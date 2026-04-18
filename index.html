@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Murim Simulator</title> 
+        <link rel="stylesheet" href="stylesheets/styles.css">
+        <script src="javascript/class/skill.js" defer></script>
+        <script src="javascript/class/item.js" defer></script>
+        <script src="javascript/class/realm.js" defer></script>
+        <script src="javascript/console.js" defer></script>
+        <script src="javascript/class/enemy.js" defer></script>
+        <script src="javascript/worldmap.js" defer></script>
+        
+        <script src="javascript/class/player.js" defer></script>
+        <script src="javascript/class/combat_manager.js" defer></script>
+        <script src="javascript/menue.js" defer></script>
+    </head>
+    <body class="dark-mode">
+        <section id="main-menue" class="">
+            <h1>Murim simulator</h1>
+                <ul id="main-menue-button-ulist">
+                    <li><button onclick="new_game()">New Game</button></li>
+                    <li><button>Load Game</button></li>
+                    <li><button onclick="open_settings()">Settings</button></li>
+                </ul>
+        </section>
+        <section id="settings-menue" class="hide">
+            <h1>Settings</h1>
+            <button onclick="toggle_dark_mode()">Dark/Light Mode</button>
+            <button onclick="open_main_menue()">Main Menue</button>
+        </section>
+        <main id="main-game" class="hide">
+            <header id="tab-selection">
+                <nav>
+                    <ul>
+                        <li><button onclick="open_world_tab()">World Map</button></li>
+                        <li><button onclick="open_cultivation_tab()">Cultivation</button></li>
+                        <li><button onclick="open_preparation_tab()">Fight Preparations</button></li>
+                        <li><button onclick="open_inventory_tab()">Inventory</button></li>
+                        <li><button onclick="open_quests_tab()">Quests</button></li>
+                        <li><button onclick="open_settings_tab()">Settings</button></li>
+                    </ul>
+                </nav>
+            </header>
+            <section id="player-section">
+                <h2 id="player-name">Kusen Kuang</h2>
+                <ul id="player-info">
+                    <li><p id="player-title"></p></li><!--If there is one, if not add class hide-->
+                    <li><p id="player-age">Age: 18yr</p></li>
+                    <li><p id="player-realm">Realm: Mortal</p></li>
+                    <li><p id="player-curency">Money: $100</p></li>
+                    <li>Health:<progress id="health" max="50" value="50"></progress></li>
+                    <li>Stamina:<progress id="stamina" max="50" value="50"></progress></li>
+                    <li class="">Internal Energy:<progress id="internal-energy" max="0" value="0"></progress></li>
+                    <li class="hide">Alignement //to do</li>
+                </ul>
+            </section>
+            <section id="main-section">
+                <section id="world-section" class="game-tab">
+                    <h2 id="location-name">error</h2>
+                    <h3 id="location-desc">error</h3>
+                    <div id="world-global">
+                        <nav id="world-container">
+
+                        </nav>
+                        <nav id="interaction-container">
+                            
+                        </nav>
+                    </div>
+                    
+                </section>
+                <section id="cultivation-section" class="game-tab hide">
+                    Cultivation
+                </section >
+                <section id="fight-preparation" class="game-tab hide">
+                    <h2>Preparation</h2>
+                    <div id="fighting-stats">
+                        <h3>Stat</h3>
+                    </div>
+                    <div id="choose-skill">
+                        <h3>Choose Skill</h3>
+                        <button>Skill 1</button>
+                        <button>Skill 2</button>
+                        <button>Skill 3</button>
+                        <button>Skill 4</button>
+                    </div>
+                    <div id="skill-inventory" class="hide">
+                        
+                    </div>
+                </section>
+                <section id="inv-section" class="game-tab hide">
+                    <div id="inventory"></div>
+                    <div id="item-details"></div>
+                </section>
+                <section id="quests-section" class="game-tab hide">
+                    Quests??
+                </section>
+                <section id="settings-section" class="game-tab hide">
+                    <button onclick="toggle_dark_mode()">Dark/Light Mode</button>
+                    <button onlick="">Save Game</button>
+                    <button onlick="">Load Game</button>
+                    <button onclick="window.close()">Close Game</button>
+                </section>
+                <section id="fighting-screen" class="hide">
+
+                </section>
+            </section>
+            <section id="inv-console-section" >
+                <div id="console-header"><h2>Console: </h2><p id="time"></p><button onclick="clearConsole()">Clear</button></div>
+                <div id="game-console"><!--Place Holder, Message inputed through JS--></div>
+            </section>
+            
+        </main>
+    </body>
+</html>

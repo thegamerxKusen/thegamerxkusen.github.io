@@ -1,0 +1,451 @@
+/* color */
+:root{
+    --bg-color:white;
+    --text-color:black;
+    
+    --border-width:3px;
+    --border-color:black;
+    
+    --btn-bg-color:white;
+    --btn-text-color:black;
+
+    --btn-hover-bg-color:black;
+    --btn-hover-text-color:white;
+
+    --btn-active-bg-color:rgb(34, 32, 32);
+    --btn-active-text-color:rgba(255, 255, 255, 0.712);
+}
+
+.dark-mode{
+    --bg-color:black;
+    --text-color:white;
+
+    --border-color:white;
+
+    --btn-bg-color:black;
+    --btn-text-color:white;
+
+    --btn-hover-bg-color:white;
+    --btn-hover-text-color:black;
+
+    --btn-active-bg-color:rgba(255, 255, 255, 0.712);
+    --btn-active-text-color:rgb(34, 32, 32);
+}
+
+/*Over all Important Class*/
+*{
+    box-sizing: border-box;
+    user-select: none;
+}
+
+body{
+    background-color: var(--bg-color);
+    color:var(--text-color);
+    overflow-y: hidden;
+}   
+
+.hide{
+    display: none !important;
+}
+
+.bold{
+    font-weight: bold;
+}
+/*Buttons*/
+button,input[type="button"],input[type="submit"],.skill-inv-skill-box{
+    background-color: var(--btn-bg-color);
+    color: var(--btn-text-color);
+    border: var(--border-width) solid var(--border-color) ;
+    border-radius: 5px;;
+    margin: 4px;
+    transition: 0.3 all ease;
+}
+
+button:hover,input[type="button"]:hover,input[type="submit"]:hover,.skill-inv-skill-box:hover{
+    background-color: var(--btn-hover-bg-color);
+    color: var(--btn-hover-text-color);
+    border: var(--border-width) solid var(--border-color) ;
+    cursor: pointer;
+    transform: scale(1.01);
+}
+button:active,input[type="button"]:active,input[type="submit"]:active,.skill-inv-skill-box:active{
+    background-color: var(--btn-active-bg-color);
+    color: var(--btn-active-text-color);
+    border: var(--border-width) solid var(--btn-active-bg-color);
+    
+    transform: scale(1.1);
+}
+
+/*Main Menue/Setting menue*/
+
+#main-menue,#settings-menue{
+    width: 100%;
+    height: 98vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#main-menue > h1, #settings-menue> h1{
+    font-size: 5rem;
+}
+
+li{
+    list-style-type: none;
+}
+#main-menue-button-ulist > li > button, #settings-menue>button{
+    width: 50vw;
+    font-size:3rem;
+}
+
+/*Main Game*/
+#main-game{
+    display: grid;
+    width: 100%;
+    height: 98vh;
+    grid-template-columns: 1fr 3fr 2fr;
+    grid-template-rows: 1fr 5fr 5fr;
+    grid-template-areas:
+    "tab-selection tab-selection tab-selection"
+    "player-section main-section inv-section"
+    "player-section main-section inv-section"; 
+}
+#player-section{grid-area:player-section;}
+#main-section{grid-area: main-section;}
+#inv-console-section{grid-area: inv-section;}
+#tab-selection{grid-area: tab-selection;}
+
+#tab-selection{
+    border: var(--border-width) solid var(--border-color);
+}
+#player-section,#main-section,#inv-console-section{
+    border-right: var(--border-width) solid var(--border-color);
+    border-bottom:var(--border-width) solid var(--border-color);
+}
+#player-section{
+    border-left: var(--border-width) solid var(--border-color);
+}
+#tab-selection > nav {height: 100%;}
+#tab-selection > nav >ul{
+    display: flex;
+    justify-content: space-around;
+    height: 100%;
+    padding: 0;
+    margin: 0;
+}
+#tab-selection > nav >ul >li{height: 100%;}
+#tab-selection > nav >ul >li>button{
+    height: 90%;
+    margin: 5px;
+    font-size:3rem;
+}
+#tab-selection > nav >ul >li>button:active{
+    height: 90%;
+    margin: 5px;
+    transform:scale(0.8);
+}
+
+#player-section,#player-info{
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+#player-info{
+    align-items: stretch;font-size: 1.5rem;}
+#player-section>h2{
+    align-self: center;
+    border-bottom: var(--border-width) solid var(--border-color);
+    width:100%;
+    border-radius: 10px;
+    text-align: center;
+    
+}
+
+/*World Section*/
+#world-section{
+    width: 99%;
+    margin:0 auto;
+
+}
+.world-place, .world-place>button{
+    width: 80%;
+    font-size: 3rem;
+}
+#world-container,#interaction-container{
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    
+    align-items: center;
+}
+
+#world-global{
+    display: grid;
+    grid-row: 1fr 1fr;
+}
+
+progress{
+    -webkit-appearance: none;
+    appearance: none;
+    margin-left: auto;
+    margin-right: auto;
+    padding-right: 0px;
+    width: 90%;
+    height: 20px;
+
+    transition: 0.3s all ease;
+    
+}
+
+progress::-webkit-progress-bar {
+    background-color: #333;
+    border-radius: 10px;
+}
+
+#health::-webkit-progress-value,#health-player::-webkit-progress-value, #health-enemy::-webkit-progress-value {
+    background-color: red; /* Change to blue or another color for Qi */
+    border-radius: 10px;
+}
+#health::-webkit-progress-value:hover,#health-player::-webkit-progress-value:hover,#health-enemy::-webkit-progress-value:hover {
+    background-color: rgb(185, 0, 0); /* Change to blue or another color for Qi */
+    border-radius: 10px;
+}
+#stamina::-webkit-progress-value {
+    background-color: orange; /* Change to blue or another color for Qi */
+    border-radius: 10px;
+}
+#stamina::-webkit-progress-value:hover {
+    background-color: rgb(201, 130, 0); /* Change to blue or another color for Qi */
+    border-radius: 10px;
+}
+#internal-energy::-webkit-progress-value, #internal-energy-player::-webkit-progress-value, #internal-energy-enemy::-webkit-progress-value {
+    background-color: aqua; /* Change to blue or another color for Qi */
+    border-radius: 10px;
+}
+#internal-energy::-webkit-progress-value:hover, #internal-energy-player::-webkit-progress-value:hover, #internal-energy-enemy::-webkit-progress-value:hover {
+    background-color: rgb(0, 190, 190); /* Change to blue or another color for Qi */
+    border-radius: 10px;
+}
+
+/*Console */
+
+#time{
+    font-size:1.2rem;    
+}
+
+#game-console{
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    margin: 0;
+    grid-area: console;
+
+}
+#console-header{
+    display: flex;
+    flex-direction: row;
+    grid-area: console-header;
+    justify-content: space-between;
+    margin-top: 10px;
+    border-bottom: 4px solid var(--border-color);
+    border-radius: 5px;
+    
+}
+#console-header>button{
+    font-size:2rem;
+    height: fit-content;
+    padding: 2px;
+}
+
+#inv-console-section{
+    display: grid;
+    grid-template-areas:
+    "console-header"
+    "console";
+    grid-template-rows: 1fr 50fr;
+    margin-top: 0;
+}
+.console-message{
+    width: 100%;
+    border-bottom: 2px solid var(--border-color);
+    border-radius: 5px;
+    font-size: 1.4rem;
+    margin: 5px;
+}
+
+#settings-section{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+}
+
+/*Settings*/
+#settings-section>button{
+    font-size: 50px;
+    margin: 10px;
+}
+#settings-section>button:active{
+    transform: scale(0.8);
+}
+/*Cult*/
+#cultivate-day{
+    width: 100%;
+    font-size: 2rem;
+}
+
+/*Inventory*/
+.item-div>p{
+    margin:0;
+    padding: 0;
+    width: 100;
+    font-size: 25px;
+}
+.item-div{
+    width: 100px;
+    height: 100px;
+    margin:5px;
+    padding: 1px;
+    text-align:center ;
+    justify-content: center;
+    border: var(--border-width) solid var(--border-color);
+    border-radius:5px;
+    cursor:pointer;
+    transition: all 0.3s ease;
+}
+.item-div:hover{
+    background-color: var(--btn-hover-bg-color);
+    color: var(--btn-hover-text-color);
+    border-color:var(--border-color) ;
+    cursor: pointer;
+}
+.item-div:active{
+    background-color: var(--btn-active-bg-color);
+    color: var(--btn-active-text-color);
+    border-color:  var(--btn-active-bg-color);
+    transform: scale(0.9);
+}
+#inventory{
+    display: flex;
+    flex-wrap: wrap;
+    margin:0 auto;
+}
+
+/*Fight Screen*/
+#fighting-screen{
+    display: grid;
+    height: 100%;
+    grid-template-rows: 1fr 1fr;
+}
+
+.info{
+    border: var(--border-width) solid var(--border-color);
+    border-radius:5px;
+    margin: 5px;
+}
+
+#health-info-enemy,#health-info-player,#energy-info-enemy,#energy-info-player{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+.info-text{
+    font-size: 20px;
+}
+
+.info>h2{
+    margin-top: 2px;
+    margin-left:5px;
+    margin-bottom: 0;
+}
+
+#fight-top-half{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+#fight-main-buttons{
+    display: grid;
+    grid-template-areas: 
+    "atk evade"
+    "items breath"
+    "flee flee";
+    grid-template-rows: 1fr 1fr 1fr;
+    height: 100%;
+}
+
+#atk-btn{grid-area: atk;font-size: 40px;}
+#evade-btn{grid-area:evade;font-size: 40px;}
+#breath-btn{grid-area:breath;font-size: 40px;}
+#items-btn{grid-area:items;font-size: 40px;}
+#flee-btn{grid-area:flee;font-size: 40px;}
+
+#fight-attack-menue{
+    display: grid;
+    grid-template-areas: 
+    "skill1 skill2"
+    "skill3 skill4"
+    "back back";
+    grid-template-rows: 1fr 1fr 1fr;
+    height: 100%;
+}
+#fight-attack-menue:first-child{grid-area: skill1;font-size: 40px;}
+#fight-attack-menue:nth-child(2){grid-area: skill2;font-size: 40px;}
+#fight-attack-menue:nth-child(3){grid-area: skill3;font-size: 40px;}
+#fight-attack-menue:nth-child(4){grid-area: skill4;font-size: 40px;}
+#fight-attack-menue:last-child{grid-area: back;font-size: 40px;}
+
+/*Tooltip*/
+
+.tooltip-recipient .tooltip {
+    font-size: 15px;
+    border: var(--border-width) solid var(--border-color);
+    visibility: hidden;
+    width: 200px;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    text-align: center;
+    padding: 5px;
+    border-radius: 5px;
+
+    position: absolute;
+    z-index: 200;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.tooltip-recipient:hover .tooltip {
+    visibility: visible;
+    opacity: 1;
+    pointer-events: auto;
+}
+.game-tab{
+    height: 100%;
+}
+/*Skill Inventory*/
+#skill-container{
+    display: flex;
+    flex-direction: column;
+    max-height: 600px;
+    overflow-x:hidden;
+    overflow-y: auto;
+}
+#skill-container::-webkit-scrollbar {
+    display: none;
+}
+.skill-inv-skill-box{
+    display: flex;
+    padding: 0;
+    flex-direction: column;
+    margin:10px;
+    height: 190px;
+}
+.skill-stats{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+}
