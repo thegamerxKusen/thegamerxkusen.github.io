@@ -50,6 +50,9 @@ class PLAYER {
     get breathing_tech() { return this._breathing_tech }
     set breathing_tech(v) { this._breathing_tech = v }
 
+    get weapon() { return this._weapon }
+    set weapon(v) { this._weapon = v }
+
     get name() { return this._name }
     set name(v) { this._name = v 
         this.refreshStats() }
@@ -526,5 +529,8 @@ class PLAYER {
         if(!(skill instanceof SKILL)){console.log("Not a skill");return;}
         this.skill_inventory.push(skill)
         sendConsoleMessage(`Your learned ${skill.name}`)
+    }
+    get_weapon_type(){
+        return this.weapon ? this.weapon.type : weapon_db[0] // Return "Fist" if no weapon equipped
     }
 }

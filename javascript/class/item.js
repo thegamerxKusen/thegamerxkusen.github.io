@@ -18,14 +18,14 @@ class ITEM{
 }
 
 class WEAPON_ITEM extends ITEM{
-    constructor(id, name, desc, value, atk_bonus, speed_bonus, rarity) {
+    constructor(id, name,type, desc, value,def_bonus, atk_bonus, speed_bonus, rarity,element) {
         super(id, name, desc, value, rarity,quantity) // Calls the Base Item constructor
+        this.type = type 
+        this.def_bonus = def_bonus
         this.atk_bonus = atk_bonus
         this.speed_bonus = speed_bonus
-        this.isEquipped = false
     }
 }
-
 class SKILL_BOOK extends ITEM {
     constructor(id, name, desc, value, mind_req, skill_id, rarity) {
         super(id, name, desc, value, rarity,quantity)

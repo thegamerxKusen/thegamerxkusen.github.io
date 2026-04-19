@@ -57,13 +57,13 @@ class CombatManager{
             skill_button.addEventListener("click",()=>{
                 if(this.player.internal_energy>=skill.basic_cost){
                     this.executeTurn(skill,false)
-                    this.player.reduceEnergy(skill.basic_cost)
                 }else{
                     sendConsoleMessage("Not enough internal energy to use this skill!")
                     //todo grey the skill out
                 }
                 
             })
+            addToolTip(attack_menue, skill.description)
             attack_menue.appendChild(skill_button)
         }
         const back = document.createElement("button")
@@ -71,26 +71,34 @@ class CombatManager{
         back.addEventListener("click",()=>{
             fight_main()
         })
-        attack_menue.appendChild(back)
-
+        
+        const weapon_type = this.player.get_weapon_type()
         const basic_atk = document.createElement("button")
-        basic_atk.innerHTML="Basic Attack"
+        basic_atk.innerHTML=weapon_type.basic_skill.name
         basic_atk.addEventListener("click",()=>{
-            this.executeTurn(null, false)//todo implement basic attack corresponding to weapon type
+            this.executeTurn(weapon_type.basic_skill, false)//todo implement basic attack corresponding to weapon type
+            
         })
+        console.log(weapon_type)
+        addToolTip(attack_menue, weapon_type.basic_skill.description)
         attack_menue.appendChild(basic_atk)
+        attack_menue.appendChild(back)
         if(this.player.max_internal_energy>0){document.querySelector("#energy-info-player").classList.remove("hide")}
     }
 
+    //set reward and punishment system
     playerDeath(){
-        sendConsoleMessage(`You died, ${this.enemy.name} won.`)
+        if(this.death_match){sendConsoleMessage(`You died, ${this.enemy.name} won.`)}
+        else{this.player.health=1;sendConsoleMessage(`You lost and are at death's door.`)}
         setTimeout(() => {
             this.endFight()
+            if(this.death_match){open_main_menue()}
         }, "4000")
         
     }
     enemyDeath(){
-        sendConsoleMessage(`${this.enemy.name} died, you won.`)
+        if(this.death_match){sendConsoleMessage(`You killed ${this.enemy.name}! You won.`)}
+        else{sendConsoleMessage(`You defeated ${this.enemy.name}!`)}
         this.endFight()
         setTimeout(() => {
             this.endFight()
@@ -108,64 +116,40 @@ class CombatManager{
         }
 
         //Speed
-        let pTotalSpeed = this.player.speed_stat + pSkill.basic_speed
-        let eTotalSpeed = this.enemy.speed_stat + eSkill.basic_speed
+        let pTotalSpeed = this.player.speed_stat + pSkill.basic_speed + (this.player.get_weapon_type().reach || 1)
+        let eTotalSpeed = this.enemy.speed_stat + eSkill.basic_speed + (this.enemy.get_weapon_type().reach || 1)
 
-        let pDamage
-        let eDamage
+        //player goes first
+        if(pTotalSpeed>=eTotalSpeed){
+            pSkill.use(this.player,this.enemy)
 
-        if(pSkill.spe_atk){
-            pDamage = (this.player.spe_atk + pSkill.basic_damage)
-            pDamage = Math.max(1,Math.floor(Math.max(0, pDamage - this.enemy.spe_def)))
-        }else{
-            pDamage = (this.player.atk_stat + pSkill.basic_damage)
-            pDamage = Math.max(1,Math.floor(Math.max(0, pDamage - this.enemy.def_stat)))
-        }
-        
-        if(eSkill.spe_atk){
-            eDamage = (this.enemy.spe_atk + eSkill.basic_damage)
-            eDamage = Math.max(1,Math.floor(Math.max(0, eDamage - this.player.spe_def)))
-        }else{
-            eDamage = (this.enemy.atk_stat + eSkill.basic_damage)
-            eDamage = Math.max(1,Math.floor(Math.max(0, eDamage - this.player.def_stat)))
-        }
-
-        
-
-        if(pTotalSpeed>=eTotalSpeed){//player goes first
-            this.enemy.health -= pDamage
-            sendConsoleMessage(`You used ${pSkill.name} and dealt ${pDamage} damage.`)
             if(this.enemy.health<=0){
                 this.enemyDeath()
                 return
             }
             setTimeout(() => {
-                this.player._health -= eDamage
-                sendConsoleMessage(`${this.enemy.name} used ${eSkill.name} and dealt ${eDamage} damage.`)
+                eSkill.use(this.enemy,this.player)
             }, "2000") 
             if(this.player.health<=0){
                 this.playerDeath()
                 return
             }
-            
-        }else{//enemy goes first
-            this.player._health -= eDamage
-            sendConsoleMessage(`${this.enemy.name} used ${eSkill.name} and dealt ${eDamage} damage.`)
+        }
+        //enemy goes first
+        else{
+            eSkill.use(this.enemy,this.player)
             if(this.player.health<=0){
                 this.playerDeath()
                 return
             }
             setTimeout(() => {
-                this.enemy.health -= pDamage
-                sendConsoleMessage(`You used ${pSkill.name} and dealt ${pDamage} damage.`)
+                pSkill.use(this.player,this.enemy)
             }, "2000") 
             
             if(this.enemy.health<=0){
                 this.enemyDeath()
             }
         }
-        
-
         this.refreshFightScreen()
     }
 
