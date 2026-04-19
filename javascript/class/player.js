@@ -28,6 +28,7 @@ class PLAYER {
 
         this._breathing_tech = breathing_tech
 
+        this.status_effects = [new BLEEDING_EFFECT(3)] 
 
         this._equipped_footwork = equipped_footwork
         
@@ -532,5 +533,23 @@ class PLAYER {
     }
     get_weapon_type(){
         return this.weapon ? this.weapon.type : weapon_db[0] // Return "Fist" if no weapon equipped
+    }
+    //status effects
+    addEffect(effect){
+        if(effect instanceof STATUS_EFFECT){
+            this.status_effects.push(effect)
+        }else{console.log("Tried to add non status effect to enemy")}
+    }
+
+    effectTurn(){
+        for (const effect of this.status_effects) {
+            console.log(effect)
+
+            effect.turn(this)
+            if(effect.duration<=0){
+                this.status_effects.splice(this.status_effects.indexOf(effect),1)
+                sendConsoleMessage(`You are no longer ${effect.adj}.`)
+            }
+        }
     }
 }

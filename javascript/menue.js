@@ -1,5 +1,5 @@
 // Main Menue
-let player = new PLAYER("Kusen",12,100,50,50,100,100,worldMap["player_home"],1,1,1,1,1,1,360,0,0,[black_dragon_ball],basic_qi_tech,null,null,null,[skill_db.demonic_roar,skill_db.iron_shoulder,skill_db.quick_jab,skill_db.dragon_breath]
+let player = new PLAYER("Kusen",12,100,50,50,100,100,worldMap["player_home"],1,1,10,1,1,1,360,0,0,[black_dragon_ball],basic_qi_tech,null,null,null,[skill_db.demonic_roar,skill_db.iron_shoulder,skill_db.quick_jab,skill_db.dragon_breath]
     )
 
 function hide_main_menue(){

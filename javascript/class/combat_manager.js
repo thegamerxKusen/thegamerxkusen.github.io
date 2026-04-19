@@ -19,6 +19,7 @@ class CombatManager{
                 <div id="energy-info-player" class="hide">
                     <p class="info-text">${this.player.internal_energy}/${this.player.max_internal_energy}</p><progress id="internal-energy-player" max="${this.player.max_internal_energy}" value="${this.player.internal_energy}"></progress>
                 </div>
+                <div id="status-effect-player"></div>
             </div>
             <div id="enemy-info" class="info">
                 <h2>${this.enemy.name}</h2>
@@ -28,6 +29,7 @@ class CombatManager{
                 <div id="energy-info-enemy" class="hide">
                     <p class="info-text">${this.enemy.internal_energy}/${this.enemy.max_internal_energy}</p><progress id="internal-energy-enemy" max="${this.enemy.max_internal_energy}" value="${this.enemy.internal_energy}"></progress>
                 </div>
+                <div id="status-effect-enemy"></div>
                 <p>${this.enemy.realm.name}</p>
             </div>
         </div>
@@ -48,7 +50,19 @@ class CombatManager{
         </div>
         `
         document.querySelector("#flee-btn").addEventListener("click",()=>this.endFight())
-
+        const player_effects = document.querySelector("#status-effect-player")
+        const enemy_effects = document.querySelector("#status-effect-enemy")
+        for (const effect of this.player.status_effects) {
+            const effect_div = document.createElement("div")
+            effect_div.innerHTML = effect.adj.charAt(0).toUpperCase() + effect.adj.slice(1) + "Turns: " + effect.duration
+            player_effects.appendChild(effect_div)
+        }
+        for (const effect of this.enemy.status_effects) {
+            const effect_div = document.createElement("div")
+            effect_div.innerHTML = effect.adj.charAt(0).toUpperCase() + effect.adj.slice(1) + " : " + effect.duration
+            enemy_effects.appendChild(effect_div)
+        }
+        
         const attack_menue = document.querySelector("#fight-attack-menue")
         for (const skill of this.player.equipped_skills) {
             const skill_button = document.createElement("button")
@@ -90,25 +104,23 @@ class CombatManager{
     playerDeath(){
         if(this.death_match){sendConsoleMessage(`You died, ${this.enemy.name} won.`)}
         else{this.player.health=1;sendConsoleMessage(`You lost and are at death's door.`)}
-        setTimeout(() => {
-            this.endFight()
-            if(this.death_match){open_main_menue()}
-        }, "4000")
+        this.endFight()
+        if(this.death_match){open_main_menue()}
         
     }
     enemyDeath(){
         if(this.death_match){sendConsoleMessage(`You killed ${this.enemy.name}! You won.`)}
         else{sendConsoleMessage(`You defeated ${this.enemy.name}!`)}
-        this.endFight()
-        setTimeout(() => {
-            this.endFight()
-        }, "4000")
+        this.endFight()            
     }
 
     // Main Turn Function
     executeTurn(player_skill, isEvading = false) {
         const pSkill = player_skill
         const eSkill = this.enemy.getRandomEnemySkill()
+        //status effects
+        this.player.effectTurn()
+        this.enemy.effectTurn()
 
         // 1. Check if Evading
         if (isEvading) {
@@ -172,9 +184,12 @@ class CombatManager{
 
 
     endFight(){
-        const fight_screen = document.querySelector("#fighting-screen")
-        hide(fight_screen)
+        setTimeout(() => {
+            const fight_screen = document.querySelector("#fighting-screen")
+            hide(fight_screen)
             open_world_tab() 
+        }, "4000")
+        
     }
 
 }

@@ -31,29 +31,26 @@ class ENEMY{
         this.breathing_tech = breathing_tech
         this.weapon = weapon
         this.armor = armor
-        console.log(`
-            --- ⚔️ ENEMY PROFILE: ${this.name.toUpperCase()} ⚔️ ---
-            Realm:   ${this.realm.name}
-            HP:      ${this.health} / ${this.max_health}
-            Stamina: ${this.stamina} / ${this.max_stamina}
-            Qi:      ${this.internal_energy} / ${this.max_internal_energy}
-            ---------------------------------------------
-            [STATS]
-            ATK: ${this.atk_stat} | SPE ATK: ${this.spe_atk}
-            DEF: ${this.def_stat} | SPE DEF: ${this.spe_def}
-            SPD: ${this.speed_stat} | MIND:    ${this.mind_stat}
-            ---------------------------------------------
-            EQUIPMENT:
-            Weapon: ${this.weapon ? this.weapon.name : "None"}
-            Armor:  ${this.armor ? this.armor.name : "None"}
-            Tech:   ${this.breathing_tech ? this.breathing_tech.name : "None"}
-                `);
 
-                if (this.skills.length > 0) {
-                    console.log("--- SKILLS ---");
-                    console.table(this.skills, ["name", "power", "speed"]);
-                }
+        this.status_effects = []
     }
+
+    addEffect(effect){
+        if(effect instanceof STATUS_EFFECT){
+            this.status_effects.push(effect)
+        }else{console.log("Tried to add non status effect to enemy")}
+    }
+
+    effectTurn(){
+        for (const effect of this.status_effects) {
+            effect.turn(this)
+            if(effect.duration<=0){
+                this.status_effects.splice(this.status_effects.indexOf(effect),1)
+                sendConsoleMessage(`${this.name} is no longer ${effect.adj}.`)
+            }
+        }
+    }
+
     getRandomEnemySkill() {
         //todo add only usable attack with fall back on basic attack, breath or item
         if(this.skills.length===0){ 
@@ -75,12 +72,9 @@ class ENEMY{
         
     }
     damage(hp_to_lose){
-        if(this.health-=hp_to_lose-this.def_stat >=0){
-            this.health-=hp_to_lose
-        }
-        else{
-            //to do death    
-        }
+        this.health-=hp_to_lose
+        const finalDamage = Math.max(1, Math.floor(hp_to_lose));
+        this.health -= finalDamage;
     }
 
     regenStamina(stamina_gain){
@@ -138,5 +132,5 @@ function createRandomEnemy(realm,name){
         skills.push(skill)
     }
 
-    return new ENEMY(name,realm,qi,qi,Math.floor(Math.random() * realm.stat_cap),Math.floor(Math.random() * realm.stat_cap),Math.floor(Math.random() * realm.stat_cap),Math.floor(Math.random() * realm.stat_cap),Math.floor(Math.random() * realm.stat_cap),Math.floor(Math.random() * realm.stat_cap),Math.floor(Math.random() * realm.stat_cap),Math.floor(Math.random() * realm.stat_cap),null,skills,null,null)
+    return new ENEMY(name,realm,qi,qi,Math.floor(Math.random() * realm.stat_cap),Math.floor(Math.random() * realm.stat_cap),Math.floor(Math.random() * realm.stat_cap),Math.max(Math.floor(Math.random() * realm.stat_cap),1),Math.floor(Math.random() * realm.stat_cap),Math.floor(Math.random() * realm.stat_cap),Math.floor(Math.random() * realm.stat_cap),Math.floor(Math.random() * realm.stat_cap),null,skills,null,null)
 }

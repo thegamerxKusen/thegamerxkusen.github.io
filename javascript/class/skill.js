@@ -27,6 +27,31 @@ class SKILL{
     }
     //Basic value is the minimum, player can go overdrive and add qi to increase the strenght of the skill
 }
+class SKILL_STATUS_EFFECT extends SKILL{
+    constructor(id,name,description,basic_cost,basic_damage,basic_speed,spe_atk,weapon_req,status_effects,chance){
+        super(id,name,description,basic_cost,basic_damage,basic_speed,spe_atk,weapon_req)
+        this.status_effects = status_effects
+        this.chance = chance//in %
+    }
+    use(user,target){
+        let damage
+
+        if(this.spe_atk){
+            damage = (user.spe_atk + this.basic_damage)
+            damage = Math.max(1,Math.floor(Math.max(0, damage - target.spe_def)))
+        }else{
+            damage = (user.atk_stat + this.basic_damage)
+            damage = Math.max(1,Math.floor(Math.max(0, damage - target.def_stat)))
+        }
+        target.health -= damage
+        user.reduceEnergy(this.basic_cost)
+        sendConsoleMessage(`${user.name} used ${this.name} and dealt ${damage} damage.`)
+        if(Math.random()<this.chance/100){
+            target.addEffect(this.status_effects)
+            sendConsoleMessage(`${target.name} is ${this.status_effects.adj}!`)
+        }
+    }
+}
 
 class WEAPON {
     constructor(name,reach,skill){
@@ -42,11 +67,11 @@ const basic_weapon_skills=[
         5,
         false,
         null),
-    new SKILL("nackstab","Backstab","A precise strike aimed at the opponent's back, has a 60% chance to cause bleeding.",
+    new SKILL_STATUS_EFFECT("backstab","Backstab","A precise strike aimed at the opponent's back, has a 60% chance to cause bleeding.",
         0,
         10,
         10,false,
-        null
+        null,new BLEEDING_EFFECT(3),60
     ),new SKILL("slash","Slash","A quick horizontal strike."),
     new SKILL("spear_thrust","Spear Thrust","A long-range piercing attack that can strike from a distance, ignore some defenses.",
         0,
@@ -61,8 +86,8 @@ const basic_weapon_skills=[
         false,
         null
     ),
-    new SKILL("staff_strike","Staff Strike","A versatile strike that can be used for both offense and defense, has a 20% chance to stun the opponent.",
-        0,9,10,false,null
+    new SKILL_STATUS_EFFECT("staff_strike","Staff Strike","A versatile strike that can be used for both offense and defense, has a 20% chance to stun the opponent.",
+        0,9,10,false,null,new STUNNED_EFFECT(1),20
     )
 ]
 
