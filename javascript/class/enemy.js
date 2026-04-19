@@ -50,7 +50,6 @@ class ENEMY{
             }
         }
     }
-
     getRandomEnemySkill() {
         //todo add only usable attack with fall back on basic attack, breath or item
         if(this.skills.length===0){ 

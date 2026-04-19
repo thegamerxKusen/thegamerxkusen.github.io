@@ -54,7 +54,7 @@ class CombatManager{
         const enemy_effects = document.querySelector("#status-effect-enemy")
         for (const effect of this.player.status_effects) {
             const effect_div = document.createElement("div")
-            effect_div.innerHTML = effect.adj.charAt(0).toUpperCase() + effect.adj.slice(1) + "Turns: " + effect.duration
+            effect_div.innerHTML = effect.adj.charAt(0).toUpperCase() + effect.adj.slice(1) + " : " + effect.duration
             player_effects.appendChild(effect_div)
         }
         for (const effect of this.enemy.status_effects) {
@@ -120,8 +120,9 @@ class CombatManager{
         const eSkill = this.enemy.getRandomEnemySkill()
         //status effects
         this.player.effectTurn()
+        this.checkDeath()
         this.enemy.effectTurn()
-
+        this.checkDeath()
         // 1. Check if Evading
         if (isEvading) {
             return this.handleEvade()
@@ -135,36 +136,35 @@ class CombatManager{
         if(pTotalSpeed>=eTotalSpeed){
             pSkill.use(this.player,this.enemy)
 
-            if(this.enemy.health<=0){
-                this.enemyDeath()
-                return
-            }
+            this.checkDeath()
             setTimeout(() => {
                 eSkill.use(this.enemy,this.player)
             }, "2000") 
-            if(this.player.health<=0){
-                this.playerDeath()
-                return
-            }
+            this.checkDeath()
         }
         //enemy goes first
         else{
             eSkill.use(this.enemy,this.player)
-            if(this.player.health<=0){
-                this.playerDeath()
-                return
-            }
+            this.checkDeath()
             setTimeout(() => {
                 pSkill.use(this.player,this.enemy)
             }, "2000") 
             
-            if(this.enemy.health<=0){
-                this.enemyDeath()
-            }
+            this.checkDeath()
         }
+        this.checkDeath()
         this.refreshFightScreen()
     }
-
+    checkDeath(){
+        if(this.player.health<=0){
+            this.playerDeath()
+            return true
+        }
+        if(this.enemy.health<=0){
+            this.enemyDeath()
+            return true
+        }
+    }
     handleEvade() {
         const footwork = this.player.equipped_footwork
         let dodgeChance = (this.player.speed_stat + footwork.dodge_bonus) / 100
