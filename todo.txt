@@ -1,0 +1,10 @@
+add elemental attack
+add item type : fighting item that can be used in combat
+expand map
+Build accademy
+Do a real age system that works
+Do quests system with a main questline
+Ballance Fighting system
+Add more status effect
+
+The game will e about the demonic accademy for now
