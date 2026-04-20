@@ -120,9 +120,9 @@ class CombatManager{
         const eSkill = this.enemy.getRandomEnemySkill()
         //status effects
         this.player.effectTurn()
-        this.checkDeath()
+        if(this.checkDeath()){return}
         this.enemy.effectTurn()
-        this.checkDeath()
+        if(this.checkDeath()){return}
         // 1. Check if Evading
         if (isEvading) {
             return this.handleEvade()
@@ -136,23 +136,23 @@ class CombatManager{
         if(pTotalSpeed>=eTotalSpeed){
             pSkill.use(this.player,this.enemy)
 
-            this.checkDeath()
+            if(this.checkDeath()){return}
             setTimeout(() => {
                 eSkill.use(this.enemy,this.player)
             }, "2000") 
-            this.checkDeath()
+            if(this.checkDeath()){return}
         }
         //enemy goes first
         else{
             eSkill.use(this.enemy,this.player)
-            this.checkDeath()
+            if(this.checkDeath()){return}
             setTimeout(() => {
                 pSkill.use(this.player,this.enemy)
             }, "2000") 
             
-            this.checkDeath()
+            if(this.checkDeath()){return}
         }
-        this.checkDeath()
+        if(this.checkDeath()){return}
         this.refreshFightScreen()
     }
     checkDeath(){
