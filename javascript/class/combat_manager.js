@@ -111,6 +111,8 @@ class CombatManager{
     enemyDeath(){
         if(this.death_match){sendConsoleMessage(`You killed ${this.enemy.name}! You won.`)}
         else{sendConsoleMessage(`You defeated ${this.enemy.name}!`)}
+
+        this.player.processEvent("KILL",this.enemy)
         this.endFight()            
     }
 

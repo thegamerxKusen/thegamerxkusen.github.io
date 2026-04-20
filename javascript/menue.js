@@ -57,6 +57,7 @@ function new_game(){
     refreshWorldSection()
     player.refreshTime()
     sendConsoleMessage(`${player.name}, your entry to the demonic academy is imminent, as an heir to the Heavenly Demon's Cult, you shall uphold the honnor of the demon's blood. You have a month until school start, prepare yourself as best as you can.`)
+    player.addQuest(new PLACE_QUEST("The Beginning","To start your training and become stronger, go to the training ground to train your body.","player_training_ground",()=>{sendConsoleMessage('Its working baby')}))
 }
 
 function load_game(){

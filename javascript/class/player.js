@@ -1,5 +1,5 @@
 class PLAYER {
-    constructor(name,  currency, health, stamina, internal_energy, max_internal_energy, location, atk_stat, def_stat,vitality_stat, speed_stat,endurance_stat, spe_atk,spe_def,hour,day, mind_stat,inventory,breathing_tech,armor, weapon,equipped_footwork,equipped_skills,realm,skill_inventory) {
+    constructor(name,  currency, health, stamina, internal_energy, max_internal_energy, location, atk_stat, def_stat,vitality_stat, speed_stat,endurance_stat, spe_atk,spe_def,hour,day, mind_stat,inventory,breathing_tech,armor, weapon,equipped_footwork,equipped_skills,realm,skill_inventory,active_quest) {
         // Use underscores here so we don't trigger the setters yet!
         this._name = name
         
@@ -22,7 +22,8 @@ class PLAYER {
         this._speed_stat = speed_stat
         this._mind_stat = mind_stat
         
-        
+        this.active_quest = active_quest || []
+
         this._was_qi_hidden = true
         this._inventory=inventory || []//lists of items
 
@@ -435,6 +436,7 @@ class PLAYER {
         this.location.onEnterMethod()
         refreshWorldSection()
         this.passMinute(10)
+        this.processEvent("MOVE", place_name, 1)
     }
     getInteractions(){
         return this.location.interactions
@@ -456,7 +458,7 @@ class PLAYER {
         }else{
             this._inventory.push(item)
         }
-        
+        this.processEvent("COLLECT",item,1)
         this.refreshInventory()
 
     }
@@ -560,4 +562,21 @@ class PLAYER {
             }
         }
     }
+
+    //Quests manager
+    addQuest(quest){
+        this.active_quest.push(quest)
+        sendConsoleMessage(`[New Quest] ${quest.title} : ${quest.description}`)
+    }
+    processEvent(eventType,target,amount=1){
+        console.log(`Processing event: ${eventType} for target: ${target} with amount: ${amount}`)
+        for (let quest of this.active_quest) {
+            // Check if the quest cares about this specific event and target
+            if (!quest.isCompleted && quest.eventType === eventType && quest.target === target) {
+                quest.updateProgress(amount);
+            }
+        }
+    }
+    
+
 }

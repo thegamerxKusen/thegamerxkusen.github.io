@@ -25,6 +25,7 @@ class INTERACTION {
             this.interaction()
             this.done++
             this.done_today++
+            player.processEvent("INTERACT", this.name, 1)
             return true
         }
         return false
