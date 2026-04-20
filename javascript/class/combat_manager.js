@@ -160,6 +160,21 @@ class CombatManager{
         if(this.checkDeath()){return}
         this.refreshFightScreen()
     }
+    executeTurnWithItemUsage(){
+        const eSkill = this.enemy.getRandomEnemySkill()
+        //status effects
+        this.player.effectTurn()
+        if(this.checkDeath()){return}
+        this.enemy.effectTurn()
+        if(this.checkDeath()){return}
+        // 1. Check if Evading
+        if (isEvading) {
+            return this.handleEvade()
+        }
+
+        eSkill.use(this.enemy,this.player)
+        if(this.checkDeath()){return}
+    }
     checkDeath(){
         if(this.player.health<=0){
             this.playerDeath()
@@ -230,6 +245,7 @@ class CombatManager{
                 use.innerHTML="Use"
                 use.addEventListener("click",()=>{
                     item.useInCombat(this.player,this.enemy)
+                    executeTurnWithItemUsage()
                     this.removeItem(item)
                     fight_main()
                     this.refreshFightScreen()
