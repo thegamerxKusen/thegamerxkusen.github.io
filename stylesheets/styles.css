@@ -449,3 +449,14 @@ progress::-webkit-progress-bar {
     flex-direction: row;
     justify-content: space-around;
 }
+
+#active-quests{
+    display: flex;
+    flex-direction: column;
+}
+.quest-box{
+    border: var(--border-width) solid var(--border-color);
+    border-radius: 5px;
+    margin: 5px;
+    padding: 5px;
+}

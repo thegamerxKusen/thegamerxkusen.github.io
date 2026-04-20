@@ -40,6 +40,23 @@ class BREATHING_TECHNIQUE extends ITEM {
         this.energy_boost = energy_boost
     }
 }
+
+class FIGHT_ITEM extends ITEM{
+    constructor(name, desc, value, rarity,quantity,effect) {
+        super(name, desc, value, rarity,quantity)
+        this.effect = effect // A function that defines what the item does in combat
+    }
+    useInCombat(user,target){
+        this.effect(user,target)
+        this.quantity--
+        if(this.quantity<=0){
+            //remove from inventory
+            const index = player.removeItem(this)
+        }
+    }
+}
+
+
 const item_db ={
     fists: new WEAPON_ITEM("Fists","Your own fists, not very strong but always with you.",0,0,0,0,"Common",weapon_db[0]),
     training_dagger: new WEAPON_ITEM("Training Dagger","A basic dagger used for training, better than nothing.",100,0,0,0,"Common",weapon_db[1]),
@@ -60,4 +77,13 @@ const item_db ={
         player.internal_energy+=100
     }),
     basic_qi_tech : new BREATHING_TECHNIQUE("Basic Qi Technique","A rough way to gather energy, can barely be called a technique, you just take all energy letting it wild in your meridian until some, gather in your dantian by chance for refining.",1000,4,1,"Common",0),
+    bandage: new FIGHT_ITEM("Bandage","A simple bandage that can be used to stop bleeding and close wounds, it can be used in combat to heal some health.",50,"Common",3,(user,target)=>{
+        const heal_amount = 5
+        user.heal(heal_amount)
+        sendConsoleMessage(`${user.name} used a bandage and healed ${heal_amount} health.`)
+        if(player.status_effects.some(e=>e instanceof BLEEDING_EFFECT)){
+            player.status_effects = player.status_effects.filter(e=>!(e instanceof BLEEDING_EFFECT))
+            sendConsoleMessage("The bandage stopped the bleeding!")
+        }
+    })
 }

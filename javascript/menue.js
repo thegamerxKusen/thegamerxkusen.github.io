@@ -195,6 +195,18 @@ function open_inventory_tab(){
 }
 function open_quests_tab(){
     hide_game_tabs()
+    const active_quests_div = document.querySelector("#active-quests")
+    for (const quests of player.active_quest) {
+        const quest_div = document.createElement("div")
+        quest_div.classList.add("quest-box")
+        quest_div.innerHTML=
+        `
+        <h3>${quests.title}</h3>
+        <p>${quests.description}</p>
+        <p>${quests.target}: ${quests.currentAmount}/${quests.requiredAmount}</p>
+        `
+        active_quests_div.appendChild(quest_div)
+    }
     show(document.querySelector("#quests-section"))
 }
 
