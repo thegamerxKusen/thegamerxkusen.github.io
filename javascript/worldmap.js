@@ -86,7 +86,7 @@ const worldMap = {
         "Residence Garden",
         "A peaceful obsidian-rock garden with a small pond. The air is still and calming.",
         ["player_home"],
-        ["leisure"],
+        ["leisure","mind_training"],
         () => true,
         null
     ),
@@ -95,7 +95,7 @@ const worldMap = {
         "Private Training Ground",
         "A reinforced stone courtyard for practicing basic forms and tempering the body.",
         ["player_home"],
-        ["foundational_training","training_ground_sparring"],
+        ["def_spe_training","atk_spe_training","speed_training","atk_training","def_training","stamina_training","training_ground_sparring"],
         () => true,
         null
     ),
@@ -310,33 +310,108 @@ const world_interactions = {
     ),
 
     // --- TRAINING ---
-    "foundational_training": new INTERACTION(
-        "Foundational Training", 0, 0,
-        () => {
-            const chance = Math.floor(Math.random() * 4) + 1
-            let msg = ""
-            switch (chance) {
-                case 1: msg = "Horse stances make your legs pillars of iron. (+1 Max Stam)"; player.max_stamina++; break
-                case 2: msg = "Striking the post callouses your knuckles. (+1 Atk)"; player.atk_stat++; break
-                case 3: msg = "Shadowboxing perfects your defense. (+1 Def)"; player.def_stat++; break
-                default: msg = "Weight training builds a solid foundation. (+1 Max HP)"; player.max_health++; break
-            }
-            player.reduceStamina(20)
-            player.passHour(4)
-            sendConsoleMessage(msg)
-        },
-        () => {
-            if (player.stamina < 20) {
-                sendConsoleMessage("You are too exhausted to train.")
-                return false
-            }
-            if(this.done_today>3){
-                sendConsoleMessage("You can't push yourself anymore before getting injured.")
-            }
-            return true
-        },
-        4 // Limit
-    ),
+    "stamina_training": new INTERACTION("Stamina Training",0,0,(()=>{
+        const chance = Math.floor(Math.random() * 2) + 1
+        player.reduceStamina(player.stamina)
+        switch (chance) {
+            case 1:
+                sendConsoleMessage("You run laps around the training ground. Your legs feel stronger. (+1 Endurance)")
+                break
+            case 2:
+                sendConsoleMessage("You do intense exercises. Your stamina capacity expands. (+1 Endurance)")
+                break
+            
+        }
+        player.endurance_stat++
+        player.passHour(4)
+         // Fully exhaust stamina to reflect intense training
+    }),()=>true),
+    "speed_training": new INTERACTION("Speed Training",0,0,(()=>{
+        const chance = Math.floor(Math.random() * 2) + 1
+        player.reduceStamina(player.stamina)
+        switch (chance) {
+            case 1:
+                sendConsoleMessage("You practice swift footwork drills. Your reflexes sharpen. (+1 Speed)") 
+                break
+            case 2:
+                sendConsoleMessage("You spar with a training dummy. Your movements become more fluid. (+1 Speed)")
+                break
+            
+        }
+        player.speed_stat++
+        player.passHour(4)
+    }),()=>true),
+    "atk_training": new INTERACTION("Attack Training",0,0,(()=>{
+        const chance = Math.floor(Math.random() * 2) + 1
+        player.reduceStamina(player.stamina)
+        switch (chance) {
+            case 1:
+                sendConsoleMessage("You strike the heavy bag repeatedly. Your punches grow stronger. (+1 Attack)")
+                break
+            case 2:
+                sendConsoleMessage("You practice powerful strikes on a training dummy. Your attack power increases. (+1 Attack)")
+                break
+        }
+        player.atk_stat++
+        player.passHour(4)
+    }),()=>true),
+    "def_training": new INTERACTION("Defence Training",0,0,(()=>{
+        const chance = Math.floor(Math.random() * 2) + 1
+        player.reduceStamina(player.stamina)
+        switch (chance) {
+            case 1:
+                sendConsoleMessage("You practice blocking and parrying. You become more resilient. (+1 Defence)")
+                break
+            case 2:
+                sendConsoleMessage("You spar with a partner focusing on defense. Your learns to absorb blows and redirect force. (+1 Defence)")
+                break
+        }
+        player.def_stat++
+        player.passHour(4)
+    }),()=>true),
+    "mind_training": new INTERACTION("Meditation",0,0,(()=>{
+        const chance = Math.floor(Math.random() * 2) + 1
+        player.reduceStamina(player.stamina)
+        switch (chance) {
+            case 1:
+                sendConsoleMessage("You sit in quiet contemplation. Your mind becomes clearer. (+1 Mind)")
+                break
+            case 2:
+                sendConsoleMessage("You practice mindfulness exercises. Your focus improves. (+1 Mind)")
+                break
+        }
+        player.mind_stat++
+        player.passHour(2)
+    }),()=>true),
+    "def_spe_training": new INTERACTION("Qi Resilience Training",0,0,(()=>{
+        const chance = Math.floor(Math.random() * 2) + 1
+        player.reduceStamina(player.stamina)
+        switch (chance) {
+            case 1:
+                sendConsoleMessage("You practice with a Qi-resistant training dummy. Your spirit defense strengthens. (+1 Spe. Defence)")
+                break
+            case 2:
+                sendConsoleMessage("You meditate while enduring controlled Qi shocks. Your spirit resilience increases. (+1 Spe. Defence)")
+                break
+        }
+        player.spe_def++
+        player.passHour(4)
+    }),()=>player.hasQi()),
+    "atk_spe_training": new INTERACTION("Qi Attack Training",0,0,(()=>{
+        const chance = Math.floor(Math.random() * 2) + 1
+        player.reduceStamina(player.stamina)
+        switch (chance) {
+            case 1:
+                sendConsoleMessage("You practice projecting Qi energy. Your spirit attack power grows. (+1 Spe. Attack)")
+                break
+            case 2:
+                sendConsoleMessage("You meditate while focusing on Qi projection. Your spirit attack sharpens. (+1 Spe. Attack)")
+                break
+        }
+        player.spe_atk++
+        player.passHour(4)
+    }),()=>player.hasQi()),
+
 
     "read": new INTERACTION(
         "Read", 0, 0,
@@ -370,7 +445,7 @@ const world_interactions = {
     "test_give_item": new GET_ITEM_INTERACTION(
         "Test Item", 0, 0,
         () => true,
-        black_dragon_ball
+        item_db.black_dragon_ball
     )
 }
 
