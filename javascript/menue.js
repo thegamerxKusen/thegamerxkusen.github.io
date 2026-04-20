@@ -52,7 +52,7 @@ function new_game(){
     show(document.querySelector("#main-game"))
     //open player creation tab
     //create player 
-    player = new PLAYER("Kusen",100,50,50,100,100,worldMap["player_home"],1,1,1,1,1,1,1,360,0,0,[item_db.black_dragon_ball,item_db.bandage],item_db.basic_qi_tech,null,item_db.fists,null,[skill_db[0],skill_db[1],skill_db[2]]
+    player = new PLAYER("Kusen",100,50,50,100,100,worldMap["player_home"],1,1,1,1,1,1,1,360,0,0,[item_db.black_dragon_ball,item_db.bandage,item_db.basic_breathing_manual],item_db.basic_qi_tech,null,item_db.fists,null,[skill_db[0],skill_db[1],skill_db[2]]
     ,realm_db[0],[skill_db[0],skill_db[1],skill_db[2],skill_db[3],skill_db[4]])
     refreshWorldSection()
     player.refreshTime()
@@ -87,19 +87,52 @@ function open_cultivation_tab(){
     const cult_section = document.querySelector("#cultivation-section")
     hide_game_tabs()
     show(cult_section)
-    console.log(player.breathing_tech)
-    if(player.breathing_tech instanceof BREATHING_TECHNIQUE){
+    console.log(player._breathing_tech)
+    if(player._breathing_tech instanceof BREATHING_TECHNIQUE){
         cult_section.innerHTML=`
         <h2> Breathing Technique: </h2>
-        <h3>${player.breathing_tech.name}</h3>
-        <p>${player.breathing_tech.desc}</p>
-        <h3>Cultivation Effect: ${player.breathing_tech.energy_boost}</h3>
-        <h3>${player.breathing_tech.rarity}</h3>
-        <button id="cultivate-day" onclick="player.cultivate(1)">Cultivate For 12 Hours</button>`
-        
+        <h3>${player._breathing_tech.name}</h3>
+        <p>${player._breathing_tech.desc}</p>
+        <h3>Cultivation Effect: ${player._breathing_tech.energy_boost}</h3>
+        <h3>${player._breathing_tech.rarity}</h3>
+        <button id="cultivate-day" onclick="player.cultivate(1)">Cultivate For 12 Hours</button>
+        `
     }else{
         cult_section.innerHTML=`<h2>You have no Breathing Techniques equiped.</h2>`
     }
+    if(player._breathing_tech_inventory.length>0){
+        cult_section.innerHTML+=`
+        <button id="switch-cult">Switch Technique</button>
+        <div id="cultivation-inventory"></div>`
+        const switch_btn = document.querySelector("#switch-cult")
+        switch_btn.addEventListener("click",()=>{
+            const cult_inv = document.querySelector("#cultivation-inventory")
+            cult_inv.innerHTML=""
+            for (const cult_tech of player._breathing_tech_inventory) {
+                cult_inv.innerHTML+=`
+                <div class="cultivation-tech-box">
+                    <h4>${cult_tech.name}</h4>
+                    <p>${cult_tech.desc}</p>
+                    <p>Energy Boost: ${cult_tech.energy_boost}</p>
+                    <p>Tier: ${cult_tech.tier}</p>
+                    
+                </div>
+                `
+                const tech_box = cult_inv.lastElementChild
+                const equip_btn = document.createElement("button")
+                equip_btn.textContent="Equip"
+                equip_btn.addEventListener("click",()=>{
+                    player._breathing_tech = cult_tech
+                    open_cultivation_tab()
+                })
+                tech_box.appendChild(equip_btn)
+                
+            }
+            }
+        )
+    }
+    
+
 }
 
 

@@ -1,6 +1,5 @@
 class SKILL{
-    constructor(id,name,description,basic_cost,basic_damage,basic_speed,spe_atk,weapon_req){
-        this.id=id
+    constructor(name,description,basic_cost,basic_damage,basic_speed,spe_atk,weapon_req){
         this.name=name
         this.description = description
         this.weapon_req = weapon_req || null //if the skill requires a specific weapon type, if not its null
@@ -61,32 +60,32 @@ class WEAPON {
     }
 }
 const basic_weapon_skills=[
-    new SKILL("Punch","Basic Punch","A simple punch, nothing fancy but it can still hurt if you hit the right spot.",
+    new SKILL("Basic Punch","A simple punch, nothing fancy but it can still hurt if you hit the right spot.",
         0,
         5,
         5,
         false,
         null),
-    new SKILL_STATUS_EFFECT("backstab","Backstab","A precise strike aimed at the opponent's back, has a 60% chance to cause bleeding.",
+    new SKILL_STATUS_EFFECT("Backstab","A precise strike aimed at the opponent's back, has a 60% chance to cause bleeding.",
         0,
         10,
         10,false,
         null,new BLEEDING_EFFECT(3),60
-    ),new SKILL("slash","Slash","A quick horizontal strike."),
-    new SKILL("spear_thrust","Spear Thrust","A long-range piercing attack that can strike from a distance, ignore some defenses.",
+    ),new SKILL("Slash","A quick horizontal strike."),
+    new SKILL("Spear Thrust","A long-range piercing attack that can strike from a distance, ignore some defenses.",
         0,
         10,
         10,
         false,
         null),
-    new SKILL("heavy-swing","Heavy Swing","A powerful overhead strike that can break through defenses but is slow to execute. Takes a turn to buildup.",
+    new SKILL("Heavy Swing","A powerful overhead strike that can break through defenses but is slow to execute. Takes a turn to buildup.",
         0,
         20,
         5,
         false,
         null
     ),
-    new SKILL_STATUS_EFFECT("staff_strike","Staff Strike","A versatile strike that can be used for both offense and defense, has a 20% chance to stun the opponent.",
+    new SKILL_STATUS_EFFECT("Staff Strike","A versatile strike that can be used for both offense and defense, has a 20% chance to stun the opponent.",
         0,9,10,false,null,new STUNNED_EFFECT(1),20
     )
 ]
@@ -106,7 +105,6 @@ const skill_db = [
     // --- PHYSICAL ATTACKS (spe_atk: false) ---
     
     new SKILL(
-        "quick_jab",
         "Swift Sparrow Strike",
         "A lightning-fast strike aimed at pressure points. High speed, but low base power.",
         5,   // basic_cost (Stamina)
@@ -117,7 +115,6 @@ const skill_db = [
     ),
 
     new SKILL(
-        "heavy_swing",
         "Mountain Crushing Blow",
         "A slow, wide arc swing using full body weight. Hard to time, but devastating.",
         15,  // basic_cost
@@ -128,7 +125,6 @@ const skill_db = [
     ),
 
     new SKILL(
-        "iron_shoulder",
         "Iron Bull Charge",
         "A balanced tackle. Sturdy and reliable for beginners.",
         10,
@@ -139,7 +135,6 @@ const skill_db = [
     ),
 
     new SKILL(
-        "flowing_palm",
         "Soft Water Palm",
         "A counter-focused strike that uses the opponent's momentum. Good speed.",
         8,
@@ -152,7 +147,6 @@ const skill_db = [
     // --- SPECIAL ATTACKS (spe_atk: true) ---
 
     new SKILL(
-        "qi_burst",
         "Internal Shockwave",
         "Erupts internal energy through the palms. Bypasses some physical defense.",
         20,  // basic_cost (Internal Energy)
@@ -163,7 +157,6 @@ const skill_db = [
     ),
 
     new SKILL(
-        "dragon_breath",
         "Dragon's Sigh",
         "A slow, channeled beam of energy. Massive damage if it lands.",
         40,
@@ -174,7 +167,6 @@ const skill_db = [
     ),
 
     new SKILL(
-        "flicker_bolt",
         "Lightning Finger",
         "A concentrated spark of energy released from the fingertip. Extremely fast.",
         15,
@@ -185,7 +177,6 @@ const skill_db = [
     ),
 
     new SKILL(
-        "demonic_roar",
         "Soul-Shaking Cry",
         "An area-of-effect sound attack that ignores physical armor.",
         25,

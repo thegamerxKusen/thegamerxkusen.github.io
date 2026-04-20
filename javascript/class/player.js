@@ -28,11 +28,13 @@ class PLAYER {
         this._inventory=inventory || []//lists of items
 
         this._breathing_tech = breathing_tech
+        this._breathing_tech_inventory = [] // multiplier is 1 if no technique is equipped
 
         this.status_effects = [new BLEEDING_EFFECT(3)] 
 
         this._equipped_footwork = equipped_footwork
-        
+        this._footwork_inventory = [] 
+
         this.equipped_skills=equipped_skills 
         this.skill_inventory = skill_inventory || []
 
@@ -462,7 +464,6 @@ class PLAYER {
 
     }
     removeItem(index){
-        index--
         const quant_element = document.querySelector("#item-quanta")
         if(!this._inventory[index] instanceof ITEM){
             console.log("Not an item: removeItem(index)")
@@ -476,9 +477,6 @@ class PLAYER {
             this._inventory.splice(index, 1)
             this.refreshInventory()
         }
-        console.log(index)
-        
-        
     }
 
     refreshInventory(){
@@ -493,48 +491,54 @@ class PLAYER {
             detail_element.innerHTML="<h2>Your inventory is empty</h2>"
             return
         }
-        let i=0
-        for (const item of this._inventory) {
-            if(!item instanceof ITEM){console.log("Inventory Problem, a non item in the inventory list.")}
-            const item_div=document.createElement("div")
+        this._inventory.forEach((item, index) => {
+            if (!(item instanceof ITEM)) { 
+                console.log("Inventory Problem, a non item in the inventory list.") 
+            }
             
-            item_div.innerHTML=
-            `
-            <p>${item.name}</p>
-            `
-            item_div.classList.add("item-div")
-            item_div.addEventListener("click",()=>{
-                //when you click on item
-                detail_element.innerHTML=
-                `
-                <h2>${item.name}</h2>
-                <h3>${item.rarity}</h3>
-                <h3>Value: ${item.value}</h3>
-                <h3 id="item-quanta">Quantity: ${item.quantity}</h3>
-                <p>${item.desc}</p>
+            const item_div = document.createElement("div");
+            item_div.innerHTML = `<p>${item.name}</p>`;
+            item_div.classList.add("item-div");
+            
+            item_div.addEventListener("click", () => {
+                detail_element.innerHTML = `
+                    <h2>${item.name}</h2>
+                    <h3>${item.rarity}</h3>
+                    <h3>Value: ${item.value}</h3>
+                    <h3 id="item-quanta">Quantity: ${item.quantity}</h3>
+                    <p>${item.desc}</p>
+                `;
                 
-                `
-                const use = document.createElement("button")
-                use.innerHTML="Use"
-                use.addEventListener("click",()=>{
-                    item.use()
-                    this.removeItem(i)
-                    
-
-                })
-                detail_element.appendChild(use)
-
-            })
-            inventory.appendChild(item_div)
-            i++
-        }
+                const useBtn = document.createElement("button");
+                useBtn.innerHTML = "Use";
+                useBtn.addEventListener("click", () => {
+                    item.use(this); 
+                    this.removeItem(index); 
+                    this.refreshInventory(); 
+                });
+                
+                detail_element.appendChild(useBtn);
+            });
+            
+            inventory.appendChild(item_div);
+        });
     }
     
-    learn_skill(skill){
-        if(!(skill instanceof SKILL)){console.log("Not a skill");return;}
-        this.skill_inventory.push(skill)
-        sendConsoleMessage(`Your learned ${skill.name}`)
+    learn_skill(skill_manual){
+        if(!(skill_manual instanceof SKILL_BOOK)){console.log("Not a manual");return;}
+        this.skill_inventory.push(skill_manual.content)
+        sendConsoleMessage(`Your learned ${skill_manual.content.name}`)
     }
+    learn_breathing_tech(breathing_manual){
+        if(!(breathing_manual instanceof BREATHING_TECHNIQUE_BOOK) || this._breathing_tech_inventory.findIndex(t => t.name === breathing_manual.content.name) !== -1){
+            console.log("Not a manual or technique already learned");
+            return;
+        }
+        console.log("Learning")
+        this._breathing_tech_inventory.push(breathing_manual.content)
+        sendConsoleMessage(`Your learned ${breathing_manual.content.name}`)
+    }
+
     get_weapon_type(){
         return this.weapon ? this.weapon.type : weapon_db[0] // Return "Fist" if no weapon equipped
     }

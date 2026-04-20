@@ -6,8 +6,6 @@ Do a main questline
 Ballance Fighting system
 Add more status effect
 
-In fight preparation add stats description
-
-create a breathing_manual class that is not an item, and create an item class that give the manual so we cann use it to learn it in our skills library
+make a tier system
 
 The game will be about the demonic accademy for now
