@@ -537,6 +537,11 @@ class PLAYER {
     get_weapon_type(){
         return this.weapon ? this.weapon.type : weapon_db[0] // Return "Fist" if no weapon equipped
     }
+
+    hasQi(){
+        return this.max_internal_energy>0
+    }
+
     //status effects
     addEffect(effect){
         if(effect instanceof STATUS_EFFECT){
