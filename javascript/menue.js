@@ -109,20 +109,17 @@ function open_preparation_tab(){
     stat_div.innerHTML=
     `
     <h3>Stat</h3>
-    <p>Attack: ${player._atk_stat}</p>
-    <p>Attack Spe.: ${player._spe_atk}</p>
-    <p>Defence: ${player._def_stat}</p>
-    <p>Defence Spe.: ${player._spe_def}</p>
-    <p>Speed: ${player._speed_stat}</p>
-    <p>Mind: ${player._mind_stat}</p>
-    <p>Vitality: ${player._vitality_stat}</p>
-    <p>Endurance: ${player._endurance_stat}</p>
+    <p class="tooltip-recipient">Attack: ${player._atk_stat}<span class="tooltip">Influence damage dealth with physical attacks.</span></p>
+    <p class="tooltip-recipient">Attack Spe.: ${player._spe_atk}<span class="tooltip">Influence damage dealth with Qi based attacks.</span></p>
+    <p class="tooltip-recipient">Defence: ${player._def_stat}<span class="tooltip">Influence the amount of damage taken by physical attacks.</span></p>
+    <p class="tooltip-recipient">Defence Spe.: ${player._spe_def}<span class="tooltip">Influence the amount of damage taken by Qi based attacks.</span></p>
+    <p class="tooltip-recipient">Speed: ${player._speed_stat}<span class="tooltip">Influence who attacks first.</span></p>
+    <p class="tooltip-recipient">Mind: ${player._mind_stat}<span class="tooltip">Influence the effectiveness of cultivation and if you can learn a skill.</span></p>
+    <p class="tooltip-recipient">Vitality: ${player._vitality_stat}<span class="tooltip">Influence Max Health.</span></p>
+    <p class="tooltip-recipient">Endurance: ${player._endurance_stat}<span class="tooltip">Influence the ability to withstand fatigue.</span></p>
     `
     const skill_selection = document.querySelector("#choose-skill")
-    skill_selection.innerHTML=
-    `
-        <h3>Choose Skill</h3>
-    `
+    skill_selection.innerHTML="<h3>Choose Skill</h3>"
     let i =0
     
     for (const skill of player.equipped_skills) {
