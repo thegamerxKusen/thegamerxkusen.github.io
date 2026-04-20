@@ -1,8 +1,8 @@
 class PLAYER {
-    constructor(name, age, currency, health, stamina, internal_energy, max_internal_energy, location, atk_stat, def_stat,vitality_stat, speed_stat,endurance_stat, spe_atk,spe_def,hour,day, mind_stat,inventory,breathing_tech,armor, weapon,equipped_footwork,equipped_skills,realm,skill_inventory) {
+    constructor(name,  currency, health, stamina, internal_energy, max_internal_energy, location, atk_stat, def_stat,vitality_stat, speed_stat,endurance_stat, spe_atk,spe_def,hour,day, mind_stat,inventory,breathing_tech,armor, weapon,equipped_footwork,equipped_skills,realm,skill_inventory) {
         // Use underscores here so we don't trigger the setters yet!
         this._name = name
-        this._age = age
+        
         this._currency = currency
         this._health = health
         this._vitality_stat=vitality_stat
@@ -41,6 +41,7 @@ class PLAYER {
         this._hour=hour
 
         this._day=day
+        this._age = 4320 + this.day
         // NOW that everything has a value, we refresh the UI
         this.refreshStats()
     }
@@ -145,10 +146,12 @@ class PLAYER {
     set endurance_stat(v) {
          if(this._endurance_stat+v>this.realm.stat_cap){
             sendConsoleMessage("Stat cap reached, breakthrought and keep training.")
+            return false
         }else{
             this._endurance_stat = v 
             this._max_stamina=(this._endurance_stat * 5) + (this._endurance_stat.id * 50)
             this.refreshStats()
+            return true
         } 
     }   
     get speed_stat() { return this._speed_stat }
@@ -268,7 +271,7 @@ class PLAYER {
             <h2 id="player-name">${this.name}</h2>
             <ul id="player-info">
                 <li class="${titleClass}"><p id="player-title">${this.title || ""}</p></li>
-                <li><p id="player-age">Age: ${this.age}yr</p></li>
+                <li><p id="player-age">Age: ${(this.age/360).toFixed(0)}</p></li>
                 <li><p id="player-realm">Realm: ${realmName}</p></li>
                 <li><p id="player-curency">Money: $${this.currency}</p></li>
                 
