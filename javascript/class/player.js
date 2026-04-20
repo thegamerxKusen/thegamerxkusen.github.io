@@ -61,8 +61,6 @@ class PLAYER {
         this.refreshStats() }
 
     get age() { return this._age }
-    set age(v) { this._age = v 
-        this.refreshStats() }
 
     get currency() { return this._currency }
     set currency(v) { this._currency = v 
@@ -72,7 +70,8 @@ class PLAYER {
     set hour(v){this._hour=v}
 
     get day(){return this._day}
-    set day(v){this._day=vrefreshIneractionsDailies()}
+    set day(v){this._day=v;this.refreshIneractionsDailies()
+        this._age = 4320 + this.day}
 
     get location() { return this._location }
     set location(v) { this._location = v 

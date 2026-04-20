@@ -4,6 +4,7 @@ class CombatManager{
         this.enemy=enemy
         this.log = []
         this.death_match = death_match || false
+        
     }
 
     refreshFightScreen(){
@@ -44,11 +45,13 @@ class CombatManager{
             <div id="fight-attack-menue" class="hide">
             </div>
             <div id="fight-items-menue" class="hide">
-                <p>Not implemented</p>
+                <div id="fight-inventory"></div>
+                <div id="fight-item-details"></div>
                 <button onclick="fight_main()">Back</button>
             </div>            
         </div>
         `
+        this.open_fight_inventory()
         document.querySelector("#flee-btn").addEventListener("click",()=>this.endFight())
         const player_effects = document.querySelector("#status-effect-player")
         const enemy_effects = document.querySelector("#status-effect-enemy")
@@ -194,6 +197,53 @@ class CombatManager{
         
     }
 
+    open_fight_inventory(){
+        const inv_selection = document.querySelector("#fight-items-menue")
+        const detail_element = document.querySelector("#fight-item-details")
+        const inventory = document.querySelector('#fight-inventory')
+        inventory.innerHTML=""
+        detail_element.innerHTML=""
+        if(this.player._inventory.length===0){
+            detail_element.innerHTML="<h2>Your inventory is empty</h2>"
+            return
+        }
+        let i=0
+        for (const item of this.player._inventory) {
+            if(item instanceof FIGHT_ITEM){
+            const item_div=document.createElement("div")
+            
+            item_div.innerHTML=
+            `
+            <p>${item.name}</p>
+            `
+            item_div.classList.add("item-div")
+            item_div.addEventListener("click",()=>{
+                //when you click on item
+                detail_element.innerHTML=
+                `
+                <h2>${item.name}</h2>
+                <h3 id="item-quanta">Quantity: ${item.quantity}</h3>
+                <p>${item.desc}</p>
+                
+                `
+                const use = document.createElement("button")
+                use.innerHTML="Use"
+                use.addEventListener("click",()=>{
+                    item.useInCombat(this.player,this.enemy)
+                    this.removeItem(item)
+                    fight_main()
+                    this.refreshFightScreen()
+
+                })
+                detail_element.appendChild(use)
+
+            })
+            inventory.appendChild(item_div)
+        }
+            i++
+        
+        }
+    }
 }
 
 // in a fight a player or enemy got 6 choices: 4 chosen skill, breathing tech to get qi, so waiting a turn mostly and evading

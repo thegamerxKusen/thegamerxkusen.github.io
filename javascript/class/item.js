@@ -49,10 +49,6 @@ class FIGHT_ITEM extends ITEM{
     useInCombat(user,target){
         this.effect(user,target)
         this.quantity--
-        if(this.quantity<=0){
-            //remove from inventory
-            const index = player.removeItem(this)
-        }
     }
 }
 
