@@ -53,6 +53,16 @@ class CombatManager{
         `
         this.open_fight_inventory()
         document.querySelector("#flee-btn").addEventListener("click",()=>this.endFight())
+        const evade_btn = document.querySelector("#evade-btn")
+        evade_btn.addEventListener("click",()=>{
+            if(!this.player.equipped_footwork){return sendConsoleMessage("You have no footwork technique!")}
+            if(this.player.internal_energy>=footwork_tech_db.basic_evade.activeCost){
+                this.executeTurnWithEvade()
+            }else{
+                sendConsoleMessage("Not enough internal energy to use this technique!")
+            }
+        })
+
         const player_effects = document.querySelector("#status-effect-player")
         const enemy_effects = document.querySelector("#status-effect-enemy")
         for (const effect of this.player.status_effects) {
@@ -134,8 +144,8 @@ class CombatManager{
         }
 
         //Speed
-        let pTotalSpeed = this.player.speed_stat + pSkill.basic_speed + (this.player.get_weapon_type().reach || 1)
-        let eTotalSpeed = this.enemy.speed_stat + eSkill.basic_speed + (this.enemy.get_weapon_type().reach || 1)
+        let pTotalSpeed = this.player.speed_stat + pSkill.basic_speed + (this.player.get_weapon_type().reach || 1) + (this.player.equipped_footwork ? this.player.equipped_footwork.passiveSpeed : 0)
+        let eTotalSpeed = this.enemy.speed_stat + eSkill.basic_speed + (this.enemy.get_weapon_type().reach || 1) + (this.enemy.equipped_footwork ? this.enemy.equipped_footwork.passiveSpeed : 0)
 
         //player goes first
         if(pTotalSpeed>=eTotalSpeed){
@@ -175,6 +185,32 @@ class CombatManager{
         eSkill.use(this.enemy,this.player)
         if(this.checkDeath()){return}
     }
+    executeTurnWithBreathingTech(){}
+    executeTurnWithEvade(){
+        const footwork = this.player.equipped_footwork
+        footwork.fightUse(this.player, this.enemy)
+        const eSkill = this.enemy.getRandomEnemySkill()
+        let pTotalSpeed = this.player.speed_stat  + (this.player.equipped_footwork ? this.player.equipped_footwork.passiveSpeed : 2)
+        let eTotalSpeed = this.enemy.speed_stat + eSkill.basic_speed + (this.enemy.get_weapon_type().reach || 1) + (this.enemy.equipped_footwork ? this.enemy.equipped_footwork.passiveSpeed : 0)
+
+        const dodgeChance = this.calculateEvasionChance(this.enemy.speed_stat,this.player.speed_stat);
+        fight_main()
+        
+        //status effects
+        this.player.effectTurn()
+        if(this.checkDeath()){return}
+        this.enemy.effectTurn()
+        // Random roll between 0 and 99
+        if (Math.random() * 100 < dodgeChance) {
+            sendConsoleMessage(`${this.enemy.name} used ${eSkill.name} but ${this.player.name} successfully evades the attack using ${footwork.name}!`)
+             return; // Skip damage calculation!
+        }
+        sendConsoleMessage(`${this.player.name} failed to evade!`)
+        if(this.checkDeath()){return}
+        eSkill.use(this.enemy,this.player)
+        if(this.checkDeath()){return}
+        
+    }
     checkDeath(){
         if(this.player.health<=0){
             this.playerDeath()
@@ -185,17 +221,29 @@ class CombatManager{
             return true
         }
     }
-    handleEvade() {
-        const footwork = this.player.equipped_footwork
-        let dodgeChance = (this.player.speed_stat + footwork.dodge_bonus) / 100
-        
-        if (Math.random() < dodgeChance) {
-            sendConsoleMessage("You moved like a ghost! Attack evaded.")
-            // Player takes 0 damage, Enemy still loses stamina for missing
-        } else {
-            sendConsoleMessage("Footwork failed! You caught the full blow.")
-            // Take extra damage or normal damage
+    calculateEvasionChance(attackerSpeed, evaderSpeed) {
+        const baseEvasion = 5; // 5% minimum chance to dodge
+        const maxEvasion = 80; // Hard cap at 80% so combat doesn't stall forever
+        const scalingFactor = 40; // How rewarding speed is. (Higher = easier to dodge)
+        evaderSpeed += this.player.equipped_footwork ? this.player.equipped_footwork.passiveSpeed : 0
+        // If the defender is slower or equal, they only get the base luck evasion
+        if (evaderSpeed <= attackerSpeed) {
+            return baseEvasion;
         }
+
+        // Calculate how much faster the defender is as a decimal percentage
+        // Example: Def=150, Att=100 -> (150 - 100) / 100 = 0.5 (50% faster)
+        const speedAdvantageRatio = (evaderSpeed - attackerSpeed) / attackerSpeed;
+
+        // Convert the ratio into an actual evasion bonus
+        // Example: 0.5 * 40 = 20% bonus evasion
+        const evasionBonus = speedAdvantageRatio * scalingFactor;
+
+        // Add base and round down for a clean integer
+        const totalEvasion = Math.floor(baseEvasion + evasionBonus);
+
+        // Ensure it never goes above the max cap
+        return Math.min(totalEvasion, maxEvasion);
     }
     start_fight(){
         this.refreshFightScreen()
@@ -246,7 +294,7 @@ class CombatManager{
                 use.addEventListener("click",()=>{
                     item.useInCombat(this.player,this.enemy)
                     executeTurnWithItemUsage()
-                    this.removeItem(item)
+                    this.player.removeItem(item)
                     fight_main()
                     this.refreshFightScreen()
 

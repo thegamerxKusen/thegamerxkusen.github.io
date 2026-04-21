@@ -18,21 +18,20 @@ const breathing_tech_db = {
     }
 
 class FOOTWORK_TECHNIQUE {
-    constructor(name, description, activeCost, passiveSpeed, activeLogic) {
+    constructor(name, description, activeCost, passiveSpeed) {
         this.name = name
         this.description = description
         this.activeCost = activeCost // How much Qi it costs to use the Evade
-        this.passiveSpeed = passiveSpeed
-        this.fightUse = activeLogic     // A function
+        this.passiveSpeed = passiveSpeed   // A function
     }
 
     fightUse(user, target) {
-
+        if (user.internal_energy >= this.activeCost) {
+            user.reduceEnergy(this.activeCost)
+        }
     }
 }
 
 const footwork_tech_db = {
-    basic_evade : new FOOTWORK_TECHNIQUE("Basic Evade","A simple footwork technique that allows you to evade attacks, but it is not very effective.", 20, 1, (user, target) => {
-        sendConsoleMessage(`${user.name} uses ${footwork_tech_db.basic_evade.name} to evade the attack!`)})
-        //no speed boost just trying to evade, so no change to user.speed
-    }
+    basic_evade : new FOOTWORK_TECHNIQUE("Basic Evade","A simple footwork technique that allows you to evade attacks, but it is not very effective.", 20, 10)
+}

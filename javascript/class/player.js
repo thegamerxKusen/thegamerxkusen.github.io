@@ -55,6 +55,9 @@ class PLAYER {
     get breathing_tech() { return this._breathing_tech }
     set breathing_tech(v) { this._breathing_tech = v }
 
+    get equipped_footwork() { return this._equipped_footwork }
+    set equipped_footwork(v) { this._equipped_footwork = v }
+    
     get weapon() { return this._weapon }
     set weapon(v) { this._weapon = v }
 
