@@ -185,13 +185,30 @@ function open_preparation_tab(){
 
 function open_skill_inventory(slot_index){
     const skill_inventory = document.querySelector("#skill-inventory")
-    show(skill_inventory)
-    hide(document.querySelector("#fighting-stats"))
     skill_inventory.innerHTML=
     `
     <h2>Skill Inventory -- Skill Slot: ${slot_index+1} - ${document.querySelector("#choose-skill-"+(slot_index+1)).textContent}</h2>
     <div id="skill-container"></div>`
+    
     const skill_container = document.querySelector("#skill-container")
+    show(skill_inventory)
+    hide(document.querySelector("#fighting-stats"))
+    if(player.equipped_skills[slot_index]){
+        const selected_skill_div = document.createElement("div")
+        selected_skill_div.classList.add("skill-inv-skill-box")
+        selected_skill_div.innerHTML=
+        `
+        <h3>Current Skill: ${player.equipped_skills[slot_index].name}</h3>
+        <p>${player.equipped_skills[slot_index].description}</p>
+        <div class="skill-stats">
+            <p>Base cost :${player.equipped_skills[slot_index].basic_cost}</p>
+            <p>Base speed :${player.equipped_skills[slot_index].basic_speed}</p>
+            <p>Base damage :${player.equipped_skills[slot_index].basic_damage}</p>
+        </div>
+        `
+        skill_container.appendChild(selected_skill_div)
+    }
+    
     for (const skill of player.skill_inventory) {
         
         const skill_div = document.createElement("div")
