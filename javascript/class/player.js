@@ -75,7 +75,7 @@ class PLAYER {
     set hour(v){this._hour=v}
 
     get day(){return this._day}
-    set day(v){this._day=v;this.refreshIneractionsDailies()
+    set day(v){this._day=v;refreshIneractionsDailies();
         this._age = 4320 + this.day}
 
     get location() { return this._location }
@@ -453,8 +453,8 @@ class PLAYER {
             return
         }
         // 2. Find if an item with the same ID already exists in the inventory
-        const existingItem = this._inventory.find(i => i.id === item.id)
-
+        const existingItem = this._inventory.find(i => i.name === item.name)
+        
         if (existingItem) {
             existingItem.addAnother()
             console.log(`Increased quantity of ${existingItem.name} to ${existingItem.quantity}`)

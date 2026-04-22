@@ -21,45 +21,108 @@ class INTERACTION {
     }
 
     execute() {
-        if (this.condition()) {
-            this.interaction()
-            this.done++
-            this.done_today++
-            player.processEvent("INTERACT", this.name, 1)
-            return true
-        }
-        return false
+        this.interaction()
+        this.done++
+        this.done_today++
+        player.processEvent("INTERACT", this.name, 1)
+        return true
+        
     }
 }
 
 class FIGHT_INTERACTION extends INTERACTION {
     constructor(name, done, done_today, condition, enemy) {
         // We pass 'null' for the interaction because we define it below
-        super(name, done, done_today, ()=>{},condition)
+        super(name, done, done_today, ()=>{
+            const fight_manager = new CombatManager(player, this.enemy, false)
+            hide_game_tabs()
+            fight_manager.start_fight()
+    },condition)
         this.enemy = enemy
-    }
-    execute(){
-        this.done++
-        this.done_today++
-        const fight_manager = new CombatManager(player, this.enemy, false)
-        hide_game_tabs()
-        fight_manager.start_fight()
     }
 }
 
 class GET_ITEM_INTERACTION extends INTERACTION {
     constructor(name, done, done_today, condition, item) {
-        super(name, done, done_today, null, condition)
+        super(name, done, done_today, () => {
+            player.addItem(this.item)
+        }, condition)
         this.item = item
     }
-    execute(){
-        this.done++
-        this.done_today++
-        this.interaction()
+}
+
+class SHOP_INTERACTION extends INTERACTION {
+    constructor(name, done, done_today, condition, shop_inventory) {
+        super(name, done, done_today, () => {
+            this.openShop()
+        }, condition)
+        this.shop_inventory = shop_inventory
     }
-    interaction() {
-        player.addItem(this.item)
+
+    openShop(){
+        const popupContent = document.createElement("div")
+        popupContent.classList.add("popup-content")
+        popupContent.innerHTML = ""
+        popupContent.innerHTML = `
+            <h2>${this.name}</h2>
+            <div class="shop-items">
+            </div>
+            <div id="item-description">
+                
+            </div>
+            <button id="close-shop-btn" onclick="closePopup()">Back</button>
+        `
+        closePopup() 
+        openPopup(popupContent)
+        const itemDescription = popupContent.querySelector("#item-description")
+        this.shop_inventory.forEach((item,index) => {
+            if(item instanceof ITEM) {
+                const itemElement = document.createElement("div")
+                itemElement.classList.add("item-div")
+                itemElement.innerHTML = `
+                    <p>${item.name}</p>
+                `
+                popupContent.querySelector(".shop-items").appendChild(itemElement)
+                addToolTip(itemElement, item.desc)
+                itemElement.addEventListener("click", () => {
+                    //open description popup for the item with the option to buy it
+                    itemDescription.innerHTML = `
+                        <h3>${item.name}</h3>
+                        <p>${item.desc}</p>
+                        <p>Value: ${item.value} coins</p>
+                        <button id="buy-item-btn">Buy</button>
+                    `
+                    const buyButton = itemDescription.querySelector("#buy-item-btn")
+                    buyButton.addEventListener("click", () => {
+                        //buy something
+                        if(player.currency >= item.value) {
+                            player.currency -= item.value
+                            player.addItem(item)
+                            this.removeItem(index)
+                            sendConsoleMessage(`You bought ${item.name} for ${item.value} coins.`)
+                            itemDescription.innerHTML = ""
+                            
+                            this.openShop()
+                        } else {
+                            sendConsoleMessage("You don't have enough coins to buy this item.")
+                        }
+                    })
+                })
+            }
+        });
     }
+
+    removeItem(index){
+        if(!this.shop_inventory[index] instanceof ITEM){
+            return
+        }
+        if(this.shop_inventory[index].quantity>1){
+            this.shop_inventory[index].quantity--
+        }else{
+            this.shop_inventory.splice(index, 1)
+        }
+    }
+
 }
 
 const worldMap = {
@@ -78,7 +141,7 @@ const worldMap = {
         "Heir's Residence: Entrance Hall",
         "The central hall of your estate. To the north lies your garden, and other rooms branch off from here.",
         ["player_garden", "player_training_ground", "player_bedroom", "player_kitchen", "player_library", "academy"],
-        [],
+        ["test_shop"],
         () => true,
         () => { sendConsoleMessage("You enter your grand residence.") }
     ),
@@ -447,6 +510,11 @@ const world_interactions = {
         "Test Item", 0, 0,
         () => true,
         item_db.black_dragon_ball
+    ),
+    "test_shop": new SHOP_INTERACTION(
+        "Test Shop", 0, 0,
+        () => true,
+        [item_db.training_axe, item_db.training_spear, item_db.training_staff, item_db.training_dagger, item_db.training_sword]
     )
 }
 
@@ -478,7 +546,6 @@ function refreshWorldSection(){
         button.innerHTML=world_interactions[interaction].name
         button.addEventListener("click",()=>{
             world_interactions[interaction].execute()
-            
         })
         interaction_container.appendChild(button)
     }
@@ -487,5 +554,8 @@ function refreshWorldSection(){
 function refreshIneractionsDailies(){
         for (const interaction of Object.values(world_interactions)) {
             interaction.done_today=0
+            if(interaction instanceof SHOP_INTERACTION){
+                //todo refill shop
+            }
         }
     }

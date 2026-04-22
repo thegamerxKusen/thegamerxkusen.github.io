@@ -8,6 +8,7 @@ class BREATHING_TECHNIQUE {
     }
 
     fightUse(user, target) {
+        sendConsoleMessage(`${user.name} used ${this.name}, boosting their energy and stamina!`)
         user.regenEnergy(this.energy_boost)
         user.regenStamina(this.energy_boost)
     }
