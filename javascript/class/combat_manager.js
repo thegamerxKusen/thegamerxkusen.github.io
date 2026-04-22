@@ -136,12 +136,10 @@ class CombatManager{
         const pSkill = player_skill
         const eSkill = this.enemy.getRandomEnemySkill()
         if(this.player.isStunned()){
-            sendConsoleMessage(`${this.player.name} is stunned and cannot move!`)
             this.executeTurnEnemyOnly()
             return
         }
         if(this.enemy.isStunned()){
-            sendConsoleMessage(`${this.enemy.name} is stunned and cannot move!`)
             this.executeTurnPlayerOnly()
             return
         }
