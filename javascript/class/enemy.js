@@ -118,6 +118,10 @@ class ENEMY{
         this.fullEnergyRegen()
         this.fullStaminaRegen()
     }
+
+    isStunned(){
+        return this.status_effects.some(effect => effect instanceof STUNNED_EFFECT)
+    }
 }
 
 function createRandomEnemy(realm,name){

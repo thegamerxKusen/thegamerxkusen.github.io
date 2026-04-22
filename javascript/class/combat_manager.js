@@ -135,6 +135,16 @@ class CombatManager{
     executeTurn(player_skill, isEvading = false) {
         const pSkill = player_skill
         const eSkill = this.enemy.getRandomEnemySkill()
+        if(this.player.isStunned()){
+            sendConsoleMessage(`${this.player.name} is stunned and cannot move!`)
+            this.executeTurnEnemyOnly()
+            return
+        }
+        if(this.enemy.isStunned()){
+            sendConsoleMessage(`${this.enemy.name} is stunned and cannot move!`)
+            this.executeTurnPlayerOnly()
+            return
+        }
         //status effects
         this.player.effectTurn()
         if(this.checkDeath()){return}
@@ -168,7 +178,7 @@ class CombatManager{
         if(this.checkDeath()){return}
         this.refreshFightScreen()
     }
-    executeTurnWithItemUsage(){
+    executeTurnEnemy(){
         const eSkill = this.enemy.getRandomEnemySkill()
         //status effects
         this.player.effectTurn()
@@ -177,6 +187,17 @@ class CombatManager{
         if(this.checkDeath()){return}
 
         eSkill.use(this.enemy,this.player)
+        if(this.checkDeath()){return}
+    }
+    executeTurnPlayer(){
+        const pSkill = this.player.getRandomPlayerSkill()
+        //status effects
+        this.player.effectTurn()
+        if(this.checkDeath()){return}
+        this.enemy.effectTurn()
+        if(this.checkDeath()){return}
+
+        pSkill.use(this.player,this.enemy)
         if(this.checkDeath()){return}
     }
     executeTurnWithBreathingTech(){}
@@ -333,7 +354,7 @@ class CombatManager{
                 use.innerHTML="Use"
                 use.addEventListener("click",()=>{
                     item.useInCombat(this.player,this.enemy)
-                    executeTurnWithItemUsage()
+                    this.executeTurnEnemyOnly()
                     this.player.removeItem(item)
                     fight_main()
                     this.refreshFightScreen()

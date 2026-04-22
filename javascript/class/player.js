@@ -569,6 +569,10 @@ class PLAYER {
         }
     }
 
+    isStunned(){
+        return this.status_effects.some(effect => effect instanceof STUNNED_EFFECT)
+    }
+
     //Quests manager
     addQuest(quest){
         this.active_quest.push(quest)

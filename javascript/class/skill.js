@@ -11,7 +11,7 @@ class SKILL{
     }
     use(user,target){
         let damage
-
+        
         if(this.spe_atk){
             damage = (user.spe_atk + this.basic_damage)
             damage = Math.max(1,Math.floor(Math.max(0, damage - target.spe_def)))

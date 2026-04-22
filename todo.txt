@@ -1,9 +1,13 @@
 add elemental attack
-add flee, evade system (footwork too)
+
 expand map
+
 Build accademy
+
 Do a main questline
+
 Ballance Fighting system
+
 Add more status effect
 
 proper economy
