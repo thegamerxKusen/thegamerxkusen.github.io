@@ -502,7 +502,7 @@ class PLAYER {
             const item_div = document.createElement("div");
             item_div.innerHTML = `<p>${item.name}</p>`;
 
-            item_div.classList.add(`item-div ${item.tier.name.toLowerCase()}`);
+            item_div.classList.add("item-div", `${item.tier.name.toLowerCase()}`)
             
             item_div.addEventListener("click", () => {
                 detail_element.innerHTML = `

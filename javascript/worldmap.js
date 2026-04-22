@@ -78,7 +78,7 @@ class SHOP_INTERACTION extends INTERACTION {
         this.shop_inventory.forEach((item,index) => {
             if(item instanceof ITEM) {
                 const itemElement = document.createElement("div")
-                itemElement.classList.add(`item-div ${item.tier.name.toLowerCase()}`)
+                itemElement.classList.add("item-div", `${item.tier.name.toLowerCase()}`)
                 itemElement.innerHTML = `
                     <p>${item.name}</p>
                 `
