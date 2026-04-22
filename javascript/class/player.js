@@ -15,6 +15,8 @@ class PLAYER {
         this._max_internal_energy = max_internal_energy
         this._location = location
 
+        this.wisdom = 0
+
         this._atk_stat = atk_stat
         this._spe_atk = spe_atk
         this._def_stat = def_stat

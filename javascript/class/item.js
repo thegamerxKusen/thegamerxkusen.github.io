@@ -28,11 +28,55 @@ class WEAPON_ITEM extends ITEM{
 }
 class MANUAL extends ITEM {
     constructor(name, desc, value, tier) {
-        super(name, desc, value, "Common", 1) // Manuals are always common and quantity is 1
+        super(name, desc, value, item_tier_db.common, 1) // Manuals are always common and quantity is 1
         this.value = value
         this.tier = tier
     }
     
+}
+
+class BOOK extends MANUAL{
+    constructor(name,desc,value,tier,page,learn,reqWisdom, learnEffect){
+        super(name,desc,value,tier = item_tier_db.common)
+        this.learn = learn
+        this.page = page
+        this.currentPage = 0
+        this.reqWisdom = reqWisdom
+
+        this.learnEffect = learnEffect || ((user) => {
+            sendConsoleMessage(`You finished reading [${this.name}]. (+1 Wisdom)`)
+            user.wisdom++
+        });
+    }
+    readMinute(user,minutesSpent){
+        if (user.wisdom < this.reqWisdom) {
+            sendConsoleMessage(`The concepts in [${this.name}] are too profound for you to grasp right now. (Requires ${this.reqWisdom} Wisdom)`)
+            return false
+        }
+
+        if (this.currentPage >= this.page) {
+            sendConsoleMessage(`You have already finished reading [${this.name}].`)
+            return false
+        }
+
+        const speedMultiplier = user.wisdom / this.reqWisdom
+        const pagesRead = Math.floor(minutesSpent * 0.5 * speedMultiplier)
+
+        this.currentPage += pagesRead
+
+    
+        if (this.currentPage >= this.page) {
+            this.currentPage = this.page
+            sendConsoleMessage(`You spent ${minutesSpent} minutes and read the final pages of [${this.name}].`);
+            
+            // Trigger the book's reward!
+            this.learnEffect(user);
+        } else {
+            sendConsoleMessage(`You spent ${minutesSpent} minutes reading [${this.name}]. You are on page ${this.currentPage}/${this.page}.`);
+        }
+
+        return true
+    }
 }
 
 class SKILL_BOOK extends MANUAL {

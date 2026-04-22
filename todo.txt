@@ -1,4 +1,4 @@
-add elemental attack
+Add a true library
 
 expand map
 
@@ -19,5 +19,7 @@ make a tier system
 add a tutorial
 
 add equipment management in fight preparation
+
+Book system, with library, or item that you can read, the time used depends on page and wisdom -> prerequisite for more complex book
 
 The game will be about the demonic accademy for now
