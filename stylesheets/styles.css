@@ -493,3 +493,32 @@ progress::-webkit-progress-bar {
     margin:10px;
     bottom: 10px;
 }
+/*Item Tiers*/
+.trash{
+    border-color:darkgray;
+    color:darkgray;
+}
+.common{
+    border-color:white;
+    color:white;
+}
+.uncommon{
+    border-color:lightgray;
+    color:lightgray;
+}
+.rare{
+    border-color:blue;
+    color:blue;
+}
+.epic{
+    border-color:purple;
+    color:purple;
+}
+.legendary{
+    border-color:gold;
+    color:gold;
+}
+.quest{
+    border-color:cadetblue;
+    color:cadetblue;
+}
