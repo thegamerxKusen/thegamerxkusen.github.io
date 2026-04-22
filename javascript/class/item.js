@@ -37,7 +37,7 @@ class MANUAL extends ITEM {
 
 class BOOK extends MANUAL{
     constructor(name,desc,value,tier,page,learn,reqWisdom, learnEffect){
-        super(name,desc,value,tier = item_tier_db.common)
+        super(name,desc,value,tier)
         this.learn = learn
         this.page = page
         this.currentPage = 0

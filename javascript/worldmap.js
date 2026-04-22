@@ -139,16 +139,18 @@ class BOOKSHELF_INTERACTION extends INTERACTION {
         this.books.forEach((book,index) => {
             if(book instanceof BOOK) {
                 const bookElement = document.createElement("div")
-                bookElement.classList.add("book-div", `${book.tier.name.toLowerCase()}`)
                 bookElement.innerHTML = `
                     <p>${book.name}</p>
                 `
+                bookElement.classList.add("book-div", book.tier.name.toLowerCase())
+                
                 popupContent.querySelector(".book-list").appendChild(bookElement)
                 bookElement.addEventListener("click", () => {
                     //open description popup for the item with the option to buy it
                     bookDescription.innerHTML = `
                         <h3>${book.name}</h3>
                         <p>${book.desc}</p>
+                        <p>Required Wisdom: ${book.reqWisdom} </p>
                         <p id="book-progress">${book.currentPage}/${book.page}Pages</p>
                         <form id="minutes-reading" min="1">
                             <label for="time-read">Time Spent:<input required type="number" id="time-read" name="time-read"> </input></label>
@@ -523,28 +525,6 @@ const world_interactions = {
         player.passHour(4)
     }),()=>player.hasQi()),
 
-
-    "read": new INTERACTION(
-        "Read", 0, 0,
-        () => {
-            sendConsoleMessage("You study the records of previous Heirs. Your mind sharpens. (+1 Mind)")
-            player.mind_stat++
-            player.reduceStamina(30)
-            player.passHour(5)
-        },
-        () => {
-            if (player.stamina < 30 ) {
-                sendConsoleMessage("You are too tired to focus on ancient texts.")
-                return false
-            }
-            if (this.done_today>2){
-                sendConsoleMessage("Touch some grass.")
-                return false
-            }
-            return true
-        },
-        2 // Limit
-    ),
 
     // --- SPECIAL ACTIONS ---
     "training_ground_sparring": new FIGHT_INTERACTION(
