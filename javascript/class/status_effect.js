@@ -43,6 +43,21 @@ class SLOWED_EFFECT extends STATUS_EFFECT{
         }
     }
 }
+class HASTED_EFFECT extends STATUS_EFFECT{
+    constructor(duration,value){
+        super(duration)
+        this.adj = "hasted"
+        this.value = value
+        target.speed+=value
+    }
+    turn(target){
+        sendConsoleMessage(`${target.name} is ${this.adj} and moves faster!`)
+        this.duration--
+        if(this.duration<=0){
+            target.speed-=this.value
+        }
+    }
+}
 
 class BURNING_EFFECT extends STATUS_EFFECT{
     constructor(duration){

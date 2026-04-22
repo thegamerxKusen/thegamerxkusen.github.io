@@ -83,7 +83,6 @@ class SHOP_INTERACTION extends INTERACTION {
                     <p>${item.name}</p>
                 `
                 popupContent.querySelector(".shop-items").appendChild(itemElement)
-                addToolTip(itemElement, item.desc)
                 itemElement.addEventListener("click", () => {
                     //open description popup for the item with the option to buy it
                     itemDescription.innerHTML = `
