@@ -20,7 +20,11 @@ class SKILL{
             damage = Math.max(1,Math.floor(Math.max(0, damage - target.def_stat)))
         }
         target.health -= damage
-        user.reduceEnergy(this.basic_cost)
+        if(this.spe_atk){
+            user.reduceEnergy(this.basic_cost)
+        }else{
+            user.reduceStamina(this.basic_cost)
+        }
         sendConsoleMessage(`${user.name} used ${this.name} and dealt ${damage} damage.`)
         
     }

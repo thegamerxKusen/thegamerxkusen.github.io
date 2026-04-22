@@ -53,6 +53,9 @@ class CombatManager{
         `
         this.open_fight_inventory()
         document.querySelector("#flee-btn").addEventListener("click",()=>this.flee())
+        document.querySelector("#breath-btn").addEventListener("click",()=>{
+            if(!this.player.equipped_breathing_technique){return sendConsoleMessage("You have no breathing technique!")}else{executeTurnWithBreath()}
+        })
         const evade_btn = document.querySelector("#evade-btn")
         evade_btn.addEventListener("click",()=>{
             if(!this.player.equipped_footwork){return sendConsoleMessage("You have no footwork technique!")}
@@ -82,13 +85,12 @@ class CombatManager{
             skill_button.id="player-skill"
             skill_button.innerHTML=skill.name
             skill_button.addEventListener("click",()=>{
-                if(this.player.internal_energy>=skill.basic_cost){
-                    this.executeTurn(skill,false)
-                }else{
-                    sendConsoleMessage("Not enough internal energy to use this skill!")
-                    //todo grey the skill out
+                if(skill.spe_atk && this.player.internal_energy<skill.basic_cost){
+                    return sendConsoleMessage("Not enough internal energy to use this skill!")
+                }else if(!skill.spe_atk && this.player.stamina<skill.basic_cost){
+                    return sendConsoleMessage("Not enough stamina to use this skill!")
                 }
-                
+                this.executeTurn(skill,false)
             })
             addToolTip(attack_menue, skill.description)
             attack_menue.appendChild(skill_button)
@@ -180,8 +182,8 @@ class CombatManager{
     executeTurnWithBreathingTech(){}
     executeTurnWithEvade(){
         const footwork = this.player.equipped_footwork
-        footwork.fightUse(this.player, this.enemy)
         const eSkill = this.enemy.getRandomEnemySkill()
+        footwork.fightUse(this.player, this.enemy)
         let pTotalSpeed = this.player.speed_stat  + (this.player.equipped_footwork ? this.player.equipped_footwork.passiveSpeed : 2)
         let eTotalSpeed = this.enemy.speed_stat + eSkill.basic_speed + (this.enemy.get_weapon_type().reach || 1) + (this.enemy.equipped_footwork ? this.enemy.equipped_footwork.passiveSpeed : 0)
 
@@ -203,6 +205,29 @@ class CombatManager{
         if(this.checkDeath()){return}
         
     }
+    executeTurnWithBreath(){
+        const breath = this.player.equipped_breathing_technique
+        breath.fightUse(this.player, this.enemy)
+        fight_main()
+    
+        const eSkill = this.enemy.getRandomEnemySkill()
+        //status effects
+        this.player.effectTurn()
+        if(this.checkDeath()){return}
+        this.enemy.effectTurn()
+        // Random roll between 0 and 99
+        if (Math.random() * 100 < dodgeChance) {
+            sendConsoleMessage(`${this.enemy.name} used ${eSkill.name} but ${this.player.name} successfully evades the attack using ${footwork.name}!`)
+             return; // Skip damage calculation!
+        }
+        sendConsoleMessage(`${this.player.name} failed to evade!`)
+        if(this.checkDeath()){return}
+        eSkill.use(this.enemy,this.player)
+        if(this.checkDeath()){return}
+        
+    }
+
+
     checkDeath(){
         if(this.player.health<=0){
             this.playerDeath()

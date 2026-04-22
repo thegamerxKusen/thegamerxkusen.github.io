@@ -8,7 +8,8 @@ class BREATHING_TECHNIQUE {
     }
 
     fightUse(user, target) {
-
+        user.regenEnergy(this.energy_boost)
+        user.regenStamina(this.energy_boost)
     }
 
 }
