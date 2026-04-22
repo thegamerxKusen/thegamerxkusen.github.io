@@ -294,13 +294,13 @@ progress::-webkit-progress-bar {
 }
 
 /*Inventory*/
-.item-div>p{
+.item-div>p,.book-div>p{
     margin:0;
     padding: 0;
     width: 100;
     font-size: 25px;
 }
-.item-div{
+.item-div,.book-div{
     width: 100px;
     height: 100px;
     margin:5px;
@@ -312,13 +312,13 @@ progress::-webkit-progress-bar {
     cursor:pointer;
     transition: all 0.3s ease;
 }
-.item-div:hover{
+.item-div:hover,.book-div:hover{
     background-color: var(--btn-hover-bg-color);
     color: var(--btn-hover-text-color);
     border-color:var(--border-color) ;
     cursor: pointer;
 }
-.item-div:active{
+.item-div:active,.book-div:active{
     background-color: var(--btn-active-bg-color);
     color: var(--btn-active-text-color);
     border-color:  var(--btn-active-bg-color);
@@ -479,7 +479,7 @@ progress::-webkit-progress-bar {
     margin-right: auto;
     padding: 5px;
 }
-.shop-items{
+.shop-items, .book-list{
     display: flex;
     flex-wrap: wrap;
     flex-direction: row;
@@ -521,4 +521,11 @@ progress::-webkit-progress-bar {
 .quest,.quest:hover{
     border-color:cadetblue;
     color:cadetblue;
+}
+/*library*/
+.book-div{
+    width: auto;
+    height: 70px;
+    flex-grow: 1;
+    align-content: center;
 }

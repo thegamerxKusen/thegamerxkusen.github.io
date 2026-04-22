@@ -59,3 +59,9 @@ class INTERACTION_QUEST extends QUEST {
         super(title, description, target, requiredAmount, "INTERACT", rewardFunction);
     }
 }
+
+class READING_QUEST extends QUEST{
+    constructor(title, description, target, requiredAmount, rewardFunction) {
+        super(title, description, target, 1, "READ", rewardFunction);
+    }
+}

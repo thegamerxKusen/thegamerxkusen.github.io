@@ -15,7 +15,7 @@ class PLAYER {
         this._max_internal_energy = max_internal_energy
         this._location = location
 
-        this.wisdom = 0
+        this.wisdom = 100//Debug, default 0 
 
         this._atk_stat = atk_stat
         this._spe_atk = spe_atk

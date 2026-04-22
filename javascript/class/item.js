@@ -45,10 +45,12 @@ class BOOK extends MANUAL{
 
         this.learnEffect = learnEffect || ((user) => {
             sendConsoleMessage(`You finished reading [${this.name}]. (+1 Wisdom)`)
+            user.processEvent("READ",this,1)
             user.wisdom++
         });
     }
     readMinute(user,minutesSpent){
+        if(!(user instanceof PLAYER)){console.log("Not A Player");return}
         if (user.wisdom < this.reqWisdom) {
             sendConsoleMessage(`The concepts in [${this.name}] are too profound for you to grasp right now. (Requires ${this.reqWisdom} Wisdom)`)
             return false
@@ -61,7 +63,7 @@ class BOOK extends MANUAL{
 
         const speedMultiplier = user.wisdom / this.reqWisdom
         const pagesRead = Math.floor(minutesSpent * 0.5 * speedMultiplier)
-
+        user.passMinute()
         this.currentPage += pagesRead
 
     
@@ -136,4 +138,176 @@ const item_db ={
         user.effectCleanse("bleeding")
     }),
     basic_breathing_manual: new BREATHING_TECHNIQUE_BOOK(breathing_tech_db.basic_qi_tech.name,breathing_tech_db.basic_qi_tech.description,1000,breathing_tech_db.basic_qi_tech,item_tier_db.common)
+}
+
+const book_db = {
+    // ==========================================
+    // --- THE DEMONIC PRINCE'S CORE LIBRARY ---
+    // ==========================================
+    chronicles_heavenly_demon: new BOOK(
+        "Chronicles of the Heavenly Demon",
+        "A historical record of the first Cult Leader who unified the Ten Thousand Mountains.",
+        50, item_tier_db.common, 150, 
+        null, 
+        5 // reqWisdom
+    ),
+
+    poetry_blood_plum: new BOOK(
+        "Poetry of the Blood Plum",
+        "A collection of poems written by a demonic elder. It teaches the elegance hidden within ruthlesness.",
+        150, item_tier_db.uncommon, 200, 
+        null, 
+        15
+    ),
+
+    art_of_deception: new BOOK(
+        "The Art of Deception and Shadow",
+        "A ruthless tactical manual outlining how to use poison, spies, and misdirection.",
+        300, item_tier_db.rare, 350, 
+        null, 
+        25
+    ),
+
+    hundred_poisons: new BOOK(
+        "Hundred Poisons Compendium",
+        "An illustrated guide to deadly herbs, venoms, and their antidotes. Smells of dried blood.",
+        500, item_tier_db.rare, 500, 
+        null, 
+        40
+    ),
+
+    anatomy_severed_meridians: new BOOK(
+        "Anatomy of the Severed Meridians",
+        "A forbidden text detailing how to forcefully reroute Qi through the body.",
+        2000, item_tier_db.rare, 100, // Short but incredibly dense!
+        null, 
+        100
+    ),
+
+    guide_to_weeds: new BOOK(
+        "Guide to Common Weeds",
+        "A terribly written, half-eaten pamphlet about grass. Found in the outer sect trash.",
+        1, item_tier_db.trash, 10, 
+        null, 1
+    ),
+
+    muddy_boot_ode: new BOOK(
+        "Ode to a Muddy Boot",
+        "A poem written by a very drunk outer disciple. It doesn't even rhyme.",
+        2, item_tier_db.trash, 5, 
+        null, 1
+    ),
+
+    cooking_with_qi: new BOOK(
+        "Cooking with Qi",
+        "A recipe book for spiritual meals. Half the pages are stained with soy sauce.",
+        20, item_tier_db.common, 50, 
+        null, 5
+    ),
+
+    merchant_arithmetic: new BOOK(
+        "Basic Arithmetic for Merchants",
+        "A boring but practical ledger on how to calculate copper coins.",
+        30, item_tier_db.common, 100, 
+        null, 8
+    ),
+
+    jianghu_geography: new BOOK(
+        "Geography of the Jianghu",
+        "A massive, incredibly dense encyclopedia of every sect, river, and mountain in the Central Plains.",
+        200, item_tier_db.rare, 800, // Massive time sink!
+        null, 10
+    ),
+
+    woodcutter_tale: new BOOK(
+        "Tale of the Iron Woodcutter",
+        "A children's fable about a man who chopped trees for 100 years until his axe split a mountain.",
+        15, item_tier_db.common, 30, 
+        null, 3
+    ),
+
+    drunken_beggar_musings: new BOOK(
+        "Musings of the Drunken Beggar",
+        "A chaotic diary detailing a beggar's drunken brawls and strange staggering movements.",
+        80, item_tier_db.uncommon, 60, 
+        null, 20
+    ),
+
+    courtesan_smile: new BOOK(
+        "The Heavenly Courtesan's Smile",
+        "A scandalous romance novel very popular among the young disciples.",
+        100, item_tier_db.uncommon, 300, 
+        null, 12
+    ),
+
+    falling_leaf_meditations: new BOOK(
+        "Meditations on a Falling Leaf",
+        "A short, philosophical text written by an eccentric Taoist.",
+        150, item_tier_db.uncommon, 40, 
+        null, 25
+    ),
+
+    swindlers_guide: new BOOK(
+        "The Swindler's Guide to Jianghu",
+        "A banned book detailing how to fake realms and cheat at dice and cards game.",
+        250, item_tier_db.epic, 120, 
+        null, 30
+    ),
+
+    iron_skin_masochist: new BOOK(
+        "Iron Skin Regimen for the Insane",
+        "A bizarre training manual that involves striking yourself with rocks.",
+        300, item_tier_db.rare, 200, 
+        null, 25
+    ),
+
+    beast_core_study: new BOOK(
+        "A Study of Beast Cores",
+        "Detailed anatomical drawings of Demonic Beasts and where to harvest their cores.",
+        400, item_tier_db.rare, 250, 
+        null, 35
+    ),
+
+    // ==========================================
+    // --- EPIC & LEGENDARY (Massive Power, High Risk) ---
+    // ==========================================
+
+    bloodstained_diary: new BOOK(
+        "Bloodstained Diary",
+        "The personal journal of a swordmaster who went mad. The writing is frantic and soaked in dried blood.",
+        800, item_tier_db.epic, 150, 
+        null, 50
+    ),
+
+    star_gazing_divination: new BOOK(
+        "Star-Gazing Divination",
+        "An ancient text predicting the flow of destiny based on the night sky.",
+        1000, item_tier_db.epic, 600, 
+        null, 65
+    ),
+
+    nine_hells_scroll: new BOOK(
+        "Scroll of the Nine Hells",
+        "A terrifying parchment that burns to the touch. Reading it feels like swallowing hot coals.",
+        3000, item_tier_db.legendary, 50, // Short, but painful
+        null, 90
+    ),
+
+    wordless_scroll: new BOOK(
+        "The Wordless Scroll",
+        "A completely blank scroll made of indestructible silk. Only true geniuses can see the words.",
+        5000, item_tier_db.legendary, 1, // Only 1 page!
+        null, 150 // Extreme stat check
+    ),
+
+    // ==========================================
+    // --- QUEST ITEMS & EVIDENCE ---
+    // ==========================================
+
+    scented_pink_envelope: new BOOK(
+        "Scented Pink Envelope",
+        "A sealed letter meant for Elder Baek. It smells strongly of cheap perfume.",
+        0, item_tier_db.quest, 5, 
+        null, 10
+    ),
 }

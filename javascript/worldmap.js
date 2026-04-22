@@ -110,16 +110,64 @@ class SHOP_INTERACTION extends INTERACTION {
             }
         });
     }
+}
 
-    removeItem(index){
-        if(!this.shop_inventory[index] instanceof ITEM){
-            return
-        }
-        if(this.shop_inventory[index].quantity>1){
-            this.shop_inventory[index].quantity--
-        }else{
-            this.shop_inventory.splice(index, 1)
-        }
+class BOOKSHELF_INTERACTION extends INTERACTION {
+    constructor(name, done, done_today, condition, books) {
+        super(name, done, done_today, () => {
+            this.openBookshelf()
+        }, condition)
+        this.books = books
+    }
+
+    openBookshelf(){
+        const popupContent = document.createElement("div")
+        popupContent.classList.add("popup-content")
+        popupContent.innerHTML = ""
+        popupContent.innerHTML = `
+            <h2>${this.name}</h2>
+            <div class="book-list">
+            </div>
+            <div id="item-description">
+                
+            </div>
+            <button id="close-shop-btn" onclick="closePopup()">Back</button>
+        `
+        closePopup() 
+        openPopup(popupContent)
+        const bookDescription = popupContent.querySelector("#item-description")
+        this.books.forEach((book,index) => {
+            if(book instanceof BOOK) {
+                const bookElement = document.createElement("div")
+                bookElement.classList.add("book-div", `${book.tier.name.toLowerCase()}`)
+                bookElement.innerHTML = `
+                    <p>${book.name}</p>
+                `
+                popupContent.querySelector(".book-list").appendChild(bookElement)
+                bookElement.addEventListener("click", () => {
+                    //open description popup for the item with the option to buy it
+                    bookDescription.innerHTML = `
+                        <h3>${book.name}</h3>
+                        <p>${book.desc}</p>
+                        <p id="book-progress">${book.currentPage}/${book.page}Pages</p>
+                        <form id="minutes-reading" min="1">
+                            <label for="time-read">Time Spent:<input required type="number" id="time-read" name="time-read"> </input></label>
+                            <input type="submit" id="read-btn"></button>
+                        </form>
+                    `
+                    const readBtn = bookDescription.querySelector("read-btn")
+                    
+                    const minutesForm = document.querySelector("#minutes-reading")
+                    minutesForm.addEventListener("submit",function(event){
+                        event.preventDefault()//stop the submit refresh
+                        console.log(book)
+                        book.readMinute(player,document.querySelector("#time-read").value)  
+                        
+                    })
+
+                })
+            }
+        });
     }
 
 }
@@ -185,7 +233,7 @@ const worldMap = {
         "Residence Library",
         "Shelves filled with basic scrolls and personal records of your progress.",
         ["player_home"],
-        ["read"],
+        ["starter_home_bookshelf"],
         () => true,
         null
     ),
@@ -514,7 +562,23 @@ const world_interactions = {
         "Test Shop", 0, 0,
         () => true,
         [item_db.training_axe, item_db.training_spear, item_db.training_staff, item_db.training_dagger, item_db.training_sword]
-    )
+    ),
+    "starter_home_bookshelf": new BOOKSHELF_INTERACTION("Bookshelf",0,0,()=>true,
+    [
+        book_db.chronicles_heavenly_demon,
+        book_db.poetry_blood_plum,
+        book_db.art_of_deception,
+        book_db.hundred_poisons,
+        book_db.anatomy_severed_meridians,
+        book_db.jianghu_geography,
+        
+        book_db.guide_to_weeds,
+        book_db.muddy_boot_ode,
+        book_db.merchant_arithmetic,
+        book_db.woodcutter_tale,
+        book_db.courtesan_smile,
+        book_db.falling_leaf_meditations,
+    ])
 }
 
 function refreshWorldSection(){
