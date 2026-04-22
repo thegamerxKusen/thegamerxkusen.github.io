@@ -40,7 +40,7 @@ class CombatManager{
                 <button id="evade-btn" onclick="">Evade</button>
                 <button id="breath-btn" onclick="">Breath</button>
                 <button id="items-btn" onclick="fight_items()">Items</button>
-                <button id="flee-btn" onclick="">Flee//not implanted</button>
+                <button id="flee-btn" onclick="">Flee</button>
             </div>
             <div id="fight-attack-menue" class="hide">
             </div>
@@ -52,7 +52,7 @@ class CombatManager{
         </div>
         `
         this.open_fight_inventory()
-        document.querySelector("#flee-btn").addEventListener("click",()=>this.endFight())
+        document.querySelector("#flee-btn").addEventListener("click",()=>this.flee())
         const evade_btn = document.querySelector("#evade-btn")
         evade_btn.addEventListener("click",()=>{
             if(!this.player.equipped_footwork){return sendConsoleMessage("You have no footwork technique!")}
@@ -138,10 +138,6 @@ class CombatManager{
         if(this.checkDeath()){return}
         this.enemy.effectTurn()
         if(this.checkDeath()){return}
-        // 1. Check if Evading
-        if (isEvading) {
-            return this.handleEvade()
-        }
 
         //Speed
         let pTotalSpeed = this.player.speed_stat + pSkill.basic_speed + (this.player.get_weapon_type().reach || 1) + (this.player.equipped_footwork ? this.player.equipped_footwork.passiveSpeed : 0)
@@ -177,10 +173,6 @@ class CombatManager{
         if(this.checkDeath()){return}
         this.enemy.effectTurn()
         if(this.checkDeath()){return}
-        // 1. Check if Evading
-        if (isEvading) {
-            return this.handleEvade()
-        }
 
         eSkill.use(this.enemy,this.player)
         if(this.checkDeath()){return}
@@ -193,7 +185,7 @@ class CombatManager{
         let pTotalSpeed = this.player.speed_stat  + (this.player.equipped_footwork ? this.player.equipped_footwork.passiveSpeed : 2)
         let eTotalSpeed = this.enemy.speed_stat + eSkill.basic_speed + (this.enemy.get_weapon_type().reach || 1) + (this.enemy.equipped_footwork ? this.enemy.equipped_footwork.passiveSpeed : 0)
 
-        const dodgeChance = this.calculateEvasionChance(this.enemy.speed_stat,this.player.speed_stat);
+        const dodgeChance = this.calculateEvasionChance(eTotalSpeed,pTotalSpeed);
         fight_main()
         
         //status effects
@@ -250,6 +242,29 @@ class CombatManager{
         open_fight_tab()
     }
 
+    flee(){
+        const eSkill = this.enemy.getRandomEnemySkill()
+        const fleeChance = this.calculateEvasionChance(this.enemy.speed_stat +eSkill.basic_speed + (this.enemy.equipped_footwork ? this.enemy.equipped_footwork.passiveSpeed : 2), this.player.speed_stat  + (this.player.equipped_footwork ? this.player.equipped_footwork.passiveSpeed : 2));
+        fight_main()
+        // Random roll between 0 and 99
+        if (Math.random() * 100 < fleeChance) {
+            sendConsoleMessage(`${this.player.name} successfully flees from the fight!`)
+            const fight_screen = document.querySelector("#fighting-screen")
+            hide(fight_screen)
+            open_world_tab()
+            return
+        }
+        sendConsoleMessage(`${this.player.name} failed to flee from the fight!`)
+        
+        //status effects
+        this.player.effectTurn()
+        if(this.checkDeath()){return}
+        this.enemy.effectTurn()
+        if(this.checkDeath()){return}
+
+        eSkill.use(this.enemy,this.player)
+        if(this.checkDeath()){return}
+    }
 
     endFight(){
         setTimeout(() => {
