@@ -35,21 +35,44 @@ class ENEMY{
         this.status_effects = []
     }
 
+    
+    //status effects
     addEffect(effect){
         if(effect instanceof STATUS_EFFECT){
             this.status_effects.push(effect)
         }else{console.log("Tried to add non status effect to enemy")}
+        const existingEffect = this.status_effects.find(e => e.adj === effect.adj) 
+        if(existingEffect){
+            existingEffect.duration = Math.max(existingEffect.duration, effect.duration)
+        }
     }
 
     effectTurn(){
         for (const effect of this.status_effects) {
+            console.log(effect)
+
             effect.turn(this)
             if(effect.duration<=0){
                 this.status_effects.splice(this.status_effects.indexOf(effect),1)
-                sendConsoleMessage(`${this.name} is no longer ${effect.adj}.`)
+                sendConsoleMessage(`You are no longer ${effect.adj}.`)
             }
         }
     }
+    effectsFullCleanse(){
+        this.status_effects = []
+    }
+    effectCleanseNegative(){
+        this.status_effects = this.status_effects.filter(effect => !(effect instanceof NEGATIVE_EFFECT))
+    }
+    effectCleanse(adj){
+        this.status_effects = this.status_effects.filter(e => e.adj !== adj)
+        sendConsoleMessage(`You are no longer ${adj}.`)
+    }
+
+    isStunned(){
+        return this.status_effects.some(effect => effect instanceof STUNNED_EFFECT)
+    }
+    
     getRandomEnemySkill() {
         //todo add only usable attack with fall back on basic attack, breath or item
         if(this.skills.length===0){ 
@@ -119,9 +142,6 @@ class ENEMY{
         this.fullStaminaRegen()
     }
 
-    isStunned(){
-        return this.status_effects.some(effect => effect instanceof STUNNED_EFFECT)
-    }
 }
 
 function createRandomEnemy(realm,name){

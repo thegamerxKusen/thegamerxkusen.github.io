@@ -501,12 +501,12 @@ class PLAYER {
             
             const item_div = document.createElement("div");
             item_div.innerHTML = `<p>${item.name}</p>`;
-            item_div.classList.add("item-div");
+            item_div.classList.add(`item-div ${item.tier.toLowerCase()}`);
             
             item_div.addEventListener("click", () => {
                 detail_element.innerHTML = `
                     <h2>${item.name}</h2>
-                    <h3>${item.rarity}</h3>
+                    <h3>${item.tier}</h3>
                     <h3>Value: ${item.value}</h3>
                     <h3 id="item-quanta">Quantity: ${item.quantity}</h3>
                     <p>${item.desc}</p>
@@ -555,6 +555,10 @@ class PLAYER {
         if(effect instanceof STATUS_EFFECT){
             this.status_effects.push(effect)
         }else{console.log("Tried to add non status effect to enemy")}
+        const existingEffect = this.status_effects.find(e => e.adj === effect.adj) 
+        if(existingEffect){
+            existingEffect.duration = Math.max(existingEffect.duration, effect.duration)
+        }
     }
 
     effectTurn(){
@@ -567,6 +571,16 @@ class PLAYER {
                 sendConsoleMessage(`You are no longer ${effect.adj}.`)
             }
         }
+    }
+    effectsFullCleanse(){
+        this.status_effects = []
+    }
+    effectCleanseNegative(){
+        this.status_effects = this.status_effects.filter(effect => !(effect instanceof NEGATIVE_EFFECT))
+    }
+    effectCleanse(adj){
+        this.status_effects = this.status_effects.filter(e => e.adj !== adj)
+        sendConsoleMessage(`You are no longer ${adj}.`)
     }
 
     isStunned(){

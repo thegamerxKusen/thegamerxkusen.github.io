@@ -3,8 +3,17 @@ class STATUS_EFFECT{
         this.duration = duration
     }
 }
-
-class BLEEDING_EFFECT extends STATUS_EFFECT{
+class POSITIVE_EFFECT extends STATUS_EFFECT{
+    constructor(duration){
+        super(duration)
+    }
+}
+class NEGATIVE_EFFECT extends STATUS_EFFECT{
+    constructor(duration){
+        super(duration)
+    }
+}
+class BLEEDING_EFFECT extends NEGATIVE_EFFECT{
     constructor(duration){
         super(duration)
         this.adj = "bleeding"
@@ -17,7 +26,7 @@ class BLEEDING_EFFECT extends STATUS_EFFECT{
     }
 }
 
-class STUNNED_EFFECT extends STATUS_EFFECT{
+class STUNNED_EFFECT extends NEGATIVE_EFFECT{
     constructor(duration){
         super(duration)
         this.adj = "stunned"
@@ -28,7 +37,7 @@ class STUNNED_EFFECT extends STATUS_EFFECT{
     }
 }
 
-class SLOWED_EFFECT extends STATUS_EFFECT{
+class SLOWED_EFFECT extends NEGATIVE_EFFECT{
     constructor(duration,value){
         super(duration)
         this.adj = "slowed"
@@ -43,7 +52,7 @@ class SLOWED_EFFECT extends STATUS_EFFECT{
         }
     }
 }
-class HASTED_EFFECT extends STATUS_EFFECT{
+class HASTED_EFFECT extends POSITIVE_EFFECT{
     constructor(duration,value){
         super(duration)
         this.adj = "hasted"
@@ -59,7 +68,7 @@ class HASTED_EFFECT extends STATUS_EFFECT{
     }
 }
 
-class BURNING_EFFECT extends STATUS_EFFECT{
+class BURNING_EFFECT extends NEGATIVE_EFFECT{
     constructor(duration){
         super(duration)
         this.adj = "burning"
@@ -72,7 +81,7 @@ class BURNING_EFFECT extends STATUS_EFFECT{
     }
 }
 
-class FROZEN_EFFECT extends STUNNED_EFFECT{
+class FROZEN_EFFECT extends NEGATIVE_EFFECT{
     constructor(duration){
         super(duration)
         this.adj = "frozen"

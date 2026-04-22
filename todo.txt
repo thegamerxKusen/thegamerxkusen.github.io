@@ -16,6 +16,8 @@ proper npc with discussion
 
 make a tier system
 
-add equipment maangement in fight preparation
+add a tutorial
+
+add equipment management in fight preparation
 
 The game will be about the demonic accademy for now
