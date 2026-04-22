@@ -1,5 +1,5 @@
 class ITEM{
-    constructor(name, desc, value, tier = "Common",quantity,use) {
+    constructor(name, desc, value, tier = item_tier_db.common,quantity,use) {
         
         this.name = name
         this.desc = desc
