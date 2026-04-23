@@ -123,7 +123,18 @@ class SHOP_INTERACTION extends INTERACTION {
                     })
                 })
             }
-        });
+       });
+    }
+    removeItem(index){
+        if(!this.shop_inventory[index] instanceof ITEM){
+            console.log("Not an item: removeItem(index)")
+            return
+        }
+        if(this.shop_inventory[index].quantity>1){
+            this.shop_inventory[index].quantity--
+        }else{
+            this.shop_inventory.splice(index, 1)
+        }
     }
 }
 

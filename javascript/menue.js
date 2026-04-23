@@ -52,7 +52,7 @@ function new_game(){
     show(document.querySelector("#main-game"))
     //open player creation tab
     //create player 
-    player = new PLAYER("Kusen",100,50,50,100,100,worldMap["player_home"],1,1,1,1,1,1,1,360,0,0,[item_db.black_dragon_ball,item_db.bandage,item_db.basic_breathing_manual],null,null,item_db.fists,footwork_tech_db.basic_evade,[skill_db[0],skill_db[1],skill_db[2]]
+    player = new PLAYER("Kusen",100,50,50,100,100,worldMap["player_home"],1,1,1,1,1,1,1,360,0,0,[item_db.black_dragon_ball,item_db.bandage,item_db.basic_breathing_manual],null,null,null,footwork_tech_db.basic_evade,[skill_db[0],skill_db[1],skill_db[2]]
     ,realm_db[0],[skill_db[0],skill_db[1],skill_db[2],skill_db[3],skill_db[4]])
     refreshWorldSection()
     player.refreshTime()

@@ -559,7 +559,7 @@ progress::-webkit-progress-bar {
 #prep-equipment{
     overflow-y: auto; 
     overflow-x: hidden;
-    justify-content: space-as;
+    justify-content: space-around;
     align-items: center;
     display: flex;
     flex-direction: column;

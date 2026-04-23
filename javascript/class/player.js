@@ -24,6 +24,13 @@ class PLAYER {
         this._speed_stat = speed_stat
         this._mind_stat = mind_stat
         
+        this.temp_atk_stat = 0
+        this.temp_spe_atk = 0
+        this.temp_def_stat = 0
+        this.temp_spe_def = 0
+        this.temp_speed_stat = 0
+        this.temp_mind_stat = 0
+
         this.active_quest = active_quest || []
 
         this._was_qi_hidden = true
@@ -92,8 +99,6 @@ class PLAYER {
     }
 
     get max_health() { return this._max_health }
-    set max_health(v) { this._max_health = v 
-        this.refreshStats() }
 
     get stamina() { return this._stamina }
     set stamina(v) { 
@@ -121,31 +126,40 @@ class PLAYER {
         this.refreshStats() }
 
     // --- Combat & Mental Stats ---
-    get atk_stat() { return this._atk_stat }
+    get atk_stat() { return this._atk_stat+=this.temp_atk_stat }
     set atk_stat(v) { 
         if(this._atk_stat+v>this.realm.stat_cap){
-            sendConsoleMessage("Stat cap reached, breakthrought and keep training.")
+            sendConsoleMessage("Stat cap reached, breakthrought to break your limits.")
         }else{
             this._atk_stat = v
             this.refreshStats()
         } 
     }
 
-    get spe_def(){return this._spe_def}
+    get spe_def(){return this._spe_def+=this.temp_spe_def}
+    set spe_def(b){
+        if(this._spe_def+v>this.realm.stat_cap){
+            sendConsoleMessage("Stat cap reached, breakthrought to break your limits.")
+        }else{
+            this._spe_def = v 
+            this.refreshStats()
+        } 
+    }
 
-    get def_stat() { return this._def_stat }
+    get def_stat() { return this._def_stat+=this.temp_def_stat }
     set def_stat(v) {
          if(this._def_stat+v>this.realm.stat_cap){
-            sendConsoleMessage("Stat cap reached, breakthrought and keep training.")
+            sendConsoleMessage("Stat cap reached, breakthrought to break your limits.")
         }else{
             this._def_stat = v 
             this.refreshStats()
         } 
         }
+
     get vitality_stat() { return this._vitality_stat }
     set vitality_stat(v) {
          if(this._vitality_stat+v>this.realm.stat_cap){
-            sendConsoleMessage("Stat cap reached, breakthrought and keep training.")
+            sendConsoleMessage("Stat cap reached, breakthrought to break your limits.")
         }else{
             this._vitality_stat = v 
             this._max_health=(this._vitality_stat * 5) + (this.realm.id * 50)
@@ -155,7 +169,7 @@ class PLAYER {
     get endurance_stat() { return this._endurance_stat }
     set endurance_stat(v) {
          if(this._endurance_stat+v>this.realm.stat_cap){
-            sendConsoleMessage("Stat cap reached, breakthrought and keep training.")
+            sendConsoleMessage("Stat cap reached, breakthrought to break your limits.")
             return false
         }else{
             this._endurance_stat = v 
@@ -164,34 +178,41 @@ class PLAYER {
             return true
         } 
     }   
-    get speed_stat() { return this._speed_stat }
+    get speed_stat() { return this._speed_stat+=this.temp_speed_stat }
     set speed_stat(v) {
         if(this._speed_stat+v>this.realm.stat_cap){
-            sendConsoleMessage("Stat cap reached, breakthrought and keep training.")
+            sendConsoleMessage("Stat cap reached, breakthrought to break your limits.")
         }else{
             this._speed_stat = v 
             this.refreshStats()
         } 
     }
 
-    get spe_atk() { return this._spe_atk }
+    get spe_atk() { return this._spe_atk+=this.temp_spe_atk }
     set spe_atk(v) {
          if(this._spe_atk+v>this.realm.stat_cap){
-            sendConsoleMessage("Stat cap reached, breakthrought and keep training.")
+            sendConsoleMessage("Stat cap reached, breakthrought to break your limits.")
         }else{
             this._spe_atk = v 
             this.refreshStats()
         } 
         }
 
-    get mind_stat() {return this._mind_stat }
+    get mind_stat() {return this._mind_stat+=this.temp_mind_stat  }
     set mind_stat(v) {
         if(this._mind_stat+v>this.realm.stat_cap){
-            sendConsoleMessage("Stat cap reached, breakthrought and keep training.")
+            sendConsoleMessage("Stat cap reached, breakthrought to break your limits.")
         }else{
             this._mind_stat = v 
             this.refreshStats()
         } 
+    }
+
+    equipWeapon(item){
+        if(!(item instanceof WEAPON_ITEM)){return}
+        if(this.weapon){this.addItem(this.weapon)}
+        this._weapon=item
+        sendConsoleMessage(`Equiped ${item.name}.`)
     }
 
     attemptBreakthrought(){
@@ -258,10 +279,22 @@ class PLAYER {
         this.refreshStats()
 
     }
-    
+    resetTempStats(){
+        this.temp_atk_stat=0
+        this.temp_def_stat=0
+        this.temp_mind_stat=0
+        this.temp_spe_atk=0
+        this.temp_spe_def=0
+        this.temp_speed_stat=0
+    }
+    refreshTempStats(){
+        resetTempStats()
+    }
+
     refreshStats() {
         const playerSection = document.querySelector("#player-section")
-        
+        //add temp stats
+
         // 1. Check for the Qi Discovery message before updating HTML
         if (this._max_internal_energy > 0 && this._was_qi_hidden) {
             sendConsoleMessage("You can finally feel Qi, the force of the universe. You can now harness its power by refining it in the dantian.")
@@ -521,10 +554,10 @@ class PLAYER {
                 const useBtn = document.createElement("button");
                 useBtn.innerHTML = "Use";
                 useBtn.addEventListener("click", () => {
-                    item.use(this); 
-                    this.removeItem(index); 
-                    this.refreshInventory(); 
-                });
+                    item.use()
+                    this.removeItem(index)
+                    this.refreshInventory()
+                })
                 
                 detail_element.appendChild(useBtn);
             });

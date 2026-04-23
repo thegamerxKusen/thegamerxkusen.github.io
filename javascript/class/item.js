@@ -6,7 +6,7 @@ class ITEM{
         this.value = value
         this.tier = tier
         this.quantity = Number(quantity) || 1
-        if(!(this instanceof MANUAL)){this.use = use || (() => {})}
+        if(!(this instanceof MANUAL)|| !(this instanceof WEAPON_ITEM)){this.use = use || (() => {})}
     }
     addAnother() {
         // Ensure quantity is a number before adding
@@ -19,7 +19,10 @@ class ITEM{
 
 class WEAPON_ITEM extends ITEM{
     constructor(name, desc, value,def_bonus, atk_bonus, speed_bonus, tier,type) {
-        super(name, desc, value, tier,1) // Calls the Base Item constructor
+        super(name, desc, value, tier,1,()=>{console.log("Use")
+            //equip weapon
+            player.equipWeapon(this)
+        })
         this.type = type 
         this.def_bonus = def_bonus
         this.atk_bonus = atk_bonus
