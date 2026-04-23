@@ -17,3 +17,5 @@ The game will be about the demonic accademy for now
 In residence library: rename study: add a "write diary[save]" and "read diary[load] "options so you need to be in a safe place to saves
 
 add stat requirement for moves and if used give the user the "Strained" status effect that reduce stats
+
+Give thanks to all assets used

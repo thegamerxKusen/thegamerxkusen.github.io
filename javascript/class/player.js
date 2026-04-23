@@ -304,9 +304,9 @@ class PLAYER {
             this.temp_speed_stat+=this.armor.speed_modifer
         }
         if(this.weapon){
-            this.temp_atk_stat+=this.armor.atk_bonus
-            this.temp_spe_atk+=this.armor.spe_atk_bonus
-            this.temp_speed_stat+=this.armor.speed_bonus
+            this.temp_atk_stat+=this.weapon.atk_bonus
+            this.temp_spe_atk+=this.weapon.spe_atk_bonus
+            this.temp_speed_stat+=this.weapon.speed_bonus
         }
     }
 

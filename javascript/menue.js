@@ -7,6 +7,7 @@ function hide_main_menue(){
     return
 }
 function open_main_menue(){
+    
     const main_menue_element = document.querySelector("#main-menue")
     hide(document.querySelector("#main-game"))
     hide(document.querySelector("#settings-menue"))
@@ -45,6 +46,7 @@ function toggle_dark_mode(){
 
 // Main Menue Options Class
 function new_game(){
+    gameAudio.playBGM()
     //say , you have one year until the start of the demonic academy, train as you will
     hide_main_menue()
     hide(document.querySelector("#settings-menue"))
