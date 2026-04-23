@@ -16,7 +16,8 @@ class BREATHING_TECHNIQUE {
 }
 
 const breathing_tech_db = {
-    basic_qi_tech : new BREATHING_TECHNIQUE("Basic Qi Technique","A rough way to gather energy, can barely be called a technique, you just take all energy letting it wild in your meridian until some, gather in your dantian by chance for refining.",1000,4,"Common"),
+    three_powers_breathing: new BREATHING_TECHNIQUE("Three Powers Breathing","This method is not used to gather internal energy but to train the mind and body through Qi Ventitaltion.",100,1,item_tier_db.trash),
+    basic_qi_tech : new BREATHING_TECHNIQUE("Basic Qi Technique","A rough way to gather energy, can barely be called a technique, you just take all energy letting it wild in your meridian until some, gather in your dantian by chance for refining.",1000,4,item_tier_db.common),
     }
 
 class FOOTWORK_TECHNIQUE {
