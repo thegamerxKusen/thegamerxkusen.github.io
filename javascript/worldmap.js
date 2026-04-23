@@ -205,7 +205,7 @@ const worldMap = {
         "Heir's Residence: Entrance Hall",
         "The central hall of your estate. To the north lies your garden, and other rooms branch off from here.",
         ["player_garden", "player_training_ground", "player_bedroom", "player_kitchen", "player_library", "academy"],
-        ["test_shop","test_unique_interaction"],
+        ["test_shop"],
         () => true,
         () => { sendConsoleMessage("You enter your grand residence.") }
     ),
