@@ -137,6 +137,7 @@ const item_db ={
         user.heal(heal_amount)
         user.effectCleanse("bleeding")
     }),
+    three_powers_breathing: new BREATHING_TECHNIQUE_BOOK(breathing_tech_db.three_powers_breathing.name,breathing_tech_db.three_powers_breathing.description,1000,breathing_tech_db.three_powers_breathing,item_tier_db.common),
     basic_breathing_manual: new BREATHING_TECHNIQUE_BOOK(breathing_tech_db.basic_qi_tech.name,breathing_tech_db.basic_qi_tech.description,1000,breathing_tech_db.basic_qi_tech,item_tier_db.common)
 }
 

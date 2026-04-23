@@ -25,11 +25,26 @@ class INTERACTION {
         this.done++
         this.done_today++
         player.processEvent("INTERACT", this.name, 1)
+        refreshWorldSection()
         return true
-        
     }
 }
 
+class UNIQUE_INTERACTION extends INTERACTION{
+    constructor(name,condition,done,interaction){
+        super(name,done,0,interaction,condition)
+    }
+    execute() {
+        this.interaction()
+        if(this.done>=0){console.error("Shouldn't be executed")}
+        this.condition=()=>false
+        this.done++
+        this.done_today++
+        player.processEvent("INTERACT", this.name, 1)
+        refreshWorldSection()
+        return true   
+    }
+}
 class FIGHT_INTERACTION extends INTERACTION {
     constructor(name, done, done_today, condition, enemy) {
         // We pass 'null' for the interaction because we define it below
@@ -190,7 +205,7 @@ const worldMap = {
         "Heir's Residence: Entrance Hall",
         "The central hall of your estate. To the north lies your garden, and other rooms branch off from here.",
         ["player_garden", "player_training_ground", "player_bedroom", "player_kitchen", "player_library", "academy"],
-        ["test_shop"],
+        ["test_shop","test_unique_interaction"],
         () => true,
         () => { sendConsoleMessage("You enter your grand residence.") }
     ),
@@ -244,7 +259,7 @@ const worldMap = {
     "academy": new LOCATION(
         "Demonic Academy Gates",
         "The entrance to the academy, which opens only once every ten years.",
-        ["sky_demon_order", "academy_plaza"],
+        ["sky_demon_order", "academy_plaza", "headmaster_office", "dormitories","infirmary", "sealed_demon_cave", "testing_arenas","academy_training_area","academy_cafeteria"],
         [],
         () => {
             if (player.day >= 30) return true
@@ -260,7 +275,7 @@ const worldMap = {
     "academy_plaza": new LOCATION(
         "Central Academy Plaza",
         "The site of the opening ceremony where cadets receive their color-coded tags.",
-        ["academy", "headmaster_office", "dormitories", "testing_arenas"],
+        ["academy"],
         [],
         () => true,
         null
@@ -310,6 +325,20 @@ const worldMap = {
         () => false,
         null
     ),
+    "academy_training_area":new LOCATION(
+        "Training Area",
+        "The place where the young demons learn martial arts every day with vigorous training.",
+        ["academy_plaza","academy"]
+        ,[]
+        ,()=>true
+        ,null),
+    "academy_cafeteria":new LOCATION(
+        "Cafeteria",
+        "The place where the young demons eat healthy food to get strong fast.",
+        ["academy"]
+        ,[]
+        ,()=>true
+        ,null),
 
     // --- THE PRECIOUS LIBRARY TOWER ---
     "academy_library": new LOCATION(
@@ -529,8 +558,8 @@ const world_interactions = {
     // --- SPECIAL ACTIONS ---
     "training_ground_sparring": new FIGHT_INTERACTION(
         "Sparring", 0, 0,
-        () => player.health > 10,
-        createRandomEnemy(realm_db[0],"Sparring Partner")//want to take the player realm as first parameter but it does work todo
+        () => player.health === player.max_health,
+        createRandomEnemy(realm_db[0],"Sparring Partner")//todo to take the player realm as first parameter but it doesnt work 
     ),
 
     "test_give_item": new GET_ITEM_INTERACTION(
@@ -558,7 +587,7 @@ const world_interactions = {
         book_db.woodcutter_tale,
         book_db.courtesan_smile,
         book_db.falling_leaf_meditations,
-    ])
+    ]),
 }
 
 function refreshWorldSection(){
@@ -584,13 +613,16 @@ function refreshWorldSection(){
     const interaction_container=document.querySelector("#interaction-container")
     interaction_container.innerHTML=""
     for (const interaction of player.getInteractions()) {
-        const button = document.createElement("button")
-        button.classList.add("world-place")
-        button.innerHTML=world_interactions[interaction].name
-        button.addEventListener("click",()=>{
-            world_interactions[interaction].execute()
-        })
-        interaction_container.appendChild(button)
+        if(!world_interactions[interaction].condition()){}else{
+            const button = document.createElement("button")
+            button.classList.add("world-place")
+            button.innerHTML=world_interactions[interaction].name
+            button.addEventListener("click",()=>{
+                world_interactions[interaction].execute()
+                
+            })
+            interaction_container.appendChild(button)
+        }
     }
     
 }
