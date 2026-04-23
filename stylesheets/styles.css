@@ -37,6 +37,10 @@
     box-sizing: border-box;
     user-select: none;
 }
+.flex-row{
+    display: flex;
+    flex-direction: row;
+}
 
 body{
     background-color: var(--bg-color);
@@ -50,6 +54,35 @@ body{
 
 .bold{
     font-weight: bold;
+}
+
+/*Tooltip*/
+
+.tooltip-recipient .tooltip {
+    font-size: 15px;
+    border: var(--border-width) solid var(--border-color);
+    visibility: hidden;
+    width: 200px;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    text-align: center;
+    padding: 5px;
+    border-radius: 5px;
+
+    position: absolute;
+    z-index: 200;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.tooltip-recipient:hover .tooltip {
+    visibility: visible;
+    opacity: 1;
+    pointer-events: auto;
 }
 /*Buttons*/
 button,input[type="button"],input[type="submit"],.skill-inv-skill-box{
@@ -311,6 +344,7 @@ progress::-webkit-progress-bar {
     border-radius:5px;
     cursor:pointer;
     transition: all 0.3s ease;
+    align-content: center;
 }
 .item-div:hover,.book-div:hover{
     background-color: var(--btn-hover-bg-color);
@@ -395,34 +429,6 @@ progress::-webkit-progress-bar {
 #fight-attack-menue:nth-child(4){grid-area: skill4;font-size: 40px;}
 #fight-attack-menue:last-child{grid-area: back;font-size: 40px;}
 
-/*Tooltip*/
-
-.tooltip-recipient .tooltip {
-    font-size: 15px;
-    border: var(--border-width) solid var(--border-color);
-    visibility: hidden;
-    width: 200px;
-    background-color: var(--bg-color);
-    color: var(--text-color);
-    text-align: center;
-    padding: 5px;
-    border-radius: 5px;
-
-    position: absolute;
-    z-index: 200;
-    bottom: 100%;
-    left: 50%;
-    transform: translateX(-50%);
-
-    opacity: 0;
-    transition: opacity 0.3s;
-}
-
-.tooltip-recipient:hover .tooltip {
-    visibility: visible;
-    opacity: 1;
-    pointer-events: auto;
-}
 .game-tab{
     height: 100%;
 }
@@ -528,4 +534,53 @@ progress::-webkit-progress-bar {
     height: 70px;
     flex-grow: 1;
     align-content: center;
+}
+
+/*Fight Preparation*/
+
+#fight-preparation{
+    max-height: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    grid-template-areas:
+        "fighting-stats current-skill equipments"
+        "skill-inv skill-inv skill-inv"; 
+    gap: 20px;
+
+}
+#fighting-stats{
+    font-size:18px;
+    grid-area: fighting-stats;
+    overflow-y: auto; 
+    overflow-x: hidden;
+}
+
+#prep-equipment{
+    overflow-y: auto; 
+    overflow-x: hidden;
+    justify-content: space-as;
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    grid-area:equipments;
+
+    font-size: 12px;}
+
+#choose-skill{
+    display: flex;
+    flex-direction: column;
+    font-size: 1.2rem;
+    overflow-y: auto; 
+    overflow-x: hidden;
+    grid-area:current-skill;
+
+}
+#skill-inventory{
+    overflow-y: auto; 
+    overflow-x: hidden;
+    grid-area: skill-inv;
+}
+#skill-inventory::-webkit-scrollbar{
+    display: none;
 }

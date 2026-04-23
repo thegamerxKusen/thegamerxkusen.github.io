@@ -106,6 +106,9 @@ class PLAYER {
         this._max_stamina = v 
         this.refreshStats() }
 
+    get armor(){return this._armor}
+    get weapon(){return this._weapon}
+
     get internal_energy() { return this._internal_energy }
     set internal_energy(v) { 
         this._internal_energy = Math.max(0, Math.min(v, this._max_internal_energy)) 

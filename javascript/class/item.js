@@ -18,7 +18,7 @@ class ITEM{
 }
 
 class WEAPON_ITEM extends ITEM{
-    constructor(name, desc, value,def_bonus, atk_bonus, speed_bonus, tier,type,element) {
+    constructor(name, desc, value,def_bonus, atk_bonus, speed_bonus, tier,type) {
         super(name, desc, value, tier,1) // Calls the Base Item constructor
         this.type = type 
         this.def_bonus = def_bonus
