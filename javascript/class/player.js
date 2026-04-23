@@ -275,7 +275,7 @@ class PLAYER {
         
         // 3. Rebuild the section
         playerSection.innerHTML = `
-            <h2 id="player-name">${this.name}</h2>
+            <h2 id="player-name">Cheon ${this.name}</h2>
             <ul id="player-info">
                 <li class="${titleClass}"><p id="player-title">${this.title || ""}</p></li>
                 <li><p id="player-age">Age: ${(this.age/360).toFixed(0)}</p></li>
