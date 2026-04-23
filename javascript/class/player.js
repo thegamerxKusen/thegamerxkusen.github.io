@@ -213,7 +213,16 @@ class PLAYER {
         if(this.weapon){this.addItem(this.weapon)}
         this._weapon=item
         sendConsoleMessage(`Equiped ${item.name}.`)
+        this.refreshTempStats()
     }
+    equipArmor(item){
+        if(!(item instanceof ARMOR_ITEM)){return}
+        if(this.armor){this.addItem(this.armor)}
+        this._armor=item
+        sendConsoleMessage(`Equiped ${item.name}.`)
+        this.refreshTempStats()
+    }
+
 
     attemptBreakthrought(){
         const realmIndex = realm_db.findIndex(r => r.id === this.realm.id && r.stage === this.realm.stage)
@@ -288,10 +297,21 @@ class PLAYER {
         this.temp_speed_stat=0
     }
     refreshTempStats(){
-        resetTempStats()
+        this.resetTempStats()
+        if(this.armor){
+            this.temp_def_stat+=this.armor.def_modifier
+            this.temp_spe_def+=this.armor.spe_def_modifier
+            this.temp_speed_stat+=this.armor.speed_modifer
+        }
+        if(this.weapon){
+            this.temp_atk_stat+=this.armor.atk_bonus
+            this.temp_spe_atk+=this.armor.spe_atk_bonus
+            this.temp_speed_stat+=this.armor.speed_bonus
+        }
     }
 
     refreshStats() {
+        this.refreshTempStats()
         const playerSection = document.querySelector("#player-section")
         //add temp stats
 
@@ -579,6 +599,13 @@ class PLAYER {
         console.log("Learning")
         this._breathing_tech_inventory.push(breathing_manual.content)
         sendConsoleMessage(`Your learned ${breathing_manual.content.name}`)
+    }
+    equipBreathingTech(breathing_manual){
+        if(!(breathing_manual instanceof BREATHING_TECHNIQUE_BOOK)){
+            console.log("Not a manual or technique already learned");
+            return;
+        }
+        this._breathing_tech=breathing_manual
     }
 
     get_weapon_type(){

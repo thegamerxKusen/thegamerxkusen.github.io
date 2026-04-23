@@ -18,7 +18,6 @@ add equipment management in fight preparation
 
 add footwork change in fight prep
 
-create armor item
 
 The game will be about the demonic accademy for now
 

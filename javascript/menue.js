@@ -1,6 +1,5 @@
 // Main Menue
-let player = new PLAYER("Kusen",100,50,50,100,100,worldMap["player_home"],1,1,10,1,1,1,360,0,0,[item_db.black_dragon_ball],item_db.basic_qi_tech,null,null,null,[skill_db.demonic_roar,skill_db.iron_shoulder,skill_db.quick_jab,skill_db.dragon_breath]
-    )
+let player
 
 function hide_main_menue(){
     const main_menue_element = document.querySelector("#main-menue")
@@ -52,7 +51,7 @@ function new_game(){
     show(document.querySelector("#main-game"))
     //open player creation tab
     //create player 
-    player = new PLAYER("Kusen",100,50,50,100,100,worldMap["player_home"],1,1,1,1,1,1,1,360,0,0,[item_db.black_dragon_ball,item_db.bandage,item_db.basic_breathing_manual],null,null,null,footwork_tech_db.basic_evade,[skill_db[0],skill_db[1],skill_db[2]]
+    player = new PLAYER("Kusen",100,50,50,100,100,worldMap["player_home"],1,1,1,1,1,1,1,360,0,0,[item_db.black_dragon_ball,item_db.bandage,item_db.basic_breathing_manual,item_db.linen_martial_attire],null,null,null,footwork_tech_db.basic_evade,[skill_db[0],skill_db[1],skill_db[2]]
     ,realm_db[0],[skill_db[0],skill_db[1],skill_db[2],skill_db[3],skill_db[4]])
     refreshWorldSection()
     player.refreshTime()
@@ -122,7 +121,7 @@ function open_cultivation_tab(){
                 const equip_btn = document.createElement("button")
                 equip_btn.textContent="Equip"
                 equip_btn.addEventListener("click",()=>{
-                    player._breathing_tech = cult_tech
+                    player.equipBreathingTech(breathing_manual)
                     open_cultivation_tab()
                 })
                 tech_box.appendChild(equip_btn)
@@ -195,11 +194,12 @@ function open_preparation_tab(){
             equipmentDetails.innerHTML=
             `
             <h2>${weapon.name}</h2>
-            <p>Weapon: <bold>${weapon.type.name}</bold></p>
             <h2>Bonus Stats:</p>
-            <div class="flex-row"><p>Defense: ${weapon.def_bonus+" | "} </p>
-            <p>Attack: ${weapon.atk_bonus+"| "} </p>
-            <p>Speed: ${weapon.speed_bonus} </p></div>
+            <div class="">
+                <p>Attack: ${weapon.atk_bonus} </p>
+                <p>Spe Attack: ${weapon.spe_atk_bonus} </p>
+                <p>Speed: ${weapon.speed_bonus} </p>
+            </div>
             
             <p>${weapon.desc}</p>
             `
@@ -211,10 +211,22 @@ function open_preparation_tab(){
         armorDiv.classList.add(armor.tier.name.toLowerCase())
         armorDiv.innerHTML=
         `
-        <p>${weapon.name}</p>
+        <p>${armor.name}</p>
+        
         `
         armorDiv.addEventListener("click",()=>{
             show(equipmentDetails)
+            equipmentDetails.innerHTML=
+            `
+            <h2>${armor.name}</h2>
+            <h2>Bonus Stats:</p>
+            <div class="">
+            <p>Defense: ${armor.def_modifier} </p>
+            <p>Spe Defense: ${armor.spe_def_modifier} </p>
+            <p>Speed: ${armor.speed_modifier} </p></div>
+            
+            <p>${armor.desc}</p>
+            `
         })
     }else{armorDiv.innerHTML='<p>No Armor Equiped</p>'}
     

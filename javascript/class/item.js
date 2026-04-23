@@ -18,17 +18,30 @@ class ITEM{
 }
 
 class WEAPON_ITEM extends ITEM{
-    constructor(name, desc, value,def_bonus, atk_bonus, speed_bonus, tier,type) {
+    constructor(name, desc, value, atk_bonus,spe_atk_bonus, speed_bonus, tier,type) {
         super(name, desc, value, tier,1,()=>{console.log("Use")
             //equip weapon
             player.equipWeapon(this)
         })
         this.type = type 
-        this.def_bonus = def_bonus
         this.atk_bonus = atk_bonus
         this.speed_bonus = speed_bonus
+        this.spe_atk_bonus = spe_atk_bonus
     }
 }
+
+class ARMOR_ITEM extends ITEM{
+    constructor(name, desc, value,def_modifier,spe_def_modifier, speed_modifier, tier) {
+        super(name, desc, value, tier,1,()=>{
+            //equip armor
+            player.equipArmor(this)
+        })
+        this.def_modifier=def_modifier
+        this.spe_def_modifier=spe_def_modifier
+        this.speed_modifier=speed_modifier
+    }
+}
+
 class MANUAL extends ITEM {
     constructor(name, desc, value, tier) {
         super(name, desc, value, item_tier_db.common, 1) // Manuals are always common and quantity is 1
@@ -96,13 +109,10 @@ class SKILL_BOOK extends MANUAL {
 
 class BREATHING_TECHNIQUE_BOOK extends MANUAL {
     constructor(name, desc, value, content, tier) {
-        super(name, desc, value, tier)
+        super(name, desc, value, tier,()=>player.learn_breathing_tech(this))
         this.content = content
     }
-    use(user){
-        console.log("Using manual")
-        user.learn_breathing_tech(this)
-    }
+    
 }
 
 class FIGHT_ITEM extends ITEM{
@@ -141,7 +151,8 @@ const item_db ={
         user.effectCleanse("bleeding")
     }),
     three_powers_breathing: new BREATHING_TECHNIQUE_BOOK(breathing_tech_db.three_powers_breathing.name,breathing_tech_db.three_powers_breathing.description,1000,breathing_tech_db.three_powers_breathing,item_tier_db.common),
-    basic_breathing_manual: new BREATHING_TECHNIQUE_BOOK(breathing_tech_db.basic_qi_tech.name,breathing_tech_db.basic_qi_tech.description,1000,breathing_tech_db.basic_qi_tech,item_tier_db.common)
+    basic_breathing_manual: new BREATHING_TECHNIQUE_BOOK(breathing_tech_db.basic_qi_tech.name,breathing_tech_db.basic_qi_tech.description,1000,breathing_tech_db.basic_qi_tech,item_tier_db.common),
+    linen_martial_attire: new ARMOR_ITEM("Linen Martial Attire","A classic martial robe of medium quality, only offer resistance against cold wind.",100,1,0,0,item_tier_db.trash)
 }
 
 const book_db = {
