@@ -1,5 +1,3 @@
-expand map
-
 Build accademy
 
 Do a main questline
@@ -8,16 +6,11 @@ Ballance Fighting system
 
 Add more status effect
 
-proper economy
-
 proper npc with discussion
 
 add a tutorial
 
-add equipment management in fight preparation
-
 add footwork change in fight prep
-
 
 The game will be about the demonic accademy for now
 
