@@ -6,7 +6,7 @@ class ITEM{
         this.value = value
         this.tier = tier
         this.quantity = Number(quantity) || 1
-        if(!(this instanceof MANUAL)|| !(this instanceof WEAPON_ITEM)){this.use = use || (() => {})}
+        if(!(this instanceof MANUAL)|| !(this instanceof WEAPON_ITEM)){this.use = use || (() => {player.processEvent("USE_ITEM",this,1)})}
     }
     addAnother() {
         // Ensure quantity is a number before adding
@@ -22,6 +22,7 @@ class WEAPON_ITEM extends ITEM{
         super(name, desc, value, tier,1,()=>{console.log("Use")
             //equip weapon
             player.equipWeapon(this)
+            player.processEvent("USE_ITEM",this,1)
         })
         this.type = type 
         this.atk_bonus = atk_bonus
@@ -35,6 +36,7 @@ class ARMOR_ITEM extends ITEM{
         super(name, desc, value, tier,1,()=>{
             //equip armor
             player.equipArmor(this)
+            player.processEvent("USE_ITEM",this,1)
         })
         this.def_modifier=def_modifier
         this.spe_def_modifier=spe_def_modifier
@@ -44,7 +46,7 @@ class ARMOR_ITEM extends ITEM{
 
 class MANUAL extends ITEM {
     constructor(name, desc, value, tier) {
-        super(name, desc, value, item_tier_db.common, 1) // Manuals are always common and quantity is 1
+        super(name, desc, value, item_tier_db.common, 1,()=>{player.processEvent("USE_ITEM",this,1)}) // Manuals are always common and quantity is 1
         this.value = value
         this.tier = tier
     }
@@ -105,12 +107,15 @@ class SKILL_BOOK extends MANUAL {
     }
     use(user){
         user.learn_skill(this)
+        player.processEvent("USE_ITEM",this,1)
     }
 }
 
 class BREATHING_TECHNIQUE_BOOK extends MANUAL {
     constructor(name, desc, value, content, tier) {
-        super(name, desc, value, tier,()=>player.learn_breathing_tech(this))
+        super(name, desc, value, tier,()=>{
+            player.processEvent("USE_ITEM",this,1)
+            player.learn_breathing_tech(this)})
         this.content = content
     }
     

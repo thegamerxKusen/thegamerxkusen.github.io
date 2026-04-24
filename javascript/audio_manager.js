@@ -15,7 +15,9 @@ class AudioManager {
             buy: new Audio(this.sfx_Path + "buy_sound[400 Sounds Effect].wav"),
             read: new Audio(this.sfx_Path + "page_turn[400 Sounds Effect].wav"),
             punch: new Audio(this.sfx_Path + "punch[400 Sounds Pack].wav"),
-            evade_success:new Audio(this.sfx_Path + "swipe[400 Sounds Effect].wav")
+            evade_success:new Audio(this.sfx_Path + "swipe[400 Sounds Effect].wav"),
+            sword_attack_1: new Audio(this.sfx_Path + "Sword Attack 1[TomMusic].ogg"),
+            inflict_bleeding: new Audio(this.sfx_Path + "Sword Impact Hit 2[TomMusic].ogg")
             //Ex: click: new Audio("assets/sounds/ui_click.wav"),
         };
 

@@ -65,3 +65,9 @@ class READING_QUEST extends QUEST{
         super(title, description, target, 1, "READ", rewardFunction);
     }
 }
+
+class USE_ITEM extends QUEST{
+    constructor(title, description, target, requiredAmount, rewardFunction) {//target is an item
+        super(title, description, target, 1, "USE_ITEM", rewardFunction);
+    }
+}

@@ -56,6 +56,7 @@ class SKILL_STATUS_EFFECT extends SKILL{
         if(Math.random()<this.chance/100){
             target.addEffect(this.status_effects)
             sendConsoleMessage(`${target.name} is ${this.status_effects.adj}!`)
+            gameAudio.playSFX(this.sfx)
         }
     }
 }
@@ -78,8 +79,15 @@ const basic_weapon_skills=[
         0,
         10,
         10,false,
-        null,new BLEEDING_EFFECT(3),60
-    ),new SKILL("Slash","A quick horizontal strike."),
+        null,new BLEEDING_EFFECT(3),60,"inflict_bleeding"
+    ),
+    new SKILL("Slash","A quick horizontal strike.",
+        0,
+        10,
+        7,
+        false,
+        null,
+        "sword_attack_1"),
     new SKILL("Spear Thrust","A long-range piercing attack that can strike from a distance, ignore some defenses.",
         0,
         10,
