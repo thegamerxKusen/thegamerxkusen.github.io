@@ -20,18 +20,21 @@ const breathing_tech_db = {
     basic_qi_tech : new BREATHING_TECHNIQUE("Basic Qi Technique","A rough way to gather energy, can barely be called a technique, you just take all energy letting it wild in your meridian until some, gather in your dantian by chance for refining.",1000,4,item_tier_db.common),
     }
 
-class FOOTWORK_TECHNIQUE {
-    constructor(name, description, activeCost, passiveSpeed) {
+class FOOTWORK_TECHNIQUE{
+    constructor(name, description, activeCost, passiveSpeed,activeEffect) {
         this.name = name
         this.description = description
         this.activeCost = activeCost // How much Qi it costs to use the Evade
         this.passiveSpeed = passiveSpeed   // A function
+        this.activeEffect= activeEffect || ((user)=>{})
     }
 
     fightUse(user, target) {
         if (user.internal_energy >= this.activeCost) {
             user.reduceEnergy(this.activeCost)
+            activeEffect(user)
         }
+        
     }
 }
 

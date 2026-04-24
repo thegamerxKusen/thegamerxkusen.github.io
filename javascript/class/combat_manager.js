@@ -20,6 +20,7 @@ class CombatManager{
                 <div id="energy-info-player" class="hide">
                     <p class="info-text">${this.player.internal_energy}/${this.player.max_internal_energy}</p><progress id="internal-energy-player" max="${this.player.max_internal_energy}" value="${this.player.internal_energy}"></progress>
                 </div>
+                <p>Weapon: ${this.player.weapon_type.name}</p>
                 <div id="status-effect-player"></div>
             </div>
             <div id="enemy-info" class="info">
@@ -30,8 +31,9 @@ class CombatManager{
                 <div id="energy-info-enemy" class="hide">
                     <p class="info-text">${this.enemy.internal_energy}/${this.enemy.max_internal_energy}</p><progress id="internal-energy-enemy" max="${this.enemy.max_internal_energy}" value="${this.enemy.internal_energy}"></progress>
                 </div>
+                <p>Weapon: ${this.player.weapon_type.name}</p>
                 <div id="status-effect-enemy"></div>
-                <p>${this.enemy.realm.name}</p>
+                <p>Realm: ${this.enemy.realm.name}</p>
             </div>
         </div>
         <div id="fight-lower-half">
@@ -101,7 +103,7 @@ class CombatManager{
             fight_main()
         })
         
-        const weapon_type = this.player.get_weapon_type()
+        const weapon_type = this.player.weapon_type
         const basic_atk = document.createElement("button")
         basic_atk.innerHTML=weapon_type.basic_skill.name
         basic_atk.addEventListener("click",()=>{
@@ -198,7 +200,6 @@ class CombatManager{
         pSkill.use(this.player,this.enemy)
         if(this.checkDeath()){return}
     }
-    executeTurnWithBreathingTech(){}
     executeTurnWithEvade(){
         const footwork = this.player.equipped_footwork
         const eSkill = this.enemy.getRandomEnemySkill()

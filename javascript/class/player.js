@@ -615,8 +615,8 @@ class PLAYER {
         this._breathing_tech=breathing_manual
     }
 
-    get_weapon_type(){
-        return this.weapon ? this.weapon.type : weapon_db[0] // Return "Fist" if no weapon equipped
+    get weapon_type(){
+        return this.weapon ? this.weapon.type : weapon_db[0] 
     }
 
     hasQi(){

@@ -224,7 +224,7 @@ const worldMap = {
     "player_home": new LOCATION(
         "Heir's Residence: Entrance Hall",
         "The central hall of your estate. To the north lies your garden, and other rooms branch off from here.",
-        ["player_garden", "player_training_ground", "player_bedroom", "player_kitchen", "player_library", "academy"],
+        ["player_garden", "player_training_ground", "player_bedroom", "player_kitchen", "player_study", "academy"],
         [],
         () => true,
         () => { sendConsoleMessage("You enter your grand residence.") }
@@ -266,11 +266,11 @@ const worldMap = {
         null
     ),
 
-    "player_library": new LOCATION(
-        "Residence Library",
+    "player_study": new LOCATION(
+        "Residence study",
         "Shelves filled with basic scrolls and personal records of your progress.",
         ["player_home"],
-        ["starter_home_bookshelf"],
+        ["starter_home_bookshelf","write_diary_save","read_diary_load"],
         () => true,
         null
     ),
@@ -608,6 +608,14 @@ const world_interactions = {
         book_db.courtesan_smile,
         book_db.falling_leaf_meditations,
     ]),
+    "write_diary_save": new INTERACTION("Write Diary [SAVE]",0,0,()=>{
+        //saving function
+        sendConsoleMessage("Not implemented Yet")
+    },()=>true),
+    "read_diary_load": new INTERACTION("Read Diary [LOAD]",0,0,()=>{
+        //loading function
+        sendConsoleMessage("Not implemented Yet")
+    },()=>true)
 }
 
 function refreshWorldSection(){
