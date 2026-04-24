@@ -19,3 +19,8 @@ In residence library: rename study: add a "write diary[save]" and "read diary[lo
 add stat requirement for moves and if used give the user the "Strained" status effect that reduce stats
 
 Give thanks to all assets used
+
+add settings to controle vollume and mute music and sound effect
+
+todo maybe add weather (after academy stuff) and add background based on the type of locations:
+interiors etc interesting one at:D:\assets\soundEffect\Free Fantasy SFX Pack By TomMusic\OGG Files\BGS Loops
