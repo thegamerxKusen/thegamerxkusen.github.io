@@ -215,13 +215,16 @@ class CombatManager{
         this.enemy.effectTurn()
         // Random roll between 0 and 99
         if (Math.random() * 100 < dodgeChance) {
+            gameAudio.playSFX("evade_success")
             sendConsoleMessage(`${this.enemy.name} used ${eSkill.name} but ${this.player.name} successfully evades the attack using ${footwork.name}!`)
              return; // Skip damage calculation!
+        }else{
+            sendConsoleMessage(`${this.player.name} failed to evade!`)
+            if(this.checkDeath()){return}
+            eSkill.use(this.enemy,this.player)
+            if(this.checkDeath()){return}
         }
-        sendConsoleMessage(`${this.player.name} failed to evade!`)
-        if(this.checkDeath()){return}
-        eSkill.use(this.enemy,this.player)
-        if(this.checkDeath()){return}
+        
         
     }
     executeTurnWithBreath(){

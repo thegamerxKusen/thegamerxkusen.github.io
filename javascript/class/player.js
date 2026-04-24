@@ -336,7 +336,7 @@ class PLAYER {
                 <li class="${titleClass}"><p id="player-title">${this.title || ""}</p></li>
                 <li><p id="player-age">Age: ${(this.age/360).toFixed(0)}</p></li>
                 <li><p id="player-realm">Realm: ${realmName}</p></li>
-                <li><p id="player-curency">Money: $${this.currency}</p></li>
+                <li><p id="player-curency" class="hide">Money: $${this.currency}</p></li>
                 
                 <li>
                     Health: 

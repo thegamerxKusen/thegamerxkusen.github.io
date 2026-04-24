@@ -80,8 +80,9 @@ class BOOK extends MANUAL{
         const speedMultiplier = user.wisdom / this.reqWisdom
         const pagesRead = Math.floor(minutesSpent * 0.5 * speedMultiplier)
         user.passMinute()
-        this.currentPage += pagesRead
 
+        this.currentPage += pagesRead
+        gameAudio.playSFX("read")
     
         if (this.currentPage >= this.page) {
             this.currentPage = this.page
@@ -128,12 +129,12 @@ class FIGHT_ITEM extends ITEM{
 
 
 const item_db ={
-    fists: new WEAPON_ITEM("Fists","Your own fists, not very strong but always with you.",0,0,0,0,item_tier_db.common,weapon_db[0]),
-    training_dagger: new WEAPON_ITEM("Training Dagger","A basic dagger used for training, better than nothing.",100,0,0,0,item_tier_db.common,weapon_db[1]),
-    training_sword: new WEAPON_ITEM("Training Sword","A basic sword used for training, better than nothing.",100,0,0,0,item_tier_db.common,weapon_db[2]),
-    training_spear: new WEAPON_ITEM("Training Spear","A basic spear used for training, better than nothing.",100,0,0,0,item_tier_db.common,weapon_db[3]),
-    training_axe: new WEAPON_ITEM("Training Axe","A basic axe used for training, better than nothing.",100,0,0,0,item_tier_db.common,weapon_db[4]),
-    training_staff: new WEAPON_ITEM("Training Staff","A basic staff used for training, better than nothing.",100,0,0,0,item_tier_db.common,weapon_db[5]),
+    fists: new WEAPON_ITEM("Fists","Your own fists, not very strong but always with you.",0,0,0,0,item_tier_db.trash,weapon_db[0]),
+    training_dagger: new WEAPON_ITEM("Training Dagger","A basic dagger used for training, better than nothing.",0,0,0,0,item_tier_db.trash,weapon_db[1]),
+    training_sword: new WEAPON_ITEM("Training Sword","A basic sword used for training, better than nothing.",0,0,0,0,item_tier_db.trash,weapon_db[2]),
+    training_spear: new WEAPON_ITEM("Training Spear","A basic spear used for training, better than nothing.",0,0,0,0,item_tier_db.trash,weapon_db[3]),
+    training_axe: new WEAPON_ITEM("Training Axe","A basic axe used for training, better than nothing.",0,0,0,0,item_tier_db.trash,weapon_db[4]),
+    training_staff: new WEAPON_ITEM("Training Staff","A basic staff used for training, better than nothing.",0,0,0,0,item_tier_db.trash,weapon_db[5]),
     black_dragon_ball: new ITEM("Black Dragon Ball","A medicine ball of the cult that was created by the founding clan leader of the Poison Clan named Baek Yu. Allow the person who consume it to gain at least 20 years' worth of internal energy.",5000,item_tier_db.epic, (user) => {
         if(!user._breathing_tech){
             //qi deviation

@@ -1,5 +1,5 @@
 class SKILL{
-    constructor(name,description,basic_cost,basic_damage,basic_speed,spe_atk,weapon_req){
+    constructor(name,description,basic_cost,basic_damage,basic_speed,spe_atk,weapon_req,sfx){
         this.name=name
         this.description = description
         this.weapon_req = weapon_req || null //if the skill requires a specific weapon type, if not its null
@@ -7,7 +7,8 @@ class SKILL{
         this.basic_damage=basic_damage
         this.basic_speed = basic_speed
 
-        this.spe_atk=spe_atk|| false //if true its a spe atk if not its physical.
+        this.spe_atk = spe_atk|| false //if true its a spe atk if not its physical.
+        this.sfx = sfx
     }
     use(user,target){
         let damage
@@ -25,14 +26,17 @@ class SKILL{
         }else{
             user.reduceStamina(this.basic_cost)
         }
+        if(this.sfx){
+            gameAudio.playSFX(this.sfx)
+        }
         sendConsoleMessage(`${user.name} used ${this.name} and dealt ${damage} damage.`)
         
     }
     //Basic value is the minimum, player can go overdrive and add qi to increase the strenght of the skill
 }
 class SKILL_STATUS_EFFECT extends SKILL{
-    constructor(id,name,description,basic_cost,basic_damage,basic_speed,spe_atk,weapon_req,status_effects,chance){
-        super(id,name,description,basic_cost,basic_damage,basic_speed,spe_atk,weapon_req)
+    constructor(name,description,basic_cost,basic_damage,basic_speed,spe_atk,weapon_req,status_effects,chance,sfx){
+        super(name,description,basic_cost,basic_damage,basic_speed,spe_atk,weapon_req,sfx)
         this.status_effects = status_effects
         this.chance = chance//in %
     }
@@ -69,7 +73,7 @@ const basic_weapon_skills=[
         5,
         5,
         false,
-        null),
+        null,"punch"),
     new SKILL_STATUS_EFFECT("Backstab","A precise strike aimed at the opponent's back, has a 60% chance to cause bleeding.",
         0,
         10,

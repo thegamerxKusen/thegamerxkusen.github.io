@@ -10,7 +10,12 @@ class AudioManager {
         this.fight_bgm.loop = true 
         this.fight_bgm.volume = 0.1
         
+        this.sfx_Path="assets/sounds/sfx/"
         this.sfx = {
+            buy: new Audio(this.sfx_Path + "buy_sound[400 Sounds Effect].wav"),
+            read: new Audio(this.sfx_Path + "page_turn[400 Sounds Effect].wav"),
+            punch: new Audio(this.sfx_Path + "punch[400 Sounds Pack].wav"),
+            evade_success:new Audio(this.sfx_Path + "swipe[400 Sounds Effect].wav")
             //Ex: click: new Audio("assets/sounds/ui_click.wav"),
         };
 

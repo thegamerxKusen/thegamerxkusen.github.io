@@ -100,13 +100,22 @@ class SHOP_INTERACTION extends INTERACTION {
                 popupContent.querySelector(".shop-items").appendChild(itemElement)
                 itemElement.addEventListener("click", () => {
                     //open description popup for the item with the option to buy it
+                    
                     itemDescription.innerHTML = `
                         <h3>${item.name}</h3>
                         <p>${item.desc}</p>
                         <p>Value: ${item.value} coins</p>
                         <button id="buy-item-btn">Buy</button>
                     `
+                    if(item.value >=0){
+                        itemDescription.innerHTML = `
+                        <h3>${item.name}</h3>
+                        <p>${item.desc}</p>
+                        <button id="buy-item-btn">Take</button>
+                    `
+                    }
                     const buyButton = itemDescription.querySelector("#buy-item-btn")
+                    
                     buyButton.addEventListener("click", () => {
                         //buy something
                         if(player.currency >= item.value) {
@@ -115,7 +124,7 @@ class SHOP_INTERACTION extends INTERACTION {
                             this.removeItem(index)
                             sendConsoleMessage(`You bought ${item.name} for ${item.value} coins.`)
                             itemDescription.innerHTML = ""
-                            
+                            gameAudio.playSFX("buy")
                             this.openShop()
                         } else {
                             sendConsoleMessage("You don't have enough coins to buy this item.")
@@ -216,7 +225,7 @@ const worldMap = {
         "Heir's Residence: Entrance Hall",
         "The central hall of your estate. To the north lies your garden, and other rooms branch off from here.",
         ["player_garden", "player_training_ground", "player_bedroom", "player_kitchen", "player_library", "academy"],
-        ["test_shop"],
+        [],
         () => true,
         () => { sendConsoleMessage("You enter your grand residence.") }
     ),
@@ -234,7 +243,7 @@ const worldMap = {
         "Private Training Ground",
         "A reinforced stone courtyard for practicing basic forms and tempering the body.",
         ["player_home"],
-        ["def_spe_training","atk_spe_training","speed_training","atk_training","def_training","stamina_training","training_ground_sparring"],
+        ["training_weapon_rack","def_spe_training","atk_spe_training","speed_training","atk_training","def_training","stamina_training","training_ground_sparring"],
         () => true,
         null
     ),
@@ -578,8 +587,8 @@ const world_interactions = {
         () => true,
         item_db.black_dragon_ball
     ),
-    "test_shop": new SHOP_INTERACTION(
-        "Test Shop", 0, 0,
+    "training_weapon_rack": new SHOP_INTERACTION(
+        "Weapon Rack", 0, 0,
         () => true,
         [item_db.training_axe, item_db.training_spear, item_db.training_staff, item_db.training_dagger, item_db.training_sword]
     ),
