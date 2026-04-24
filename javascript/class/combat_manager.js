@@ -282,6 +282,7 @@ class CombatManager{
         return Math.min(totalEvasion, maxEvasion);
     }
     start_fight(){
+        gameAudio.playFightBGM()
         this.refreshFightScreen()
         open_fight_tab()
     }
@@ -296,6 +297,7 @@ class CombatManager{
             const fight_screen = document.querySelector("#fighting-screen")
             hide(fight_screen)
             open_world_tab()
+            gameAudio.playCalmBGM()
             return
         }
         sendConsoleMessage(`${this.player.name} failed to flee from the fight!`)
@@ -314,6 +316,7 @@ class CombatManager{
         setTimeout(() => {
             const fight_screen = document.querySelector("#fighting-screen")
             hide(fight_screen)
+            gameAudio.playCalmBGM()
             open_world_tab() 
         }, "4000")
         

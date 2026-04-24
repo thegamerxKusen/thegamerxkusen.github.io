@@ -3,10 +3,13 @@ class AudioManager {
         // --- 1. Background Music Setup ---
         // Replace with the actual paths to your audio files!
         this.calm_bgm = new Audio("assets/sounds/music/Lotus Pond - Loop.wav")
-        this.fight_bgm = new Audio("assets/sounds/music/Dragon Dance - Loop.wav")
-        this.bgm.loop = true // Makes it loop forever
-        this.bgm.volume = 0.1 // Keep BGM volume low so it doesn't drown out SFX (0.0 to 1.0)
+        
+        this.calm_bgm.loop = true 
+        this.calm_bgm.volume = 0.1 //between 0.0 and 1.0
 
+        this.fight_bgm = new Audio("assets/sounds/music/Dragon Dance - Loop.wav")
+        this.fight_bgm.loop = true 
+        this.fight_bgm.volume = 0.1
         // --- 2. Preload Sound Effects ---
         // Preloading them ensures there is no delay when you try to play them in combat
         this.sfx = {
@@ -27,7 +30,7 @@ class AudioManager {
     playFightBGM(){
         this.stopCalmBGM()
         // The .catch() prevents the game from crashing if the browser blocks autoplay
-        this.calm_bgm.play().catch(error => {
+        this.fight_bgm.play().catch(error => {
             console.log("Browser blocked autoplay. Waiting for user interaction.");
         });
     }

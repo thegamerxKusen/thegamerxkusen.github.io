@@ -46,7 +46,7 @@ function toggle_dark_mode(){
 
 // Main Menue Options Class
 function new_game(){
-    gameAudio.playBGM()
+    gameAudio.playCalmBGM()
     //say , you have one year until the start of the demonic academy, train as you will
     hide_main_menue()
     hide(document.querySelector("#settings-menue"))
