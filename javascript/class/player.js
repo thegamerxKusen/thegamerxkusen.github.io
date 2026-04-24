@@ -210,17 +210,24 @@ class PLAYER {
 
     equipWeapon(item){
         if(!(item instanceof WEAPON_ITEM)){return}
-        if(this.weapon){this.addItem(this.weapon)}
+        this.unequipWeapon()
         this._weapon=item
         sendConsoleMessage(`Equiped ${item.name}.`)
         this.refreshTempStats()
     }
+    unequipWeapon(){
+        if(this.weapon){this.addItem(this.weapon);this._weapon=null}
+        
+    }
     equipArmor(item){
         if(!(item instanceof ARMOR_ITEM)){return}
-        if(this.armor){this.addItem(this.armor)}
+        this.unequipArmor()
         this._armor=item
         sendConsoleMessage(`Equiped ${item.name}.`)
         this.refreshTempStats()
+    }
+    unequipArmor(){
+        if(this.armor){this.addItem(this.armor);this._armor=null}
     }
 
 

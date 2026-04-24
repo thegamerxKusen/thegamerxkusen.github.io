@@ -191,8 +191,11 @@ function open_preparation_tab(){
         `
         <p>${weapon.name}</p>
         `
+        
         weaponDiv.addEventListener("click",()=>{
-            show(equipmentDetails)
+            if(player.weapon){
+                show(equipmentDetails)
+            }
             equipmentDetails.innerHTML=
             `
             <h2>${weapon.name}</h2>
@@ -204,9 +207,20 @@ function open_preparation_tab(){
             </div>
             
             <p>${weapon.desc}</p>
+            <button id="weapon-un-btn">Unequip</button>
             `
+            document.querySelector("#weapon-un-btn").addEventListener("click",()=>{
+                player.unequipweapon()
+                open_preparation_tab()
+            })
         })//name,type desc,def_bonus, atk_bonus, speed_bonus,
-    }else{weaponDiv.innerHTML='<p>No Weapon Equiped</p>'}
+    }else{
+        hide(equipmentDetails)
+        weaponDiv.innerHTML='<p>No Weapon Equiped</p>'
+        equipmentDetails.innerHTML=''
+        weaponDiv.classList="item-div"
+    
+    }
     
     if(player.armor){
         const armor = player.armor
@@ -217,7 +231,10 @@ function open_preparation_tab(){
         
         `
         armorDiv.addEventListener("click",()=>{
-            show(equipmentDetails)
+            if(player.armor){
+                show(equipmentDetails)
+            }
+            
             equipmentDetails.innerHTML=
             `
             <h2>${armor.name}</h2>
@@ -228,9 +245,19 @@ function open_preparation_tab(){
             <p>Speed: ${armor.speed_modifier} </p></div>
             
             <p>${armor.desc}</p>
+            <button id="armor-un-btn">Unequip</button>
             `
+            document.querySelector("#armor-un-btn").addEventListener("click",()=>{
+                player.unequipArmor()
+                open_preparation_tab()
+            })
         })
-    }else{armorDiv.innerHTML='<p>No Armor Equiped</p>'}
+    }else{
+        hide(equipmentDetails)
+        armorDiv.innerHTML='<p>No Armor Equiped</p>'
+        equipmentDetails.innerHTML=''
+        armorDiv.classList="item-div"
+    }
     
     
     
