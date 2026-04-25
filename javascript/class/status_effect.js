@@ -91,3 +91,17 @@ class FROZEN_EFFECT extends NEGATIVE_EFFECT{
         this.duration--
     }
 }
+
+class STRAINED_EFFECT extends NEGATIVE_EFFECT{
+    constructor(duration){
+        super(duration)
+        this.adj = "strained"
+    }
+    turn(target){
+        sendConsoleMessage(`${target.name} is ${this.adj} and is weaker!`)
+        this.duration--
+        if(this.duration<=0){
+            //re give stat
+        }
+    }
+}

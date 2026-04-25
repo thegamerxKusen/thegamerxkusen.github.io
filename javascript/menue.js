@@ -48,17 +48,27 @@ function toggle_dark_mode(){
 function new_game(){
     gameAudio.playCalmBGM()
     //say , you have one year until the start of the demonic academy, train as you will
+    new_char()
+}
+
+function new_char(){
     hide_main_menue()
     hide(document.querySelector("#settings-menue"))
-    show(document.querySelector("#main-game"))
-    //open player creation tab
-    //create player 
-    player = new PLAYER("Kusen",100,50,50,100,100,worldMap["player_home"],5,5,5,5,5,5,5,360,0,0,[item_db.black_dragon_ball,item_db.bandage,item_db.basic_breathing_manual,item_db.linen_martial_attire],null,null,null,footwork_tech_db.basic_evade,[skill_db[0],skill_db[1],skill_db[2]]
-    ,realm_db[0],[skill_db[0],skill_db[1],skill_db[2],skill_db[3],skill_db[4]])
-    refreshWorldSection()
-    player.refreshTime()
-    sendConsoleMessage(`${player.name}, your entry to the demonic academy is imminent, as an heir to the Heavenly Demon's Cult, you shall uphold the honnor of the demon's blood. You have a month until school start, prepare yourself as best as you can.`)
-    player.addQuest(new PLACE_QUEST("The Beginning","To start your training and become stronger, go to the training ground to train your body.","player_training_ground",()=>{sendConsoleMessage('Its working baby')}))
+    show(document.querySelector("#character-creation"))
+    const form = document.querySelector("#new-char-form")
+    form.addEventListener("submit",function(event){
+        event.preventDefault()//stop the submit refresh
+        const first_name = document.querySelector("#char-name").value
+        player = new PLAYER(first_name,0,0,0,0,0,worldMap["player_home"],1,1,1,1,1,1,1,360,0,1,[],null,null,null,null,[],realm_db[0],[],[])//add main quest
+        player.fullRestoration()
+        hide(document.querySelector("#character-creation"))
+        show(document.querySelector("#main-game"))
+        refreshWorldSection()
+        player.refreshTime()
+        sendConsoleMessage(`${player.name}, your entry to the demonic academy is imminent, as an heir to the Heavenly Demon's Cult, you shall uphold the honnor of the demon's blood. You have a month until school start, prepare yourself as best as you can.`)
+        
+})
+    
 }
 
 function load_game(){
