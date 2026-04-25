@@ -4,10 +4,23 @@ class CombatManager{
         this.enemy=enemy
         this.log = []
         this.death_match = death_match || false
+    }
+    start_fight(){
+        gameAudio.playFightBGM()
+        this.createFightScreen()
+        open_fight_tab()
+    }
+    endFight(){
+        setTimeout(() => {
+            const fight_screen = document.querySelector("#fighting-screen")
+            hide(fight_screen)
+            gameAudio.playCalmBGM()
+            open_world_tab() 
+        }, "4000")
         
     }
 
-    refreshFightScreen(){
+    createFightScreen(){
         const fight_screen = document.querySelector("#fighting-screen")
         fight_screen.innerHTML=
         `
@@ -38,10 +51,10 @@ class CombatManager{
         </div>
         <div id="fight-lower-half">
             <div id="fight-main-buttons">
-                <button id="atk-btn" onclick="fight_attack()">Attack</button>
+                <button id="atk-btn" onclick="">Attack</button>
                 <button id="evade-btn" onclick="">Evade</button>
                 <button id="breath-btn" onclick="">Breath</button>
-                <button id="items-btn" onclick="fight_items()">Items</button>
+                <button id="items-btn" onclick="">Items</button>
                 <button id="flee-btn" onclick="">Flee</button>
             </div>
             <div id="fight-attack-menue" class="hide">
@@ -53,34 +66,56 @@ class CombatManager{
             </div>            
         </div>
         `
-        this.open_fight_inventory()
-        document.querySelector("#flee-btn").addEventListener("click",()=>this.flee())
-        document.querySelector("#breath-btn").addEventListener("click",()=>{
-            if(!this.player.equipped_breathing_technique){return sendConsoleMessage("You have no breathing technique!")}else{executeTurnWithBreath()}
+        document.querySelector("#items-btn").addEventListener("click",()=>{
+            this.item_btn()
         })
-        const evade_btn = document.querySelector("#evade-btn")
-        evade_btn.addEventListener("click",()=>{
+        document.querySelector("#flee-btn").addEventListener("click",()=>{
+            this.executeAttemptFleeTurn()
+        })
+        document.querySelector("#breath-btn").addEventListener("click",()=>{
+              if(!this.player.equipped_breathing_technique){return sendConsoleMessage("You have no breathing technique!")}else{executeTurnWithBreath()}
+        })
+        document.querySelector("#evade-btn").addEventListener("click",()=>{
             if(!this.player.equipped_footwork){return sendConsoleMessage("You have no footwork technique!")}
-            if(this.player.internal_energy>=footwork_tech_db.basic_evade.activeCost){
+            if(this.player.internal_energy>=this.player.equipped_footwork.activeCost){
                 this.executeTurnWithEvade()
             }else{
-                sendConsoleMessage("Not enough internal energy to use this technique!")
+                sendConsoleMessage("Not enough internal energy to use this footwork!")
             }
         })
+        
+        document.querySelector("#atk-btn").addEventListener('click',()=>{
+            hide_fight_btn()
+            show(document.querySelector("#fight-attack-menue"))
+        })
+        //create the skill buttons
+        const attack_menue = document.querySelector("#fight-attack-menue")
+        this.player.equipped_skills.forEach((element,index) => {
+        const skill_button = document.createElement("button")
+        skill_button.id="player-skill-"+(index+1)
+        skill_button.innerHTML=element.name
+        skill_button.addEventListener("click",()=>{
+            if(overdrive.classList.contains("toggled") ){
+                sendConsoleMessage("TOGGLED")
+                //here overdrive
+                if((element.spe_atk && this.player.internal_energy<element.basic_cost*2)||(!element.spe_atk && this.player.stamina<element.basic_cost*2)){
+                    sendConsoleMessage("Not enough energy to overdrive this skill!")
+                }else{
+                    sendConsoleMessage("OVERDRIVE!")
+                    this.exexuteTurnOverdrive(element)
+                }
+            }
 
-        const player_effects = document.querySelector("#status-effect-player")
-        const enemy_effects = document.querySelector("#status-effect-enemy")
-        for (const effect of this.player.status_effects) {
-            const effect_div = document.createElement("div")
-            effect_div.innerHTML = effect.adj.charAt(0).toUpperCase() + effect.adj.slice(1) + " : " + effect.duration
-            player_effects.appendChild(effect_div)
-        }
-        for (const effect of this.enemy.status_effects) {
-            const effect_div = document.createElement("div")
-            effect_div.innerHTML = effect.adj.charAt(0).toUpperCase() + effect.adj.slice(1) + " : " + effect.duration
-            enemy_effects.appendChild(effect_div)
-        }
-
+            if(element.spe_atk && this.player.internal_energy<element.basic_cost){
+                return sendConsoleMessage("Not enough internal energy to use this skill!")
+            }else if(!element.spe_atk && this.player.stamina<element.basic_cost){
+                return sendConsoleMessage("Not enough stamina to use this skill!")
+            }
+            this.executeTurn(element)
+        })
+        
+        attack_menue.appendChild(skill_button)})
+        
         const overdrive = document.createElement("button")
         overdrive.innerHTML="Overdrive"
         overdrive.id="fight-overdrive"
@@ -89,33 +124,7 @@ class CombatManager{
             overdrive.classList.toggle("dark-mode")
         })
 
-        const attack_menue = document.querySelector("#fight-attack-menue")
-        this.player.equipped_skills.forEach((element,index) => {
-            const skill_button = document.createElement("button")
-            skill_button.id="player-skill-"+(index+1)
-            skill_button.innerHTML=element.name
-            skill_button.addEventListener("click",()=>{
-                if(overdrive.classList.contains("toggled") ){
-                    sendConsoleMessage("TOGGLED")
-                    //here overdrive
-                    if((element.spe_atk && this.player.internal_energy<element.basic_cost*2)||(!element.spe_atk && this.player.stamina<element.basic_cost*2)){
-                        sendConsoleMessage("Not enough energy to overdrive this skill!")
-                    }else{
-                        sendConsoleMessage("OVERDRIVE!")
-                        this.exexuteTurnOverdrive(element)
-                    }
-                }
-
-                if(element.spe_atk && this.player.internal_energy<element.basic_cost){
-                    return sendConsoleMessage("Not enough internal energy to use this skill!")
-                }else if(!element.spe_atk && this.player.stamina<element.basic_cost){
-                    return sendConsoleMessage("Not enough stamina to use this skill!")
-                }
-                this.executeTurn(element,false)
-            })
-            addToolTip(attack_menue, element.description)
-            attack_menue.appendChild(skill_button)
-        });
+        
         const back = document.createElement("button")
         back.innerHTML="Back"
         back.id="fight-back"
@@ -131,17 +140,72 @@ class CombatManager{
         basic_atk.id="basic-atk"
         basic_atk.innerHTML=weapon_type.basic_skill.name
         basic_atk.addEventListener("click",()=>{
-                this.executeTurn(weapon_type.basic_skill, false)//todo implement basic attack corresponding to weapon type
-        })
-        
+                this.executeTurn(weapon_type.basic_skill)
+            })
 
         console.log(weapon_type)
         attack_menue.appendChild(overdrive)
         attack_menue.appendChild(basic_atk)
         attack_menue.appendChild(back)
         if(this.player.max_internal_energy>0){document.querySelector("#energy-info-player").classList.remove("hide")}
+        this.refreshFightScreen()
     }
 
+    refreshFightScreen(){
+        const player_info = document.querySelector('#fight-player-info')
+        player_info.innerHTML=
+        `
+        <h2>${this.player.name}</h2>
+        <div id="health-info-player">
+            <p class="info-text">${this.player.health}/${this.player.max_health}</p><progress id="health-player" max="${this.player.max_health}" value="${this.player.health}"></progress>
+        </div>
+        <div id="energy-info-player" class="hide">
+            <p class="info-text">${this.player.internal_energy}/${this.player.max_internal_energy}</p><progress id="internal-energy-player" max="${this.player.max_internal_energy}" value="${this.player.internal_energy}"></progress>
+        </div>
+        <p>Weapon: ${this.player.weapon_type.name}</p>
+        <div id="status-effect-player"></div>
+        `
+        const enemy_info = document.querySelector('#enemy-info')
+        enemy_info.innerHTML=
+        `
+        <h2>${this.enemy.name}</h2>
+        <div id="health-info-enemy">
+            <p class="info-text">${this.enemy.health}/${this.enemy.max_health}</p><progress id="health-enemy" max="${this.enemy.max_health}" value="${this.enemy.health}"></progress>
+        </div>
+        <div id="energy-info-enemy" class="hide">
+            <p class="info-text">${this.enemy.internal_energy}/${this.enemy.max_internal_energy}</p><progress id="internal-energy-enemy" max="${this.enemy.max_internal_energy}" value="${this.enemy.internal_energy}"></progress>
+        </div>
+        <p>Weapon: ${this.player.weapon_type.name}</p>
+        <div id="status-effect-enemy"></div>
+        <p>Realm: ${this.enemy.realm.name}</p>
+        `
+        const player_effects = document.querySelector("#status-effect-player")
+        const enemy_effects = document.querySelector("#status-effect-enemy")
+        for (const effect of this.player.status_effects) {
+            const effect_div = document.createElement("div")
+            effect_div.innerHTML = effect.adj.charAt(0).toUpperCase() + effect.adj.slice(1) + " : " + effect.duration
+            player_effects.appendChild(effect_div)
+        }
+        for (const effect of this.enemy.status_effects) {
+            const effect_div = document.createElement("div")
+            effect_div.innerHTML = effect.adj.charAt(0).toUpperCase() + effect.adj.slice(1) + " : " + effect.duration
+            enemy_effects.appendChild(effect_div)
+        }
+
+        
+    }
+    start_turn(){
+        this.player.effectTurn()
+        if(this.checkDeath()){return}
+        this.enemy.effectTurn()
+        if(this.checkDeath()){return}
+        hide(document.querySelector("#fight-lower-half"))
+    }
+    end_turn(){
+        this.refreshFightScreen()
+        show("#fight-lower-half")
+        fight_main()
+    }
     //set reward and punishment system
     playerDeath(){
         if(this.death_match){sendConsoleMessage(`You died, ${this.enemy.name} won.`)}
@@ -151,33 +215,33 @@ class CombatManager{
         
     }
     enemyDeath(){
-        if(this.death_match){sendConsoleMessage(`You killed ${this.enemy.name}! You won.`)}
+        if(this.death_match){sendConsoleMessage(`You killed ${this.enemy.name}!`)}
         else{sendConsoleMessage(`You defeated ${this.enemy.name}!`)}
 
         this.player.processEvent("KILL",this.enemy)
         this.endFight()            
     }
 
+    get_player_speed(skill){return this.player.speed_stat +(skill ? skill.basic_speed:0)+ (this.player.weapon_type.reach || 1) + (this.player.equipped_footwork ? this.player.equipped_footwork.passiveSpeed : 0)}
+
+    get_enemy_speed(skill){return this.enemy.speed_stat +(skill ? skill.basic_speed:0)+ (this.enemy.weapon_type.reach || 1) + (this.enemy.equipped_footwork ? this.enemy.equipped_footwork.passiveSpeed : 0) + (this.enemy.weapon? this.enemy.weapon.speed_bonus:0) + ((this.enemy.armor? this.enemy.armor.speed_modifier : 0))}
     // Main Turn Function
-    executeTurn(player_skill, isEvading = false) {
+    executeTurn(player_skill) {
+        this.start_turn()
         const pSkill = player_skill
         const eSkill = this.enemy.getRandomEnemySkill()
         if(this.player.isStunned()){
-            this.executeTurnEnemyOnly()
+            this.executeTurnEnemy()
             return
         }
         if(this.enemy.isStunned()){
-            this.executeTurnPlayerOnly()
+            this.executeTurnPlayer()
             return
         }
-        //status effects
-        this.player.effectTurn()
-        if(this.checkDeath()){return}
-        this.enemy.effectTurn()
-        if(this.checkDeath()){return}
+        
         //Speed
-        let pTotalSpeed = this.player.speed_stat + pSkill.basic_speed + (this.player.weapon_type.reach || 1) + (this.player.equipped_footwork ? this.player.equipped_footwork.passiveSpeed : 0)
-        let eTotalSpeed = this.enemy.speed_stat + eSkill.basic_speed + (this.enemy.weapon_type.reach || 1) + (this.enemy.equipped_footwork ? this.enemy.equipped_footwork.passiveSpeed : 0)
+        let pTotalSpeed = this.get_player_speed(pSkill)
+        let eTotalSpeed = this.get_enemy_speed(eSkill)
 
         //player goes first
         if(pTotalSpeed>=eTotalSpeed){
@@ -198,13 +262,14 @@ class CombatManager{
             
             if(this.checkDeath()){return}
         }
-        if(this.checkDeath()){return}
-        this.refreshFightScreen()
+        this.end_turn()
     }
-    exexuteTurnOverdrive(pSkill){
+    exexuteTurnOverdrive(skill){
+        this.start_turn()
+        const pSkill = skill
         const eSkill = this.enemy.getRandomEnemySkill()
         let pTotalSpeed = this.player.speed_stat + (pSkill.basic_speed)*2 + (this.player.weapon_type.reach || 1) + (this.player.equipped_footwork ? this.player.equipped_footwork.passiveSpeed : 0)
-        let eTotalSpeed = this.enemy.speed_stat + eSkill.basic_speed + (this.enemy.weapon_type.reach || 1) + (this.enemy.equipped_footwork ? this.enemy.equipped_footwork.passiveSpeed : 0)
+        let eTotalSpeed = this.enemy.speed_stat + eSkill.basic_speed + (this.enemy.weapon_type.reach || 1) + (this.enemy.equipped_footwork ? this.enemy.equipped_footwork.passiveSpeed : 0)+ (this.enemy.weapon? this.enemy.weapon.speed_bonus:0) + (this.enemy.armor? this.enemy.armor.speed_modifier : 0)
 
         if(pTotalSpeed>=eTotalSpeed){
             pSkill.overdriveUse(this.player,this.enemy)
@@ -224,31 +289,25 @@ class CombatManager{
             
             if(this.checkDeath()){return}
         }
+        this.end_turn()
     }
     executeTurnEnemy(){
+        this.start_turn()
         const eSkill = this.enemy.getRandomEnemySkill()
-        //status effects
-        this.player.effectTurn()
-        if(this.checkDeath()){return}
-        this.enemy.effectTurn()
-        if(this.checkDeath()){return}
-
         eSkill.use(this.enemy,this.player)
         if(this.checkDeath()){return}
+        this.end_turn()
     }
 
-    executeTurnPlayer(){
-        const pSkill = this.player.getRandomPlayerSkill()
-        //status effects
-        this.player.effectTurn()
-        if(this.checkDeath()){return}
-        this.enemy.effectTurn()
-        if(this.checkDeath()){return}
-
+    executeTurnPlayer(skill){
+        this.start_turn()
+        const pSkill = skill
         pSkill.use(this.player,this.enemy)
         if(this.checkDeath()){return}
+        this.end_turn()
     }
     executeTurnWithEvade(){
+        this.start_turn()
         const footwork = this.player.equipped_footwork
         const eSkill = this.enemy.getRandomEnemySkill()
         footwork.fightUse(this.player, this.enemy)
@@ -258,15 +317,10 @@ class CombatManager{
         const dodgeChance = this.calculateEvasionChance(eTotalSpeed,pTotalSpeed);
         fight_main()
         
-        //status effects
-        this.player.effectTurn()
-        if(this.checkDeath()){return}
-        this.enemy.effectTurn()
-        // Random roll between 0 and 99
         if (Math.random() * 100 < dodgeChance) {
             gameAudio.playSFX("evade_success")
             sendConsoleMessage(`${this.enemy.name} used ${eSkill.name} but ${this.player.name} successfully evades the attack using ${footwork.name}!`)
-             return; // Skip damage calculation!
+             return
         }else{
             sendConsoleMessage(`${this.player.name} failed to evade!`)
             if(this.checkDeath()){return}
@@ -274,72 +328,20 @@ class CombatManager{
             if(this.checkDeath()){return}
         }
         
-        
+        this.end_turn()        
     }
     executeTurnWithBreath(){
+        this.start_turn()
+
         const breath = this.player.equipped_breathing_technique
         breath.fightUse(this.player, this.enemy)
-        fight_main()
-    
         const eSkill = this.enemy.getRandomEnemySkill()
-        //status effects
-        this.player.effectTurn()
-        if(this.checkDeath()){return}
-        this.enemy.effectTurn()
-        // Random roll between 0 and 99
-        if (Math.random() * 100 < dodgeChance) {
-            sendConsoleMessage(`${this.enemy.name} used ${eSkill.name} but ${this.player.name} successfully evades the attack using ${footwork.name}!`)
-             return; // Skip damage calculation!
-        }
-        sendConsoleMessage(`${this.player.name} failed to evade!`)
         if(this.checkDeath()){return}
         eSkill.use(this.enemy,this.player)
         if(this.checkDeath()){return}
-        
+        this.end_turn() 
     }
-
-
-    checkDeath(){
-        if(this.player.health<=0){
-            this.playerDeath()
-            return true
-        }
-        if(this.enemy.health<=0){
-            this.enemyDeath()
-            return true
-        }
-    }
-    calculateEvasionChance(attackerSpeed, evaderSpeed) {
-        const baseEvasion = 5; // 5% minimum chance to dodge
-        const maxEvasion = 80; // Hard cap at 80% so combat doesn't stall forever
-        const scalingFactor = 40; // How rewarding speed is. (Higher = easier to dodge)
-        evaderSpeed += this.player.equipped_footwork ? this.player.equipped_footwork.passiveSpeed : 0
-        // If the defender is slower or equal, they only get the base luck evasion
-        if (evaderSpeed <= attackerSpeed) {
-            return baseEvasion;
-        }
-
-        // Calculate how much faster the defender is as a decimal percentage
-        // Example: Def=150, Att=100 -> (150 - 100) / 100 = 0.5 (50% faster)
-        const speedAdvantageRatio = (evaderSpeed - attackerSpeed) / attackerSpeed;
-
-        // Convert the ratio into an actual evasion bonus
-        // Example: 0.5 * 40 = 20% bonus evasion
-        const evasionBonus = speedAdvantageRatio * scalingFactor;
-
-        // Add base and round down for a clean integer
-        const totalEvasion = Math.floor(baseEvasion + evasionBonus);
-
-        // Ensure it never goes above the max cap
-        return Math.min(totalEvasion, maxEvasion);
-    }
-    start_fight(){
-        gameAudio.playFightBGM()
-        this.refreshFightScreen()
-        open_fight_tab()
-    }
-
-    flee(){
+    executeAttemptFleeTurn(){
         const eSkill = this.enemy.getRandomEnemySkill()
         const fleeChance = this.calculateEvasionChance(this.enemy.speed_stat +eSkill.basic_speed + (this.enemy.equipped_footwork ? this.enemy.equipped_footwork.passiveSpeed : 2), this.player.speed_stat  + (this.player.equipped_footwork ? this.player.equipped_footwork.passiveSpeed : 2));
         fight_main()
@@ -353,27 +355,41 @@ class CombatManager{
             return
         }
         sendConsoleMessage(`${this.player.name} failed to flee from the fight!`)
-        
-        //status effects
-        this.player.effectTurn()
-        if(this.checkDeath()){return}
-        this.enemy.effectTurn()
-        if(this.checkDeath()){return}
-
+        this.start_turn()
         eSkill.use(this.enemy,this.player)
         if(this.checkDeath()){return}
+        this.end_turn()
     }
 
-    endFight(){
-        setTimeout(() => {
-            const fight_screen = document.querySelector("#fighting-screen")
-            hide(fight_screen)
-            gameAudio.playCalmBGM()
-            open_world_tab() 
-        }, "4000")
-        
+
+
+    checkDeath(){
+        if(this.player.health<=0){
+            this.playerDeath()
+            return true
+        }
+        if(this.enemy.health<=0){
+            this.enemyDeath()
+            return true
+        }
+        return false
     }
 
+    calculateEvasionChance(attackerSpeed, evaderSpeed) {
+        const baseEvasion = 5;
+        const maxEvasion = 80
+        const scalingFactor = 40;
+        evaderSpeed += this.player.equipped_footwork ? this.player.equipped_footwork.passiveSpeed : 0
+        if (evaderSpeed <= attackerSpeed) {
+            return baseEvasion
+        }
+        const speedAdvantageRatio = (evaderSpeed - attackerSpeed) / attackerSpeed
+        const evasionBonus = speedAdvantageRatio * scalingFactor
+        const totalEvasion = Math.floor(baseEvasion + evasionBonus)
+        return Math.min(totalEvasion, maxEvasion)
+    }
+    
+    
     open_fight_inventory(){
         const inv_selection = document.querySelector("#fight-items-menue")
         const detail_element = document.querySelector("#fight-item-details")
@@ -407,7 +423,7 @@ class CombatManager{
                 use.innerHTML="Use"
                 use.addEventListener("click",()=>{
                     item.useInCombat(this.player,this.enemy)
-                    this.executeTurnEnemyOnly()
+                    this.executeTurnEnemy()
                     this.player.removeItem(item)
                     fight_main()
                     this.refreshFightScreen()
@@ -422,6 +438,21 @@ class CombatManager{
         
         }
     }
+
+    item_btn(){
+        hide_fight_btn()
+        show(document.querySelector("#fight-items-menue"))
+        this.open_fight_inventory()
+    }
 }
 
+function hide_fight_btn(){
+    hide(document.querySelector("#fight-main-buttons"))
+    hide(document.querySelector("#fight-attack-menue"))
+    hide(document.querySelector("#fight-items-menue"))
+}
+function fight_main(){
+    hide_fight_btn()
+    show(document.querySelector("#fight-main-buttons"))
+}
 // in a fight a player or enemy got 6 choices: 4 chosen skill, breathing tech to get qi, so waiting a turn mostly and evading

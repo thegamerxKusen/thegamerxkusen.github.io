@@ -39,7 +39,7 @@ class PLAYER {
         this._breathing_tech = breathing_tech
         this._breathing_tech_inventory = [] // multiplier is 1 if no technique is equipped
 
-        this.status_effects = [new BLEEDING_EFFECT(3)] 
+        this.status_effects = [] 
 
         this._equipped_footwork = equipped_footwork
         this._footwork_inventory = [] 

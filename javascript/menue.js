@@ -90,6 +90,11 @@ function hide_game_tabs(){
     hide(document.querySelector("#settings-section"))
     hide(document.querySelector("#fighting-screen"))
 }
+function open_fight_tab(){
+    hide_game_tabs()
+    show(document.querySelector("#fighting-screen"))
+}
+
 function open_world_tab(){
     hide_game_tabs()
     show(document.querySelector("#world-section"))
@@ -356,30 +361,7 @@ function open_settings_tab(){
 }
 
 //fight screen manager
-function open_fight_tab(){
-    hide_game_tabs()
-    show(document.querySelector("#fighting-screen"))
-}
 
-function hide_fight_btn(){
-    hide(document.querySelector("#fight-main-buttons"))
-    hide(document.querySelector("#fight-attack-menue"))
-    hide(document.querySelector("#fight-items-menue"))
-}
-
-function fight_attack(){
-    hide_fight_btn()
-    show(document.querySelector("#fight-attack-menue"))
-}
-function fight_items(){
-    hide_fight_btn()
-    show(document.querySelector("#fight-items-menue"))
-}
-
-function fight_main(){
-    hide_fight_btn()
-    show(document.querySelector("#fight-main-buttons"))
-}
 
 //tooltip
 function addToolTip(element,text){
