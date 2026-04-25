@@ -85,7 +85,7 @@ body{
     pointer-events: auto;
 }
 /*Buttons*/
-button,input[type="button"],input[type="submit"],.skill-inv-skill-box{
+button,input[type="button"],input[type="submit"],.skill-inv-skill-box,input[type="checkbox"]{
     background-color: var(--btn-bg-color);
     color: var(--btn-text-color);
     border: var(--border-width) solid var(--border-color) ;
@@ -94,14 +94,14 @@ button,input[type="button"],input[type="submit"],.skill-inv-skill-box{
     transition: 0.3 all ease;
 }
 
-button:hover,input[type="button"]:hover,input[type="submit"]:hover,.skill-inv-skill-box:hover{
+button:hover,input[type="button"]:hover,input[type="submit"]:hover,.skill-inv-skill-box:hover,input[type="checkbox"]:hover{
     background-color: var(--btn-hover-bg-color);
     color: var(--btn-hover-text-color);
     border: var(--border-width) solid var(--border-color) ;
     cursor: pointer;
     transform: scale(1.01);
 }
-button:active,input[type="button"]:active,input[type="submit"]:active,.skill-inv-skill-box:active{
+button:active,input[type="button"]:active,input[type="submit"]:active,.skill-inv-skill-box:active,input[type="checkbox"]:active{
     background-color: var(--btn-active-bg-color);
     color: var(--btn-active-text-color);
     border: var(--border-width) solid var(--btn-active-bg-color);
@@ -419,15 +419,20 @@ progress::-webkit-progress-bar {
     grid-template-areas: 
     "skill1 skill2"
     "skill3 skill4"
+    "overdrive basic-atk"
     "back back";
-    grid-template-rows: 1fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr 1fr;
+    grid-template-columns: 1fr 1fr;
+    gap:1px;
     height: 100%;
 }
-#fight-attack-menue:first-child{grid-area: skill1;font-size: 40px;}
-#fight-attack-menue:nth-child(2){grid-area: skill2;font-size: 40px;}
-#fight-attack-menue:nth-child(3){grid-area: skill3;font-size: 40px;}
-#fight-attack-menue:nth-child(4){grid-area: skill4;font-size: 40px;}
-#fight-attack-menue:last-child{grid-area: back;font-size: 40px;}
+#player-skill-1{grid-area: skill1;font-size: 40px;}
+#player-skill-2{grid-area: skill2;font-size: 40px;}
+#player-skill-3{grid-area: skill3;font-size: 40px;}
+#player-skill-4{grid-area: skill4;font-size: 40px;}
+#fight-overdrive{grid-area: overdrive;font-size: 40px;}
+#basic-atk{grid-area: basic-atk;font-size: 40px;}
+#fight-back{grid-area: back;font-size: 40px;}
 
 .game-tab{
     height: 100%;
@@ -583,4 +588,17 @@ progress::-webkit-progress-bar {
 }
 #skill-inventory::-webkit-scrollbar{
     display: none;
+}
+
+.toggled{
+    color:var(--bg-color);
+    background-color: var(--border-color);
+}
+.toggled:active{
+    color:var(--color);
+    background-color: var(--bg-color);
+}
+.toggled:hover{
+    color:var(--color);
+    background-color: var(--bg-color);
 }

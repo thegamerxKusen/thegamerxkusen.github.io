@@ -82,36 +82,54 @@ class CombatManager{
         }
         
         const attack_menue = document.querySelector("#fight-attack-menue")
-        for (const skill of this.player.equipped_skills) {
+        this.player.equipped_skills.forEach((element,index) => {
             const skill_button = document.createElement("button")
-            skill_button.id="player-skill"
-            skill_button.innerHTML=skill.name
+            skill_button.id="player-skill-"+(index+1)
+            skill_button.innerHTML=element.name
             skill_button.addEventListener("click",()=>{
-                if(skill.spe_atk && this.player.internal_energy<skill.basic_cost){
+                if(element.spe_atk && this.player.internal_energy<element.basic_cost){
                     return sendConsoleMessage("Not enough internal energy to use this skill!")
-                }else if(!skill.spe_atk && this.player.stamina<skill.basic_cost){
+                }else if(!element.spe_atk && this.player.stamina<element.basic_cost){
                     return sendConsoleMessage("Not enough stamina to use this skill!")
                 }
-                this.executeTurn(skill,false)
+                this.executeTurn(element,false)
             })
-            addToolTip(attack_menue, skill.description)
+            addToolTip(attack_menue, element.description)
             attack_menue.appendChild(skill_button)
-        }
+        });
         const back = document.createElement("button")
         back.innerHTML="Back"
+        back.id="fight-back"
         back.addEventListener("click",()=>{
             fight_main()
         })
+
+        const overdrive = document.createElement("button")
+        overdrive.innerHTML="Overdrive"
+        overdrive.id="fight-overdrive"
+        overdrive.addEventListener("click",()=>{
+            overdrive.classList.toggle("toggled") 
+            overdrive.classList.toggle("dark-mode")
+        })
         
+
         const weapon_type = this.player.weapon_type
         const basic_atk = document.createElement("button")
+        basic_atk.id="basic-atk"
         basic_atk.innerHTML=weapon_type.basic_skill.name
         basic_atk.addEventListener("click",()=>{
+            if(overdrive.classList.contains("true")){
+                //here overdrive
+                console.log("Overdrive")
+                return
+            }
             this.executeTurn(weapon_type.basic_skill, false)//todo implement basic attack corresponding to weapon type
             
         })
+        
+
         console.log(weapon_type)
-        addToolTip(attack_menue, weapon_type.basic_skill.description)
+        attack_menue.appendChild(overdrive)
         attack_menue.appendChild(basic_atk)
         attack_menue.appendChild(back)
         if(this.player.max_internal_energy>0){document.querySelector("#energy-info-player").classList.remove("hide")}
@@ -152,8 +170,8 @@ class CombatManager{
         if(this.checkDeath()){return}
 
         //Speed
-        let pTotalSpeed = this.player.speed_stat + pSkill.basic_speed + (this.player.get_weapon_type().reach || 1) + (this.player.equipped_footwork ? this.player.equipped_footwork.passiveSpeed : 0)
-        let eTotalSpeed = this.enemy.speed_stat + eSkill.basic_speed + (this.enemy.get_weapon_type().reach || 1) + (this.enemy.equipped_footwork ? this.enemy.equipped_footwork.passiveSpeed : 0)
+        let pTotalSpeed = this.player.speed_stat + pSkill.basic_speed + (this.player.weapon_type.reach || 1) + (this.player.equipped_footwork ? this.player.equipped_footwork.passiveSpeed : 0)
+        let eTotalSpeed = this.enemy.speed_stat + eSkill.basic_speed + (this.enemy.weapon_type.reach || 1) + (this.enemy.equipped_footwork ? this.enemy.equipped_footwork.passiveSpeed : 0)
 
         //player goes first
         if(pTotalSpeed>=eTotalSpeed){

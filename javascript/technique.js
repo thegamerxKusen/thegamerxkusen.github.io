@@ -26,13 +26,11 @@ class FOOTWORK_TECHNIQUE{
         this.description = description
         this.activeCost = activeCost // How much Qi it costs to use the Evade
         this.passiveSpeed = passiveSpeed   // A function
-        this.activeEffect= activeEffect || ((user)=>{})
     }
 
     fightUse(user, target) {
         if (user.internal_energy >= this.activeCost) {
             user.reduceEnergy(this.activeCost)
-            activeEffect(user)
         }
         
     }

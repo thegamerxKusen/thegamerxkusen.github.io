@@ -8,21 +8,18 @@ Add more status effect
 
 proper npc with discussion
 
-add a tutorial
-
 add footwork change in fight prep
 
 The game will be about the demonic accademy for now
 
 In residence library: rename study: add a "write diary[save]" and "read diary[load] "options so you need to be in a safe place to saves
 
-add stat requirement for moves and if used give the user the "Strained" status effect that reduce stats
+add overdrive toggle button who increase damage against stam or energy but has a chance to give the "Strained" status effect that reduce stats
 
 Give thanks to all assets used
 
-add settings to controle vollume and mute music and sound effect
+add settings to controle volume and mute music and sound effect
 
 todo maybe add weather (after academy stuff) and add background based on the type of locations:
 interiors etc interesting one at:D:\assets\soundEffect\Free Fantasy SFX Pack By TomMusic\OGG Files\BGS Loops
 
-add indicator in fight to know the enemies weapon

@@ -261,7 +261,7 @@ const worldMap = {
         "Private Kitchen",
         "A well-stocked kitchen where servants prepare spirit-rich meals for your recovery.",
         ["player_home"],
-        ["eat","test_give_item"],
+        ["eat"],
         () => true,
         null
     ),
@@ -487,7 +487,7 @@ const world_interactions = {
         player.endurance_stat++
         player.passHour(4)
          // Fully exhaust stamina to reflect intense training
-    }),()=>true),
+    }),()=>player.stamina===player.max_stamina),
     "speed_training": new INTERACTION("Speed Training",0,0,(()=>{
         const chance = Math.floor(Math.random() * 2) + 1
         player.reduceStamina(player.stamina)
@@ -502,7 +502,7 @@ const world_interactions = {
         }
         player.speed_stat++
         player.passHour(4)
-    }),()=>true),
+    }),()=>player.stamina===player.max_stamina),
     "atk_training": new INTERACTION("Attack Training",0,0,(()=>{
         const chance = Math.floor(Math.random() * 2) + 1
         player.reduceStamina(player.stamina)
@@ -516,7 +516,7 @@ const world_interactions = {
         }
         player.atk_stat++
         player.passHour(4)
-    }),()=>true),
+    }),()=>player.stamina===player.max_stamina),
     "def_training": new INTERACTION("Defence Training",0,0,(()=>{
         const chance = Math.floor(Math.random() * 2) + 1
         player.reduceStamina(player.stamina)
@@ -530,7 +530,7 @@ const world_interactions = {
         }
         player.def_stat++
         player.passHour(4)
-    }),()=>true),
+    }),()=>player.stamina===player.max_stamina),
     "mind_training": new INTERACTION("Meditation",0,0,(()=>{
         const chance = Math.floor(Math.random() * 2) + 1
         player.reduceStamina(player.stamina)
@@ -544,7 +544,7 @@ const world_interactions = {
         }
         player.mind_stat++
         player.passHour(2)
-    }),()=>true),
+    }),()=>player.stamina===player.max_stamina),
     "def_spe_training": new INTERACTION("Qi Resilience Training",0,0,(()=>{
         const chance = Math.floor(Math.random() * 2) + 1
         player.reduceStamina(player.stamina)
@@ -558,7 +558,7 @@ const world_interactions = {
         }
         player.spe_def++
         player.passHour(4)
-    }),()=>player.hasQi()),
+    }),()=>player.hasQi()&&player.stamina===player.max_stamina),
     "atk_spe_training": new INTERACTION("Qi Attack Training",0,0,(()=>{
         const chance = Math.floor(Math.random() * 2) + 1
         player.reduceStamina(player.stamina)
@@ -572,7 +572,7 @@ const world_interactions = {
         }
         player.spe_atk++
         player.passHour(4)
-    }),()=>player.hasQi()),
+    }),()=>player.hasQi()&&player.stamina===player.max_stamina),
 
 
     // --- SPECIAL ACTIONS ---

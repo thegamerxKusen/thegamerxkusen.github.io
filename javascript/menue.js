@@ -374,7 +374,6 @@ function fight_main(){
 //tooltip
 function addToolTip(element,text){
     //if(!(element instanceof Element) || !(text instanceof String)){ console.log("Wrong tooltip");return}
-
     const tooltip = document.createElement("span")
     tooltip.classList.add("tooltip")
     tooltip.innerHTML=text
