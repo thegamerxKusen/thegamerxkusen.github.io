@@ -11,6 +11,7 @@ class LOCATION {
     }
 }
 
+
 class INTERACTION {
     constructor(name, done, done_today, interaction, condition) {
         this.name = name
@@ -24,15 +25,15 @@ class INTERACTION {
         this.interaction()
         this.done++
         this.done_today++
-        player.processEvent("INTERACT", this.name, 1)
+        player.processEvent("INTERACT", this, 1)
         refreshWorldSection()
         return true
     }
 }
 
 class UNIQUE_INTERACTION extends INTERACTION{
-    constructor(name,condition,done,interaction){
-        super(name,done,0,interaction,condition)
+    constructor(name,done,interaction){
+        super(name,done,0,interaction,()=>true)
     }
     execute() {
         this.interaction()
@@ -40,7 +41,7 @@ class UNIQUE_INTERACTION extends INTERACTION{
         this.condition=()=>false
         this.done++
         this.done_today++
-        player.processEvent("INTERACT", this.name, 1)
+        player.processEvent("INTERACT", this, 1)
         refreshWorldSection()
         return true   
     }
@@ -296,7 +297,7 @@ const worldMap = {
         "Central Academy Plaza",
         "The site of the opening ceremony where cadets receive their color-coded tags.",
         ["academy"],
-        [],
+        ["academy_first_test"],
         () => true,
         null
     ),
@@ -623,7 +624,13 @@ const world_interactions = {
     "read_diary_load": new INTERACTION("Read Diary [LOAD]",0,0,()=>{
         //loading function
         sendConsoleMessage("Not implemented Yet")
-    },()=>true)
+    },()=>true),
+    "academy_first_test": new UNIQUE_INTERACTION("Welcoming Ceremony",0,()=>{
+        sendConsoleMessage("While still feeling nervous, you are overcome by exitment at the prospect of the Demonic Academy. As an heir to the academy people naturally turn their head towards you,but due to your common upbrininging, born to a mere maid of the lord, they quickly turn around.")
+        sendConsoleMessage("Right Guardian: Silence. From now on you are no longer, sons and daughter of your clans or prince or princess but mere trainee. From now on you will answer everything by screaming 'MADO!' Understood!")
+        sendConsoleMessage("Trainees: MADO!")
+        sendConsoleMessage("Now welcome the Music Clan's Leader for the First Test!")
+    })
 }
 
 function refreshWorldSection(){

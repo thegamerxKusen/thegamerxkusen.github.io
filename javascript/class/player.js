@@ -505,7 +505,7 @@ class PLAYER {
         this.location.onEnterMethod()
         refreshWorldSection()
         this.passMinute(10)
-        this.processEvent("MOVE", place_name, 1)
+        this.processEvent("MOVE", this.location, 1)
     }
     getInteractions(){
         return this.location.interactions
