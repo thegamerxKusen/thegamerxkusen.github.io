@@ -173,7 +173,7 @@ class PLAYER {
             return false
         }else{
             this._endurance_stat = v 
-            this._max_stamina=(this._endurance_stat * 5) + (this._endurance_stat.id * 50)
+            this._max_stamina=(this._endurance_stat * 5) + (this.realm.id * 50)
             this.refreshStats()
             return true
         } 

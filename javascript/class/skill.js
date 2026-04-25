@@ -10,6 +10,27 @@ class SKILL{
         this.spe_atk = spe_atk|| false //if true its a spe atk if not its physical.
         this.sfx = sfx
     }
+    overdriveUse(user,target){
+        let damage
+        
+        if(this.spe_atk){
+            damage = (user.spe_atk + this.basic_damage*2)
+            damage = Math.max(1,Math.floor(Math.max(0, damage - target.spe_def)))
+        }else{
+            damage = (user.atk_stat + this.basic_damage*2)
+            damage = Math.max(1,Math.floor(Math.max(0, damage - target.def_stat)))
+        }
+        target.health -= damage
+        if(this.spe_atk){
+            user.reduceEnergy(this.basic_cost*2)
+        }else{
+            user.reduceStamina(this.basic_cost*2)
+        }
+        if(this.sfx){
+            gameAudio.playSFX(this.sfx)
+        }
+        sendConsoleMessage(`${user.name} used ${this.name} in overdrive and dealt ${damage} damage.`)
+    }
     use(user,target){
         let damage
         
@@ -51,12 +72,39 @@ class SKILL_STATUS_EFFECT extends SKILL{
             damage = Math.max(1,Math.floor(Math.max(0, damage - target.def_stat)))
         }
         target.health -= damage
-        user.reduceEnergy(this.basic_cost)
+        if(this.spe_atk){
+            user.reduceEnergy(this.basic_cost)
+        }else{
+            user.reduceStamina(this.basic_cost)
+        }
         sendConsoleMessage(`${user.name} used ${this.name} and dealt ${damage} damage.`)
         if(Math.random()<this.chance/100){
             target.addEffect(this.status_effects)
             sendConsoleMessage(`${target.name} is ${this.status_effects.adj}!`)
-            gameAudio.playSFX(this.sfx)
+            if(this.sfx){gameAudio.playSFX(this.sfx)}
+        }
+    }
+    overdriveUse(user,target){
+        let damage
+
+        if(this.spe_atk){
+            damage = (user.spe_atk + this.basic_damage*2)
+            damage = Math.max(1,Math.floor(Math.max(0, damage - target.spe_def)))
+        }else{
+            damage = (user.atk_stat + this.basic_damage*2)
+            damage = Math.max(1,Math.floor(Math.max(0, damage - target.def_stat)))
+        }
+        target.health -= damage
+        if(this.spe_atk){
+            user.reduceEnergy(this.basic_cost)
+        }else{
+            user.reduceStamina(this.basic_cost)
+        }
+        sendConsoleMessage(`${user.name} used ${this.name} in overdrive and dealt ${damage} damage.`)
+        if(Math.random()<this.chance/100){
+            target.addEffect(this.status_effects)
+            sendConsoleMessage(`${target.name} is ${this.status_effects.adj}!`)
+            if(this.sfx){gameAudio.playSFX(this.sfx)}
         }
     }
 }

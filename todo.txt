@@ -23,3 +23,11 @@ add settings to controle volume and mute music and sound effect
 todo maybe add weather (after academy stuff) and add background based on the type of locations:
 interiors etc interesting one at:D:\assets\soundEffect\Free Fantasy SFX Pack By TomMusic\OGG Files\BGS Loops
 
+
+
+bugs:
+When i took a attack with damage higher than my hp the fight didn't stop with my death
+
+repeating messages
+
+Need to do over the combat manager for clarity

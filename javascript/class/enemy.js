@@ -86,7 +86,7 @@ class ENEMY{
         }
         return this.skills[roll]
     }
-    get_weapon_type(){
+    get weapon_type(){
         return this.weapon ? this.weapon.type : weapon_db[0] // Return "Fist" if no weapon equipped
     }
     heal(hp_to_heal){

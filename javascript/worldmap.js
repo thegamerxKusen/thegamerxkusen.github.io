@@ -227,7 +227,7 @@ const worldMap = {
         ["player_garden", "player_training_ground", "player_bedroom", "player_kitchen", "player_study", "academy"],
         [],
         () => true,
-        () => { sendConsoleMessage("You enter your grand residence.") }
+        null
     ),
 
     "player_garden": new LOCATION(
@@ -243,7 +243,7 @@ const worldMap = {
         "Private Training Ground",
         "A reinforced stone courtyard for practicing basic forms and tempering the body.",
         ["player_home"],
-        ["training_weapon_rack","def_spe_training","atk_spe_training","speed_training","atk_training","def_training","stamina_training","training_ground_sparring"],
+        ["training_weapon_rack","vitality_training","def_spe_training","atk_spe_training","speed_training","atk_training","def_training","stamina_training","training_ground_sparring"],
         () => true,
         null
     ),
@@ -573,6 +573,14 @@ const world_interactions = {
         player.spe_atk++
         player.passHour(4)
     }),()=>player.hasQi()&&player.stamina===player.max_stamina),
+    "vitality_training":new INTERACTION("Vitality Training",0,0,(()=>{
+        player.reduceStamina(player.stamina)
+        sendConsoleMessage("You injure yourself repeatedly to train your vitality. (+1 Vitality)")    
+        player.vitality_stat++
+        player.passHour(4)}),
+        ()=>player.stamina>=player.max_stamina
+
+    ),
 
 
     // --- SPECIAL ACTIONS ---

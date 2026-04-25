@@ -80,13 +80,32 @@ class CombatManager{
             effect_div.innerHTML = effect.adj.charAt(0).toUpperCase() + effect.adj.slice(1) + " : " + effect.duration
             enemy_effects.appendChild(effect_div)
         }
-        
+
+        const overdrive = document.createElement("button")
+        overdrive.innerHTML="Overdrive"
+        overdrive.id="fight-overdrive"
+        overdrive.addEventListener("click",()=>{
+            overdrive.classList.toggle("toggled") 
+            overdrive.classList.toggle("dark-mode")
+        })
+
         const attack_menue = document.querySelector("#fight-attack-menue")
         this.player.equipped_skills.forEach((element,index) => {
             const skill_button = document.createElement("button")
             skill_button.id="player-skill-"+(index+1)
             skill_button.innerHTML=element.name
             skill_button.addEventListener("click",()=>{
+                if(overdrive.classList.contains("toggled") ){
+                    sendConsoleMessage("TOGGLED")
+                    //here overdrive
+                    if((element.spe_atk && this.player.internal_energy<element.basic_cost*2)||(!element.spe_atk && this.player.stamina<element.basic_cost*2)){
+                        sendConsoleMessage("Not enough energy to overdrive this skill!")
+                    }else{
+                        sendConsoleMessage("OVERDRIVE!")
+                        this.exexuteTurnOverdrive(element)
+                    }
+                }
+
                 if(element.spe_atk && this.player.internal_energy<element.basic_cost){
                     return sendConsoleMessage("Not enough internal energy to use this skill!")
                 }else if(!element.spe_atk && this.player.stamina<element.basic_cost){
@@ -104,13 +123,7 @@ class CombatManager{
             fight_main()
         })
 
-        const overdrive = document.createElement("button")
-        overdrive.innerHTML="Overdrive"
-        overdrive.id="fight-overdrive"
-        overdrive.addEventListener("click",()=>{
-            overdrive.classList.toggle("toggled") 
-            overdrive.classList.toggle("dark-mode")
-        })
+        
         
 
         const weapon_type = this.player.weapon_type
@@ -118,13 +131,7 @@ class CombatManager{
         basic_atk.id="basic-atk"
         basic_atk.innerHTML=weapon_type.basic_skill.name
         basic_atk.addEventListener("click",()=>{
-            if(overdrive.classList.contains("true")){
-                //here overdrive
-                console.log("Overdrive")
-                return
-            }
-            this.executeTurn(weapon_type.basic_skill, false)//todo implement basic attack corresponding to weapon type
-            
+                this.executeTurn(weapon_type.basic_skill, false)//todo implement basic attack corresponding to weapon type
         })
         
 
@@ -168,7 +175,6 @@ class CombatManager{
         if(this.checkDeath()){return}
         this.enemy.effectTurn()
         if(this.checkDeath()){return}
-
         //Speed
         let pTotalSpeed = this.player.speed_stat + pSkill.basic_speed + (this.player.weapon_type.reach || 1) + (this.player.equipped_footwork ? this.player.equipped_footwork.passiveSpeed : 0)
         let eTotalSpeed = this.enemy.speed_stat + eSkill.basic_speed + (this.enemy.weapon_type.reach || 1) + (this.enemy.equipped_footwork ? this.enemy.equipped_footwork.passiveSpeed : 0)
@@ -176,7 +182,6 @@ class CombatManager{
         //player goes first
         if(pTotalSpeed>=eTotalSpeed){
             pSkill.use(this.player,this.enemy)
-
             if(this.checkDeath()){return}
             setTimeout(() => {
                 eSkill.use(this.enemy,this.player)
@@ -196,6 +201,30 @@ class CombatManager{
         if(this.checkDeath()){return}
         this.refreshFightScreen()
     }
+    exexuteTurnOverdrive(pSkill){
+        const eSkill = this.enemy.getRandomEnemySkill()
+        let pTotalSpeed = this.player.speed_stat + (pSkill.basic_speed)*2 + (this.player.weapon_type.reach || 1) + (this.player.equipped_footwork ? this.player.equipped_footwork.passiveSpeed : 0)
+        let eTotalSpeed = this.enemy.speed_stat + eSkill.basic_speed + (this.enemy.weapon_type.reach || 1) + (this.enemy.equipped_footwork ? this.enemy.equipped_footwork.passiveSpeed : 0)
+
+        if(pTotalSpeed>=eTotalSpeed){
+            pSkill.overdriveUse(this.player,this.enemy)
+            if(this.checkDeath()){return}
+            setTimeout(() => {
+                eSkill.use(this.enemy,this.player)
+            }, "2000") 
+            if(this.checkDeath()){return}
+        }
+        //enemy goes first
+        else{
+            eSkill.use(this.enemy,this.player)
+            if(this.checkDeath()){return}
+            setTimeout(() => {
+                pSkill.overdriveUse(this.player,this.enemy)
+            }, "2000") 
+            
+            if(this.checkDeath()){return}
+        }
+    }
     executeTurnEnemy(){
         const eSkill = this.enemy.getRandomEnemySkill()
         //status effects
@@ -207,6 +236,7 @@ class CombatManager{
         eSkill.use(this.enemy,this.player)
         if(this.checkDeath()){return}
     }
+
     executeTurnPlayer(){
         const pSkill = this.player.getRandomPlayerSkill()
         //status effects
