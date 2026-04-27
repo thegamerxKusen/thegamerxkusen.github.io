@@ -602,3 +602,11 @@ progress::-webkit-progress-bar {
     color:var(--color);
     background-color: var(--bg-color);
 }
+
+.popup-dialogues{
+    height: 100%;
+    overflow-y: scroll;
+}
+.popup-dialogues::-webkit-scrollbar{
+    display: none;
+}

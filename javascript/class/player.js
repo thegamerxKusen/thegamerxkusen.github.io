@@ -15,7 +15,7 @@ class PLAYER {
         this._max_internal_energy = max_internal_energy
         this._location = location
 
-        this.wisdom = 100//Debug, default 0 
+        this.wisdom = 0//Debug, default 0 
 
         this._atk_stat = atk_stat
         this._spe_atk = spe_atk
@@ -56,6 +56,10 @@ class PLAYER {
         this._age = 4320 + this.day
         // NOW that everything has a value, we refresh the UI
         this.refreshStats()
+
+        //academy story
+        this.passed_first_test=false
+
     }
 
     //1day worth of internal energy = 1 internal energy
@@ -84,7 +88,7 @@ class PLAYER {
     set hour(v){this._hour=v}
 
     get day(){return this._day}
-    set day(v){this._day=v;refreshIneractionsDailies();
+    set day(v){this._day=v;refreshInteractionsDailies();
         this._age = 4320 + this.day}
 
     get location() { return this._location }
@@ -613,6 +617,10 @@ class PLAYER {
             return;
         }
         this._breathing_tech=breathing_manual
+    }
+
+    get mind_strenght(){
+        return this.mind_stat*2+this.wisdom
     }
 
     get weapon_type(){

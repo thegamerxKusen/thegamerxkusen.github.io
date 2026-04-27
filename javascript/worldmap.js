@@ -12,6 +12,7 @@ class LOCATION {
 }
 
 
+
 class INTERACTION {
     constructor(name, done, done_today, interaction, condition) {
         this.name = name
@@ -30,14 +31,13 @@ class INTERACTION {
         return true
     }
 }
-
 class UNIQUE_INTERACTION extends INTERACTION{
-    constructor(name,done,interaction){
-        super(name,done,0,interaction,()=>true)
+    constructor(name,done,interaction,condition){
+        super(name,done,0,interaction,condition)
     }
     execute() {
         this.interaction()
-        if(this.done>=0){console.error("Shouldn't be executed")}
+        if(this.done>0){console.error("Shouldn't be executed")}
         this.condition=()=>false
         this.done++
         this.done_today++
@@ -46,6 +46,57 @@ class UNIQUE_INTERACTION extends INTERACTION{
         return true   
     }
 }
+class UNIQUE_DIALOGUE_INTERACTION extends UNIQUE_INTERACTION{
+    constructor(name,done,interaction,condition,dialogues){
+        super(name,done,interaction,condition)
+        this.dialogues=dialogues
+    }
+    execute() {
+        if(this.done>0){console.error("Shouldn't be executed")}
+        this.condition=()=>false
+        this.done++
+        this.done_today++
+        player.processEvent("INTERACT", this, 1)
+        refreshWorldSection()
+        this.openDialogue()
+        return true   
+    }
+    sendDialogueMessage(text){
+        if(this.dialogues.length===0){
+            this.interaction()
+            return closePopup()}
+        
+        const popup=document.querySelector(".popup-dialogues")
+        const message=document.createElement("p")
+        message.classList.add("console-message")
+        message.innerHTML=text
+        popup.append(message)
+    }
+    dialogue(){
+            const dialogue = this.dialogues[0]
+            this.dialogues.shift()
+            this.sendDialogueMessage(dialogue)
+        }
+    openDialogue(){
+        const popupContent = document.createElement("div")
+        popupContent.classList.add("popup-content")
+        popupContent.innerHTML = ""
+        popupContent.innerHTML = `
+            <h2>${this.name}</h2>
+            <div class="popup-dialogues">
+                
+            </div>
+        `
+        closePopup() 
+        openPopup(popupContent)
+        this.dialogue()
+        document.querySelector(".popup-dialogues").addEventListener("click",()=>this.dialogue())
+    }
+    
+   
+
+}
+
 class FIGHT_INTERACTION extends INTERACTION {
     constructor(name, done, done_today, condition, enemy) {
         // We pass 'null' for the interaction because we define it below
@@ -294,11 +345,11 @@ const worldMap = {
     ),
 
     "academy_plaza": new LOCATION(
-        "Central Academy Plaza",
+        "Central Plaza",
         "The site of the opening ceremony where cadets receive their color-coded tags.",
         ["academy"],
         ["academy_first_test"],
-        () => true,
+        () => player.passed_first_test || world_interactions.academy_first_test.condition,
         null
     ),
 
@@ -307,7 +358,7 @@ const worldMap = {
         "Lee Hwamyung's office, where he manages academy testing and stops clan foul play.",
         ["academy_plaza"],
         [],
-        () => false,
+        () => player.passed_first_test,
         null
     ),
 
@@ -316,7 +367,7 @@ const worldMap = {
         "Baek Jongmeng's medical station where injured cadets are treated.",
         ["academy"],
         [],
-        () => false,
+        () => player.passed_first_test,
         null
     ),
 
@@ -325,7 +376,7 @@ const worldMap = {
         "Divided between the high-status Six Clan quarters and the dilapidated outskirts.",
         ["academy_plaza"],
         [],
-        () => false,
+        () => player.passed_first_test,
         null
     ),
 
@@ -351,68 +402,23 @@ const worldMap = {
         "The place where the young demons learn martial arts every day with vigorous training.",
         ["academy_plaza","academy"]
         ,[]
-        ,()=>true
+        ,()=>player.passed_first_test
         ,null),
     "academy_cafeteria":new LOCATION(
         "Cafeteria",
         "The place where the young demons eat healthy food to get strong fast.",
         ["academy"]
         ,[]
-        ,()=>true
+        ,()=>player.passed_first_test
         ,null),
 
     // --- THE PRECIOUS LIBRARY TOWER ---
     "academy_library": new LOCATION(
-        "Precious Library Floor 1",
-        "Basics of Qi. Center: 1st Sapphire Monolith with markings by Cheon Ma and the Sword Demon.",
-        ["testing_arenas", "library_floor_2"],
+        "Precious Library",
+        "The greatest treasure of the Heavenly Demon Sect containing thousands of martial arts manual.",
+        ["academy"],//add library floors
         [],
-        () => false,
-        null
-    ),
-
-    "library_floor_2": new LOCATION(
-        "Precious Library Floor 2",
-        "Intermediate manuals. Center: 2nd Sapphire Monolith (2nd formation).",
-        ["academy_library", "library_floor_3"],
-        [],
-        () => false,
-        null
-    ),
-
-    "library_floor_3": new LOCATION(
-        "Precious Library Floor 3",
-        "Advance Prowess manuals. Center: 3rd Sapphire Monolith.",
-        ["library_floor_2", "library_floor_4"],
-        [],
-        () => false,
-        null
-    ),
-
-    "library_floor_4": new LOCATION(
-        "Precious Library Floor 4",
-        "Expert Prowess (400 books). Center: A cut-down Sapphire Monolith (4th formation).",
-        ["library_floor_3", "library_floor_5"],
-        [],
-        () => false,
-        null
-    ),
-
-    "library_floor_5": new LOCATION(
-        "Precious Library Floor 5",
-        "Top-tier Clan manuals (20 books). Center: Final Sapphire Monolith.",
-        ["library_floor_4", "library_basement"],
-        [],
-        () => false,
-        null
-    ),
-
-    "library_basement": new LOCATION(
-        "Secret Library Basement",
-        "The hidden floor containing the Sword Demon's Right Arm and his absolute inheritance.",
-        ["library_floor_5"],
-        [],
-        () => false,
+        () => player.passed_first_test,
         null
     )
 }
@@ -625,12 +631,28 @@ const world_interactions = {
         //loading function
         sendConsoleMessage("Not implemented Yet")
     },()=>true),
-    "academy_first_test": new UNIQUE_INTERACTION("Welcoming Ceremony",0,()=>{
-        sendConsoleMessage("While still feeling nervous, you are overcome by exitment at the prospect of the Demonic Academy. As an heir to the academy people naturally turn their head towards you,but due to your common upbrininging, born to a mere maid of the lord, they quickly turn around.")
-        sendConsoleMessage("Right Guardian: Silence. From now on you are no longer, sons and daughter of your clans or prince or princess but mere trainee. From now on you will answer everything by screaming 'MADO!' Understood!")
-        sendConsoleMessage("Trainees: MADO!")
-        sendConsoleMessage("Now welcome the Music Clan's Leader for the First Test!")
-    })
+    "academy_first_test": new UNIQUE_DIALOGUE_INTERACTION("Welcoming Ceremony",0,()=>{
+        if(player.realm.id>=1){
+            sendConsoleMessage("Having Enough Internal Energy you barrely managed to resist the Elder's attack and passed the test.")
+            sendConsoleMessage("You now have access to the library to learn martial arts.")
+        }else if(player.mind_strenght >= 60){
+            sendConsoleMessage("While not having enough internal strenght you stayed still while your insides where ravaged with the strenghts of your mind.")
+            sendConsoleMessage("Silent observer noticed you.")// add a reputation when there is  a system for it
+            player.passed_first_test=true
+        }else{
+            sendConsoleMessage("After resisting for half a minute you started vomiting blood and collapsed on the ground.")
+            sendConsoleMessage("You were sent out of the academy and your martial path has been cut short. You can still train at home but killing yourself is recomended.")
+            worldMap.academy.canEntersMethod=()=>false
+            player.move("player_home")
+           
+        }
+    },()=>true,
+    ["While still feeling nervous, you are overcome by exitment at the prospect of the Demonic Academy. As an heir to the academy people naturally turn their head towards you,but due to your common upbrininging, born to a mere maid of the lord, they quickly turn around.",
+    "Right Guardian: -Silence. From now on you are no longer, sons and daughter of your clans or prince or princess but mere trainee. From now on you will answer everything by screaming 'MADO!' Understood?",
+    "Trainees: -MADO!",
+    "Right Guardian: -Now welcome the Music Clan's Leader for the First Test!",
+    "Right Guardian: -For the first test you will have to stay up under a sound attack of Elder Hang Soyu.",
+    "The Elder slowly sat down with her zither and gracefully played a single sweet note, but then you feel a shock waves shaking your insides."])
 }
 
 function refreshWorldSection(){
@@ -669,7 +691,7 @@ function refreshWorldSection(){
     }
     
 }
-function refreshIneractionsDailies(){
+function refreshInteractionsDailies(){
         for (const interaction of Object.values(world_interactions)) {
             interaction.done_today=0
             if(interaction instanceof SHOP_INTERACTION){
