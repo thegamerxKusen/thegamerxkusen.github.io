@@ -31,6 +31,23 @@ class INTERACTION {
         return true
     }
 }
+
+class NO_EVENT_INTERACTION extends INTERACTION{
+    constructor(name, done, done_today, interaction, condition) {
+        super(name,done,done_today,interaction,condition)
+
+    }
+
+    execute() {
+        this.interaction()
+        this.done++
+        this.done_today++
+        refreshWorldSection()
+        return true
+    }
+}
+
+
 class UNIQUE_INTERACTION extends INTERACTION{
     constructor(name,done,interaction,condition){
         super(name,done,0,interaction,condition)
@@ -623,15 +640,13 @@ const world_interactions = {
         book_db.courtesan_smile,
         book_db.falling_leaf_meditations,
     ]),
-    "write_diary_save": new INTERACTION("Write Diary [SAVE]",0,0,()=>{
+    "write_diary_save": new NO_EVENT_INTERACTION("Write Diary [SAVE]",0,0,()=>{
         //saving function
         save()
-        sendConsoleMessage("Not implemented Yet")
     },()=>true),
-    "read_diary_load": new INTERACTION("Read Diary [LOAD]",0,0,()=>{
+    "read_diary_load": new NO_EVENT_INTERACTION("Read Diary [LOAD]",0,0,()=>{
         //loading function
         load()
-        sendConsoleMessage("Not implemented Yet")
     },()=>true),
     "academy_first_test": new UNIQUE_DIALOGUE_INTERACTION("Welcoming Ceremony",0,()=>{
         if(player.realm.id>=1){

@@ -121,7 +121,10 @@ class PLAYER {
         }
 
         this.active_quest =  []
-       
+        for (const quest of saveData.active_quest) {
+            const realQuest = Object.values(quests_db).find(q=> q.title === quest.title)
+            this.active_quest.push(realQuest)
+        }
         
         this._breathing_tech = saveData._breathing_tech ? Object.values(breathing_tech_db).find(bt=> bt.name === saveData._breathing_tech.name) : null;
         this._breathing_tech_inventory = []
@@ -151,6 +154,7 @@ class PLAYER {
         this._weapon = saveData._weapon ? Object.values(item_db).find(i => i.name === saveData._weapon.name) : null;
         this._armor = saveData._armor ? Object.values(item_db).find(i => i.name === saveData._armor.name) : null;
 
+        
         
         this.refreshStats();
     }
@@ -211,7 +215,9 @@ class PLAYER {
         skill_inventory: this.skill_inventory.length>=0 ? this.skill_inventory.map(skill => ({ name: skill.name })):[],
 
         // Quests: redo it with a DB
-        
+        active_quest: this.active_quest.map(quest =>({
+            name:quest.title,
+        }))
     }
     }
     //time is counted in minutes: 1 day = 1440 min  1 month = 30 day ,1 year = 360 day
