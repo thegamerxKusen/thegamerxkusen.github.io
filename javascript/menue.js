@@ -61,15 +61,7 @@ function new_char(){
         const first_name = document.querySelector("#char-name").value
         player = new PLAYER(first_name,0,0,0,0,0,worldMap["player_home"],1,1,1,1,1,1,1,360,0,1,[],null,null,null,null,[],realm_db[0],[],[])
         player.fullRestoration()
-        player.addQuest(
-            new PLACE_QUEST("Main Quest 1","You have a month of preparation before the opening of the Demonic Academy, to succeed in becoming the Sect Leader you must succeed. Train to the maximum.",worldMap["academy"],
-            ()=>{player.addQuest(
-                new INTERACTION_QUEST("Main Quest 2","After 30 day of training, head Out to the academy and attend the opening ceremony",world_interactions["academy_first_test"],()=>{}))}))
-        player.addQuest(
-            new INTERACTION_QUEST("Tutorial 1","Take a training weapon from the weapon rack in the training ground.",world_interactions["training_weapon_rack"],1,
-            ()=>{player.addQuest(
-                    new INTERACTION_QUEST("Tutorial 2","One of the way to increase your strenght of mind is to read in the study.",world_interactions["starter_home_bookshelf"],1,()=>{}))})
-        )
+        player.addQuest(quests_db.MAIN_1)
         hide(document.querySelector("#character-creation"))
         show(document.querySelector("#main-game"))
         refreshWorldSection()

@@ -71,3 +71,12 @@ class USE_ITEM extends QUEST{
         super(title, description, target, 1, "USE_ITEM", rewardFunction);
     }
 }
+
+const quests_db = {
+    MAIN_2 : new INTERACTION_QUEST("Main Quest 2","After 30 day of training, head Out to the academy and attend the opening ceremony",world_interactions["academy_first_test"],()=>{})
+    ,MAIN_1:new PLACE_QUEST("Main Quest 1","You have a month of preparation before the opening of the Demonic Academy, to succeed in becoming the Sect Leader you must succeed. Train to the maximum.",worldMap["academy"],()=>{player.addQuest(quests_db.MAIN_2)})
+    ,TUTORIAL_2 : new INTERACTION_QUEST("Tutorial 2","One of the way to increase your strenght of mind is to read in the study.",world_interactions["starter_home_bookshelf"],1,()=>{})
+    ,TUTORIAL_1 : new INTERACTION_QUEST("Tutorial 1","Take a training weapon from the weapon rack in the training ground.",world_interactions["training_weapon_rack"],1,()=>{player.addQuest(quests_db.TUTORIAL_2)})
+    
+}
+
