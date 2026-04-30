@@ -625,10 +625,12 @@ const world_interactions = {
     ]),
     "write_diary_save": new INTERACTION("Write Diary [SAVE]",0,0,()=>{
         //saving function
+        save()
         sendConsoleMessage("Not implemented Yet")
     },()=>true),
     "read_diary_load": new INTERACTION("Read Diary [LOAD]",0,0,()=>{
         //loading function
+        load()
         sendConsoleMessage("Not implemented Yet")
     },()=>true),
     "academy_first_test": new UNIQUE_DIALOGUE_INTERACTION("Welcoming Ceremony",0,()=>{
@@ -699,3 +701,4 @@ function refreshInteractionsDailies(){
             }
         }
     }
+

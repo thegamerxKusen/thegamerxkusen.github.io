@@ -28,6 +28,7 @@ class WEAPON_ITEM extends ITEM{
         this.atk_bonus = atk_bonus
         this.speed_bonus = speed_bonus
         this.spe_atk_bonus = spe_atk_bonus
+        this.quantity =  1
     }
 }
 
@@ -41,6 +42,7 @@ class ARMOR_ITEM extends ITEM{
         this.def_modifier=def_modifier
         this.spe_def_modifier=spe_def_modifier
         this.speed_modifier=speed_modifier
+        this.quantity = 1
     }
 }
 

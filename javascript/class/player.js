@@ -15,7 +15,7 @@ class PLAYER {
         this._max_internal_energy = max_internal_energy
         this._location = location
 
-        this.wisdom = 0//Debug, default 0 
+        this.wisdom = 1//Debug, default 0 
 
         this._atk_stat = atk_stat
         this._spe_atk = spe_atk
@@ -62,7 +62,158 @@ class PLAYER {
 
     }
 
-    //1day worth of internal energy = 1 internal energy
+    load(saveData = {}) {
+        console.log(saveData)
+        // --- CORE INFO ---
+        // We use saveData._name if it exists. If not, default to "Yeo-Woon"
+        this._name = saveData._name || "Yeo-Woon";
+        this._currency = saveData._currency || 0;
+        this.wisdom = saveData.wisdom || 1; // Debug, default 1
+        
+        // --- TIME & AGE ---
+        this._hour = saveData._hour || 360;
+        this._day = saveData._day || 0;
+        this._age = 4320 + this._day;
+        
+        
+        this._location = saveData._location || "player_home";
+        this.realm = saveData.realm || realm_db[0];
+        this._was_qi_hidden = saveData._was_qi_hidden !== undefined ? saveData._was_qi_hidden : true;
+        this.passed_first_test = saveData.passed_first_test || false;
+
+        this._vitality_stat = saveData._vitality_stat || 0;
+        this._endurance_stat = saveData._endurance_stat || 0;
+        this._atk_stat = saveData._atk_stat || 0;
+        this._def_stat = saveData._def_stat || 0;
+        this._speed_stat = saveData._speed_stat || 0;
+        this._mind_stat = saveData._mind_stat || 0;
+        this._spe_atk = saveData._spe_atk || 0;
+        this._spe_def = saveData._spe_def || 0;
+
+        this._max_health = (this._vitality_stat * 5) + (this.realm.id * 50);
+        this._max_stamina = (this._endurance_stat * 5) + (this.realm.id * 50);
+        this._max_internal_energy = saveData._max_internal_energy || 0;
+
+    
+        this._health = saveData._health !== undefined ? saveData._health : this._max_health;
+        this._stamina = saveData._stamina !== undefined ? saveData._stamina : this._max_stamina;
+        this._internal_energy = saveData._internal_energy || 0;
+
+        
+        this.temp_atk_stat = 0;
+        this.temp_spe_atk = 0;
+        this.temp_def_stat = 0;
+        this.temp_spe_def = 0;
+        this.temp_speed_stat = 0;
+        this.temp_mind_stat = 0;
+        this.status_effects = [];
+
+        // --- INVENTORY & EQUIPMENT ---
+        // NOTE: These will need to be "rehydrated" after loading!
+        this._inventory =  []
+        for (const item of saveData._inventory) {
+            const _item = Object.values(item_db).find(i=> i.name ===item.name)
+            while(item.quantity>1){
+                _item.addAnother()
+                item.quantity--
+            }
+            this._inventory.push(_item)
+        }
+
+        this.active_quest =  []
+       
+        
+        this._breathing_tech = saveData._breathing_tech ? Object.values(breathing_tech_db).find(bt=> bt.name === saveData._breathing_tech.name) : null;
+        this._breathing_tech_inventory = []
+        for (const breathing of saveData._breathing_tech_inventory) {
+            const _tech = Object.values(breathing_tech_db).find(bt=> bt.name ===breathing.name)
+            this._breathing_tech_inventory.push(_tech)
+        }
+
+        this._equipped_footwork = Object.values(footwork_tech_db).find(ft=> ft.name===saveData._equipped_footwork) || null;
+        this._footwork_inventory = [];
+        for (const footwork of saveData._footwork_inventory) {
+            const _footwork = Object.values(footwork_tech_db).find(ft=> ft.name ===footwork.name)
+            this._footwork_inventory.push(_footwork)
+        }
+        
+        this.equipped_skills = []
+        for (const skill of saveData.equipped_skills){
+            const _skill = skill_db.find(s=> s.name === skill.name)
+            this.equipped_skills.push(_skill)
+        }
+        this.skill_inventory = []
+        for (const skill of saveData.skill_inventory){
+            const _skill = skill_db.find(s=> s.name === skill.name)
+            this.skill_inventory.push(_skill)
+        }
+        
+        this._weapon = saveData._weapon ? Object.values(item_db).find(i => i.name === saveData._weapon.name) : null;
+        this._armor = saveData._armor ? Object.values(item_db).find(i => i.name === saveData._armor.name) : null;
+
+        
+        this.refreshStats();
+    }
+    save(){
+        console.log(this._weapon)
+        return {
+        // --- CORE INFO ---
+        _name: this._name,
+        _currency: this._currency,
+        wisdom: this.wisdom,
+        _location: this._location,
+        _was_qi_hidden: this._was_qi_hidden,
+        passed_first_test: this.passed_first_test,
+
+        // --- STATS ---
+        _vitality_stat: this._vitality_stat,
+        _endurance_stat: this._endurance_stat,
+        _atk_stat: this._atk_stat,
+        _def_stat: this._def_stat,
+        _speed_stat: this._speed_stat,
+        _mind_stat: this._mind_stat,
+        _spe_atk: this._spe_atk,
+        _spe_def: this._spe_def,
+        
+        // --- RESOURCES ---
+        _health: this._health,
+        _stamina: this._stamina,
+        _internal_energy: this._internal_energy,
+        _max_internal_energy: this._max_internal_energy,
+
+        // --- TIME ---
+        _hour: this._hour,
+        _day: this._day,
+
+        // --- COMPLEX OBJECTS (Mapped to Names/IDs) ---
+        
+        // Realm is usually a database object, save the name or ID
+        realm: { id: this.realm.id, name: this.realm.name },
+
+        // Inventory: Only save name and quantity
+        _inventory: this._inventory.map(item => ({
+            name: item.name,
+            quantity: item.quantity
+        })),
+
+        // Equipment: Save only the names to avoid circular references
+        _weapon: this._weapon ? { name: this._weapon.name } : null,
+        _armor: this._armor ? { name: this._armor.name } : null,
+
+        // Techniques & Skills
+        _breathing_tech: this._breathing_tech ? { name: this._breathing_tech.name } : null,
+        _breathing_tech_inventory: this._breathing_tech_inventory.length>=0 ? this._breathing_tech_inventory.map(bt => ({ name: bt.name })):[],
+        
+        _equipped_footwork: this._equipped_footwork ? this._equipped_footwork.name : null,
+        _footwork_inventory: this._footwork_inventory.length>=0 ? this._footwork_inventory.map(ft => ({ name: ft.name })):[],
+
+        equipped_skills:this.equipped_skills.length>=0 ? this.equipped_skills.map(skill => ({ name: skill.name })):[],
+        skill_inventory: this.skill_inventory.length>=0 ? this.skill_inventory.map(skill => ({ name: skill.name })):[],
+
+        // Quests: redo it with a DB
+        
+    }
+    }
     //time is counted in minutes: 1 day = 1440 min  1 month = 30 day ,1 year = 360 day
     // --- Basic Info ---
     get breathing_tech() { return this._breathing_tech }
