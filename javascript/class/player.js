@@ -60,6 +60,8 @@ class PLAYER {
         //academy story
         this.passed_first_test=false
 
+        this.known_recipes=[]
+
     }
 
     load(saveData = {}) {
@@ -368,7 +370,7 @@ class PLAYER {
             this.refreshStats()
         } 
     }
-
+// --- EQUIPMENT MANAGEMENT ---
     equipWeapon(item){
         if(!(item instanceof WEAPON_ITEM)){return}
         this.unequipWeapon()
@@ -391,6 +393,11 @@ class PLAYER {
         if(this.armor){this.addItem(this.armor);this._armor=null}
     }
 
+// --- CRAFTING & RECIPES ---
+    learnRecipe(recipe){
+        if(!(recipe instanceof RECIPE)){return}
+        this.known_recipes.push(recipe)
+    }
 
     attemptBreakthrought(){
         const realmIndex = realm_db.findIndex(r => r.id === this.realm.id && r.stage === this.realm.stage)
@@ -557,12 +564,10 @@ class PLAYER {
         this._hour=360
         this.refreshTime()
     }
-
-    passHour(hour){
-        this.passMinute(60*hour)
-        
-    }
+//----TIME MANAGEMENT----
+    
     passMinute(min){
+        console.log("this._hour=" + this._hour + "pass minute: " + min)
         this._hour+=min
         if(this._hour>=1440){
             this._day++
@@ -570,10 +575,24 @@ class PLAYER {
         }
         this.refreshTime()
     }
+    passHour(hour){
+        this.passMinute(60*hour)
+        
+    }
     passDay(day){
         this.passHour(24*day)
     }
+    refreshTime(){
+            const temp_hour = Math.floor(this._hour / 60) // => 4 => the times 3 fits into 13  
+            let temp_minute = this._hour % 60          // => 1
 
+            if(temp_minute==0){temp_minute="00"}
+            else if(temp_minute<10){temp_minute="0"+temp_minute}
+
+            const time_element = document.querySelector('#time')
+            time_element.innerHTML=`Day:${this._day} Time: <span class="bold">${temp_hour}:${temp_minute}</span>`
+            console.log("hour: " + this._hour + "days: "+this._day)
+        }
     cultivate(half_day){
         if(this._stamina<(half_day*50)){
             sendConsoleMessage("You are too exhausted to cultivate")
@@ -586,17 +605,7 @@ class PLAYER {
         }
     }
 
-    refreshTime(){
-        const temp_hour = Math.floor(this._hour / 60) // => 4 => the times 3 fits into 13  
-        let temp_minute = this._hour % 60          // => 1
-
-        if(temp_minute==0){temp_minute="00"}
-        else if(temp_minute<10){temp_minute="0"+temp_minute}
-
-        const time_element = document.querySelector('#time')
-        time_element.innerHTML=`Day:${this._day} Time: <span class="bold">${temp_hour}:${temp_minute}</span>`
-        console.log("hour: " + this._hour + "days: "+this._day)
-    }
+    
     
     handleDeath() {
     }
@@ -672,7 +681,7 @@ class PLAYER {
         return this.location.interactions
     }
 
-    //inventory
+    //----INVENTORY MANAGEMENT----
     addItem(item){
         if(!(item instanceof ITEM)){
             console.log("Not an item: addItem(item)")
@@ -706,6 +715,10 @@ class PLAYER {
             this._inventory.splice(index, 1)
             this.refreshInventory()
         }
+    }
+    hasItem(item_name, amount=1){
+        const item= this._inventory.find(item => item.name === item_name)
+        return item ? item.quantity >= amount : false
     }
 
     refreshInventory(){
@@ -825,6 +838,19 @@ class PLAYER {
         return this.status_effects.some(effect => effect instanceof STUNNED_EFFECT)
     }
 
+    hasRead(book){
+        if(book instanceof BOOK){
+            if(book.page<=book.currentPage){
+                return true
+            }
+            else{
+                return false}
+        }else{
+            console.log("Not a book")
+            return false
+        }
+    }
+
     //Quests manager
     addQuest(quest){
         this.active_quest.push(quest)
@@ -834,7 +860,7 @@ class PLAYER {
         console.log(`Processing event: ${eventType} for target: ${target} with amount: ${amount}`)
         for (let quest of this.active_quest) {
             // Check if the quest cares about this specific event and target
-            if (!quest.isCompleted && quest.eventType === eventType && quest.target === target) {
+            if (quest.eventType === eventType && quest.target === target) {
                 quest.updateProgress(amount);
             }
         }

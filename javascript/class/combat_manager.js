@@ -150,7 +150,7 @@ class CombatManager{
         if(this.player.max_internal_energy>0){document.querySelector("#energy-info-player").classList.remove("hide")}
         this.refreshFightScreen()
     }
-
+//todo on both side add illustration of the character and enemy
     refreshFightScreen(){
         const player_info = document.querySelector('#fight-player-info')
         player_info.innerHTML=

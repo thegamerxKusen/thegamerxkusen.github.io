@@ -101,7 +101,20 @@ class STRAINED_EFFECT extends NEGATIVE_EFFECT{
         sendConsoleMessage(`${target.name} is ${this.adj} and is weaker!`)
         this.duration--
         if(this.duration<=0){
-            //re give stat
+            //todo re give stat
         }
+    }
+}
+
+class POISONED_EFFECT extends NEGATIVE_EFFECT{
+    constructor(duration, damage_per_turn){
+        super(duration)
+        this.adj = "poisoned"
+        this.damage_per_turn = damage_per_turn
+    }
+    turn(target){
+        target.damage(this.damage_per_turn)
+        sendConsoleMessage(`${target.name} takes ${this.damage_per_turn} ${this.adj} damage!`)
+        this.duration--
     }
 }

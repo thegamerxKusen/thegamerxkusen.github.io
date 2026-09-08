@@ -127,11 +127,15 @@ class FIGHT_INTERACTION extends INTERACTION {
 }
 
 class GET_ITEM_INTERACTION extends INTERACTION {
-    constructor(name, done, done_today, condition, item) {
+    constructor(name, done, done_today, condition, item,sfx) {
         super(name, done, done_today, () => {
             player.addItem(this.item)
+            if(sfx) {
+                gameAudio.playSFX(sfx)
+            }
         }, condition)
         this.item = item
+        this.sfx = sfx
     }
 }
 
@@ -176,7 +180,7 @@ class SHOP_INTERACTION extends INTERACTION {
                         <p>Value: ${item.value} coins</p>
                         <button id="buy-item-btn">Buy</button>
                     `
-                    if(item.value >=0){
+                    if(item.value ===0){
                         itemDescription.innerHTML = `
                         <h3>${item.name}</h3>
                         <p>${item.desc}</p>
@@ -187,7 +191,15 @@ class SHOP_INTERACTION extends INTERACTION {
                     
                     buyButton.addEventListener("click", () => {
                         //buy something
-                        if(player.currency >= item.value) {
+                        if(item.value === 0) {
+                            player.addItem(item)
+                            this.removeItem(index)
+                            sendConsoleMessage(`You took ${item.name}.`)
+                            itemDescription.innerHTML = ""
+                            gameAudio.playSFX("buy")
+                            this.openShop()
+                        }
+                        else if(player.currency >= item.value) {
                             player.currency -= item.value
                             player.addItem(item)
                             this.removeItem(index)
@@ -267,7 +279,7 @@ class BOOKSHELF_INTERACTION extends INTERACTION {
                     minutesForm.addEventListener("submit",function(event){
                         event.preventDefault()//stop the submit refresh
                         console.log(book)
-                        book.readMinute(player,document.querySelector("#time-read").value)  
+                        book.readMinute(player,parseInt(document.querySelector("#time-read").value))  
                         
                     })
 
@@ -278,7 +290,73 @@ class BOOKSHELF_INTERACTION extends INTERACTION {
 
 }
 
+class CRAFTING_MENUE_INTERACTION extends INTERACTION {
+    constructor(name, done, done_today, condition,instrument) {
+        super(name, done, done_today,()=>{this.openCraftingStation()} ,condition)
+        this.instrument = instrument
+    }
+    openCraftingStation(){
+        const popupContent = document.createElement("div")
+        popupContent.classList.add("popup-content")
+        popupContent.innerHTML = ""
+        popupContent.innerHTML = `
+            <h2>${this.name}</h2>
+            <div class="recipe-list">
+            </div>
+            <div id="recipe-description">
+                
+            </div>
+            <button id="close-shop-btn" onclick="closePopup()">Back</button>
+        `
+        closePopup() 
+        openPopup(popupContent)
+        for(const recipe of player.known_recipes){
+            if(recipe instanceof RECIPE && recipe.instrument === this.instrument){
+                const recipeElement = document.createElement("div")
+                recipeElement.classList.add("recipe-div")
+                recipeElement.innerHTML = `
+                    <p >${recipe.name}</p>`
+                if(recipe.canCraft()){recipeElement.classList.add("recipe-craftable")}
+                else{recipeElement.classList.add("recipe-uncraftable")}//You can still select them to look up the ingredients but its slighty dimmer or craftable is lighter, ill see
+                // Create recipe element and append to recipe-list
+                recipeElement.addEventListener("click",()=>{
+                    const recipeDescription = popupContent.querySelector("#recipe-description")
+                    recipeDescription.innerHTML = ``
+                    recipeDescription.innerHTML = `
+                    <h3>${recipe.name} : ${recipe.result.amount}</h3>
+                    <p>${recipe.description}</p>
+                    <h4>Ingredients:</h4>
+                    <div id="ingredients-list"></div>
+                    <button id="craft-btn">Craft</button>
+                    `
+                    if(!recipe.canCraft()){hide(document.querySelector("#craft-btn"))}else{
+                        document.querySelector("#craft-btn").addEventListener("click",()=>{
+                            recipe.craft()
+                        })
+                    }
+                    const ingredientElement = document.querySelector("#ingredients-list")
+                    for(const ingredient of recipe.ingredients){
+                       const ingredientDiv = document.createElement("div")
+                       ingredientDiv.innerHTML = `<p>${ingredient.name}: ${ingredient.quantity}</p>`
+                       ingredientElement.appendChild(ingredientDiv)
+                    }
+                    
+                })
+            }
+        }
+    }
+}
+
 const worldMap = {
+    //--- Accessible anywhere---//
+    "nearby_forest": new LOCATION(
+        "Nearby Forest",
+        "A dense forest with towering trees and a variety of wildlife. The air is filled with the scent of pine and earth.",
+        ["player_home"],
+        ["gather_herbs","gather_wood"],
+        () => player.hasRead(book_db.guide_to_weeds), // Unlocks after reading the "Guide to Common Weeds"
+        null
+    ),
     // --- CENTRAL HUB ---
     "sky_demon_order": new LOCATION(
         "Sky Demon Order (Main Base)",
@@ -293,7 +371,7 @@ const worldMap = {
     "player_home": new LOCATION(
         "Heir's Residence: Entrance Hall",
         "The central hall of your estate. To the north lies your garden, and other rooms branch off from here.",
-        ["player_garden", "player_training_ground", "player_bedroom", "player_kitchen", "player_study", "academy"],
+        ["player_garden","nearby_forest","player_training_ground", "player_bedroom", "player_kitchen", "player_study", "academy"],
         [],
         () => true,
         null
@@ -669,7 +747,10 @@ const world_interactions = {
     "Trainees: -MADO!",
     "Right Guardian: -Now welcome the Music Clan's Leader for the First Test!",
     "Right Guardian: -For the first test you will have to stay up under a sound attack of Elder Hang Soyu.",
-    "The Elder slowly sat down with her zither and gracefully played a single sweet note, but then you feel a shock waves shaking your insides."])
+    "The Elder slowly sat down with her zither and gracefully played a single sweet note, but then you feel a shock waves shaking your insides."]),
+    //nearby forest interactions
+    "gather_herbs":new GET_ITEM_INTERACTION("Gather Herbs", 0, 0, () => true, item_db.herb),//todo fix, when i click it doesnt show a message the firstime, must be an event problem
+    "gather_wood":new GET_ITEM_INTERACTION("Gather Wood", 0, 0, () => true, item_db.wood,"gather_wood")
 }
 
 function refreshWorldSection(){

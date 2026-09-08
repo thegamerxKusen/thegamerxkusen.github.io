@@ -141,7 +141,7 @@ const basic_weapon_skills=[
         10,
         10,
         false,
-        null),
+        "spear_attack"),
     new SKILL("Heavy Swing","A powerful overhead strike that can break through defenses but is slow to execute. Takes a turn to buildup.",
         0,
         20,

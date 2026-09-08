@@ -46,6 +46,11 @@ class ARMOR_ITEM extends ITEM{
     }
 }
 
+//todo redo the manual and skill book item to extends book, 
+//as its just an academy game you only learn in library so i'll just make it so you learn the things when you finish reading it
+// So no Book item in inventory
+
+//todo add recipe book for cooking and crafting
 class MANUAL extends ITEM {
     constructor(name, desc, value, tier) {
         super(name, desc, value, item_tier_db.common, 1,()=>{player.processEvent("USE_ITEM",this,1)}) // Manuals are always common and quantity is 1
@@ -54,20 +59,29 @@ class MANUAL extends ITEM {
     }
     
 }
-
+//todo add NanoMachine lightnovel Ultra Lendedary Epic Raririty, 
+// that if found give access to information of places, item and information about how to get technique
 class BOOK extends MANUAL{
-    constructor(name,desc,value,tier,page,learn,reqWisdom, learnEffect){
-        super(name,desc,value,tier)
-        this.learn = learn
+    constructor(name,desc,value,tier,page,learn,reqWisdom){
+        this.name=name
+        this.desc=desc
+        this.value=value
+        this.tier=tier
         this.page = page
         this.currentPage = 0
         this.reqWisdom = reqWisdom
-
-        this.learnEffect = learnEffect || ((user) => {
-            sendConsoleMessage(`You finished reading [${this.name}]. (+1 Wisdom)`)
-            user.processEvent("READ",this,1)
-            user.wisdom++
+        
+        this.learn = learn || ((user) => {
+            return false;
         });
+    }
+    learnEffect(user){
+        sendConsoleMessage(`You finished reading [${this.name}]. (+1 Wisdom)`)
+        user.processEvent("READ",this,1)
+        user.wisdom++
+        if (this.learn) {
+            this.learn(user);
+        }
     }
     readMinute(user,minutesSpent){
         if(!(user instanceof PLAYER)){console.log("Not A Player");return}
@@ -83,8 +97,9 @@ class BOOK extends MANUAL{
 
         const speedMultiplier = user.wisdom / this.reqWisdom
         const pagesRead = Math.floor(minutesSpent * 0.5 * speedMultiplier)
-        user.passMinute()
-
+        console.log("Minute Spent:"+minutesSpent)
+        user.passMinute(minutesSpent)
+        //todo fix problem with the time
         this.currentPage += pagesRead
         gameAudio.playSFX("read")
     
@@ -160,7 +175,14 @@ const item_db ={
     }),
     three_powers_breathing: new BREATHING_TECHNIQUE_BOOK(breathing_tech_db.three_powers_breathing.name,breathing_tech_db.three_powers_breathing.description,1000,breathing_tech_db.three_powers_breathing,item_tier_db.common),
     basic_breathing_manual: new BREATHING_TECHNIQUE_BOOK(breathing_tech_db.basic_qi_tech.name,breathing_tech_db.basic_qi_tech.description,1000,breathing_tech_db.basic_qi_tech,item_tier_db.common),
-    linen_martial_attire: new ARMOR_ITEM("Linen Martial Attire","A classic martial robe of medium quality, only offer resistance against cold wind.",100,1,0,0,item_tier_db.trash)
+    linen_martial_attire: new ARMOR_ITEM("Linen Martial Attire","A classic martial robe of medium quality, only offer resistance against cold wind.",100,1,0,0,item_tier_db.trash),
+    herb: new ITEM("Herb","A common herb that can be used for cooking or crafting.",2,item_tier_db.trash),
+    wood: new ITEM("Wood","A piece of wood that can be used for crafting or building.",2,item_tier_db.trash),
+    water: new ITEM("Water","You need a description of water? Maybe this game is too advanced for you.",0,item_tier_db.trash),
+    poison_herb: new ITEM("Poison Herb","A rare herb that can be used to craft poison.",10,item_tier_db.common),
+    simple_poison: new FIGHT_ITEM("Simple Poison","Weak poison that inflict 2 damage per turn for 3 turns.",25,item_tier_db.common,0,(user,target)=>{
+        target.addEffect(new POISONED_EFFECT(3, 2))
+    })
 }
 
 const book_db = {
@@ -198,7 +220,7 @@ const book_db = {
         null, 
         40
     ),
-
+//Should teach a way to cure crippling
     anatomy_severed_meridians: new BOOK(
         "Anatomy of the Severed Meridians",
         "A forbidden text detailing how to forcefully reroute Qi through the body.",
@@ -206,12 +228,14 @@ const book_db = {
         null, 
         100
     ),
-
+//make it so that this unlock the nearby forest place when read, in this place you can gather herbs, hunt for animals and gather wood. For the start could be used to concoct poison
     guide_to_weeds: new BOOK(
         "Guide to Common Weeds",
         "A terribly written, half-eaten pamphlet about grass. Found in the outer sect trash.",
-        1, item_tier_db.trash, 10, 
-        null, 1
+        1, item_tier_db.trash, 10,
+        ()=>{
+            sendConsoleMessage("You can now explore the nearby forest and gather herbs and wood, however, beware of wild animals.")
+        }, 1
     ),
 
     muddy_boot_ode: new BOOK(
@@ -262,7 +286,7 @@ const book_db = {
         100, item_tier_db.uncommon, 300, 
         null, 12
     ),
-
+//get the first breathing technique, that is really really slow!
     falling_leaf_meditations: new BOOK(
         "Meditations on a Falling Leaf",
         "A short, philosophical text written by an eccentric Taoist.",
@@ -276,7 +300,7 @@ const book_db = {
         250, item_tier_db.epic, 120, 
         null, 30
     ),
-
+//Unlock the vitality training
     iron_skin_masochist: new BOOK(
         "Iron Skin Regimen for the Insane",
         "A bizarre training manual that involves striking yourself with rocks.",

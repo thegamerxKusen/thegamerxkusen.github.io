@@ -4,6 +4,14 @@ let player
 function hide_main_menue(){
     const main_menue_element = document.querySelector("#main-menue")
     hide(main_menue_element)
+    document.body.addEventListener('click', (e) => {
+        const btn = e.target.closest('button-default-sound-effect');
+        
+        if (btn && !btn.disabled) {
+            gameAudio.playSFX('button_click');
+        }
+    });
+    //todo make a class for the button that should be sounded and those that should 
     return
 }
 function open_main_menue(){
@@ -73,7 +81,12 @@ function new_char(){
 }
 
 function load_game(){
-
+    load()
+    hide_main_menue()
+    hide(document.querySelector("#settings-menue"))
+    hide(document.querySelector("#character-creation"))
+    show(document.querySelector("#main-game"))
+    refreshWorldSection()
 }
 function open_settings(){
     hide(document.querySelector("#main-game"))
@@ -164,9 +177,11 @@ function open_preparation_tab(){
         <p class="tooltip-recipient">Defence: ${player._def_stat}<span class="tooltip">Influence the amount of damage taken by physical attacks.</span></p>
         <p class="tooltip-recipient">Defence Spe.: ${player._spe_def}<span class="tooltip">Influence the amount of damage taken by Qi based attacks.</span></p>
         <p class="tooltip-recipient">Speed: ${player._speed_stat}<span class="tooltip">Influence who attacks first.</span></p>
-        <p class="tooltip-recipient">Mind: ${player._mind_stat}<span class="tooltip">Influence the effectiveness of cultivation and if you can learn a skill.</span></p>
         <p class="tooltip-recipient">Vitality: ${player._vitality_stat}<span class="tooltip">Influence Max Health.</span></p>
         <p class="tooltip-recipient">Endurance: ${player._endurance_stat}<span class="tooltip">Influence the ability to withstand fatigue.</span></p>
+        <p class="tooltip-recipient">Mind: ${player._mind_stat}<span class="tooltip">Influence the effectiveness of cultivation and if you can learn a skill.</span></p>
+        <p class="tooltip-recipient">Wisdom: ${player.wisdom}<span class="tooltip">Influence your understanding of certain pieces of knowledge.</span></p>
+
     `
     const skill_selection = document.querySelector("#choose-skill")
     skill_selection.innerHTML="<h3>Choose Skill</h3>"

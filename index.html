@@ -3,13 +3,18 @@
     <head>
         <meta charset="UTF-8">
         <title>Murim Simulator</title> 
+        <meta
+        name="description"
+        content="Become the strongest in this Murim Simulator where you begin as a Young Trainee of the demonic academy until you can become the Demon God of the Heavenly Demon Sect!"
+        />
         <link rel="stylesheet" href="stylesheets/styles.css">
         <script src="javascript/audio_manager.js" defer></script>
         <script src="javascript/class/tier.js" defer></script>
         <script src="javascript/technique.js" defer></script>
         
         <script src="javascript/class/status_effect.js" defer></script>
-        
+
+        <script src="javascript/class/crafting.js" defer></script>
         <script src="javascript/class/skill.js" defer></script>
         <script src="javascript/class/item.js" defer></script>
         <script src="javascript/class/realm.js" defer></script>
@@ -34,7 +39,7 @@
             <h1>Murim Simulator</h1>
                 <ul id="main-menue-button-ulist">
                     <li><button onclick="new_game()">New Game</button></li>
-                    <li><button>Load Game</button></li>
+                    <li><button onclick="load_game()">Load Game</button></li>
                     <li><button onclick="open_settings()">Settings</button></li>
                 </ul>
         </section>
