@@ -291,7 +291,7 @@ class PLAYER {
     // --- Combat & Mental Stats ---
     get atk_stat() { return this._atk_stat+=this.temp_atk_stat }
     set atk_stat(v) { 
-        if(this._atk_stat+v>this.realm.stat_cap){
+        if(v>this.realm.stat_cap){
             sendConsoleMessage("Stat cap reached, breakthrought to break your limits.")
         }else{
             this._atk_stat = v
@@ -301,7 +301,7 @@ class PLAYER {
 
     get spe_def(){return this._spe_def+=this.temp_spe_def}
     set spe_def(b){
-        if(this._spe_def+v>this.realm.stat_cap){
+        if(v>this.realm.stat_cap){
             sendConsoleMessage("Stat cap reached, breakthrought to break your limits.")
         }else{
             this._spe_def = v 
@@ -311,7 +311,7 @@ class PLAYER {
 
     get def_stat() { return this._def_stat+=this.temp_def_stat }
     set def_stat(v) {
-         if(this._def_stat+v>this.realm.stat_cap){
+         if(v>this.realm.stat_cap){
             sendConsoleMessage("Stat cap reached, breakthrought to break your limits.")
         }else{
             this._def_stat = v 
@@ -321,7 +321,7 @@ class PLAYER {
 
     get vitality_stat() { return this._vitality_stat }
     set vitality_stat(v) {
-         if(this._vitality_stat+v>this.realm.stat_cap){
+         if(v>this.realm.stat_cap){
             sendConsoleMessage("Stat cap reached, breakthrought to break your limits.")
         }else{
             this._vitality_stat = v 
@@ -331,7 +331,8 @@ class PLAYER {
     }   
     get endurance_stat() { return this._endurance_stat }
     set endurance_stat(v) {
-         if(this._endurance_stat+v>this.realm.stat_cap){
+         if(v>this.realm.stat_cap){
+            console.log("Future Endurance stat:"+(this._endurance_stat+v)+"/Stat Cap:"+this.realm.stat_cap)
             sendConsoleMessage("Stat cap reached, breakthrought to break your limits.")
             return false
         }else{
@@ -343,7 +344,7 @@ class PLAYER {
     }   
     get speed_stat() { return this._speed_stat+=this.temp_speed_stat }
     set speed_stat(v) {
-        if(this._speed_stat+v>this.realm.stat_cap){
+        if(v>this.realm.stat_cap){
             sendConsoleMessage("Stat cap reached, breakthrought to break your limits.")
         }else{
             this._speed_stat = v 
@@ -353,7 +354,7 @@ class PLAYER {
 
     get spe_atk() { return this._spe_atk+=this.temp_spe_atk }
     set spe_atk(v) {
-         if(this._spe_atk+v>this.realm.stat_cap){
+         if(v>this.realm.stat_cap){
             sendConsoleMessage("Stat cap reached, breakthrought to break your limits.")
         }else{
             this._spe_atk = v 
@@ -363,7 +364,7 @@ class PLAYER {
 
     get mind_stat() {return this._mind_stat+=this.temp_mind_stat  }
     set mind_stat(v) {
-        if(this._mind_stat+v>this.realm.stat_cap){
+        if(v>this.realm.stat_cap){
             sendConsoleMessage("Stat cap reached, breakthrought to break your limits.")
         }else{
             this._mind_stat = v 
@@ -397,6 +398,10 @@ class PLAYER {
     learnRecipe(recipe){
         if(!(recipe instanceof RECIPE)){return}
         this.known_recipes.push(recipe)
+    }
+    hasRecipe(recipe){
+        if(!(recipe instanceof RECIPE)){return}
+        return this.known_recipes.includes(recipe)
     }
 
     attemptBreakthrought(){
@@ -594,6 +599,9 @@ class PLAYER {
             console.log("hour: " + this._hour + "days: "+this._day)
         }
     cultivate(half_day){
+        if(this._max_stamina<=50){
+            sendConsoleMessage("Your body can't handle internal cultivation. Train your stamina to the extreme.")
+        }
         if(this._stamina<(half_day*50)){
             sendConsoleMessage("You are too exhausted to cultivate")
         }else{
@@ -772,21 +780,22 @@ class PLAYER {
         this.skill_inventory.push(skill_manual.content)
         sendConsoleMessage(`Your learned ${skill_manual.content.name}`)
     }
-    learn_breathing_tech(breathing_manual){
-        if(!(breathing_manual instanceof BREATHING_TECHNIQUE_BOOK) || this._breathing_tech_inventory.findIndex(t => t.name === breathing_manual.content.name) !== -1){
+    learn_breathing_tech(breathing_tech){
+        console.log("Manual"+breathing_tech)
+        if((!breathing_tech instanceof BREATHING_TECHNIQUE) || this._breathing_tech_inventory.findIndex(t => t.name === breathing_tech.name) !== -1){
             console.log("Not a manual or technique already learned");
+            console.log("Is a manual:"+(!breathing_tech instanceof BREATHING_TECHNIQUE))
             return;
         }
-        console.log("Learning")
-        this._breathing_tech_inventory.push(breathing_manual.content)
-        sendConsoleMessage(`Your learned ${breathing_manual.content.name}`)
+        this._breathing_tech_inventory.push(breathing_tech)
+        sendConsoleMessage(`Your learned ${breathing_tech.name}`)
     }
-    equipBreathingTech(breathing_manual){
-        if(!(breathing_manual instanceof BREATHING_TECHNIQUE_BOOK)){
+    equipBreathingTech(breathing_tech){
+        if(!(breathing_tech instanceof BREATHING_TECHNIQUE)){
             console.log("Not a manual or technique already learned");
             return;
         }
-        this._breathing_tech=breathing_manual
+        this._breathing_tech=breathing_tech
     }
 
     get mind_strenght(){

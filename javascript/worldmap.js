@@ -311,7 +311,7 @@ class CRAFTING_MENUE_INTERACTION extends INTERACTION {
         closePopup() 
         openPopup(popupContent)
         for(const recipe of player.known_recipes){
-            if(recipe instanceof RECIPE && recipe.instrument === this.instrument){
+            if(recipe instanceof RECIPE && recipe.instrument === this.instrument){//the problem maye the equal of strings)
                 const recipeElement = document.createElement("div")
                 recipeElement.classList.add("recipe-div")
                 recipeElement.innerHTML = `
@@ -337,11 +337,12 @@ class CRAFTING_MENUE_INTERACTION extends INTERACTION {
                     const ingredientElement = document.querySelector("#ingredients-list")
                     for(const ingredient of recipe.ingredients){
                        const ingredientDiv = document.createElement("div")
-                       ingredientDiv.innerHTML = `<p>${ingredient.name}: ${ingredient.quantity}</p>`
+                       ingredientDiv.innerHTML = `<p>${item_db[ingredient.item].name}: ${ingredient.amount}</p>`
                        ingredientElement.appendChild(ingredientDiv)
                     }
                     
                 })
+                popupContent.querySelector(".recipe-list").appendChild(recipeElement)
             }
         }
     }
@@ -408,7 +409,7 @@ const worldMap = {
         "Private Kitchen",
         "A well-stocked kitchen where servants prepare spirit-rich meals for your recovery.",
         ["player_home"],
-        ["eat"],
+        ["eat","cooking_pot"],
         () => true,
         null
     ),
@@ -575,19 +576,23 @@ const world_interactions = {
 
     // --- TRAINING ---
     "stamina_training": new INTERACTION("Stamina Training",0,0,(()=>{
-        const chance = Math.floor(Math.random() * 2) + 1
-        player.reduceStamina(player.stamina)
-        switch (chance) {
-            case 1:
-                sendConsoleMessage("You run laps around the training ground. Your legs feel stronger. (+1 Endurance)")
-                break
-            case 2:
-                sendConsoleMessage("You do intense exercises. Your stamina capacity expands. (+1 Endurance)")
-                break
-            
+        if(!player.endurance_stat==player.realm.stat_cap){
+            const chance = Math.floor(Math.random() * 2) + 1
+            player.reduceStamina(player.stamina)
+            switch (chance) {
+                case 1:
+                    sendConsoleMessage("You run laps around the training ground. Your legs feel stronger. (+1 Endurance)")
+                    break
+                case 2:
+                    sendConsoleMessage("You do intense exercises. Your stamina capacity expands. (+1 Endurance)")
+                    break
+                    
+            }
+        player.passHour(4)
         }
         player.endurance_stat++
-        player.passHour(4)
+        
+        
          // Fully exhaust stamina to reflect intense training
     }),()=>player.stamina===player.max_stamina),
     "speed_training": new INTERACTION("Speed Training",0,0,(()=>{
@@ -707,7 +712,9 @@ const world_interactions = {
         book_db.chronicles_heavenly_demon,
         book_db.poetry_blood_plum,
         book_db.art_of_deception,
+        book_db.qi_ventilation,
         book_db.hundred_poisons,
+        book_db.poisoning_for_children,
         book_db.anatomy_severed_meridians,
         book_db.jianghu_geography,
         
@@ -750,7 +757,11 @@ const world_interactions = {
     "The Elder slowly sat down with her zither and gracefully played a single sweet note, but then you feel a shock waves shaking your insides."]),
     //nearby forest interactions
     "gather_herbs":new GET_ITEM_INTERACTION("Gather Herbs", 0, 0, () => true, item_db.herb),//todo fix, when i click it doesnt show a message the firstime, must be an event problem
-    "gather_wood":new GET_ITEM_INTERACTION("Gather Wood", 0, 0, () => true, item_db.wood,"gather_wood")
+    "gather_poisonous_herbs":new GET_ITEM_INTERACTION("Gather Poisonous Herbs", 0, 0, () => player.hasRead(book_db.poisoning_for_children)
+    , item_db.poison_herb),
+    "gather_wood":new GET_ITEM_INTERACTION("Gather Wood", 0, 0, () => player.hasRead(book_db.woodcutter_tale), item_db.wood,"gather_wood"),
+    "cooking_pot":new CRAFTING_MENUE_INTERACTION("Cooking Pot",0,0,()=>true,"Pot"),
+
 }
 
 function refreshWorldSection(){

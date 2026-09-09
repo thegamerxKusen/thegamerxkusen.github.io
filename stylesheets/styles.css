@@ -337,7 +337,7 @@ progress::-webkit-progress-bar {
     width: 100;
     font-size: 25px;
 }
-.item-div,.book-div{
+.item-div,.book-div,.recipe-div{
     width: 100px;
     height: 100px;
     margin:5px;
@@ -350,19 +350,19 @@ progress::-webkit-progress-bar {
     transition: all 0.3s ease;
     align-content: center;
 }
-.item-div:hover,.book-div:hover{
+.item-div:hover,.book-div:hover,.recipe-div:hover{
     background-color: var(--btn-hover-bg-color);
     color: var(--btn-hover-text-color);
     border-color:var(--border-color) ;
     cursor: pointer;
 }
-.item-div:active,.book-div:active{
+.item-div:active,.book-div:active,.recipe-div:active{
     background-color: var(--btn-active-bg-color);
     color: var(--btn-active-text-color);
     border-color:  var(--btn-active-bg-color);
     transform: scale(0.9);
 }
-#inventory{
+#inventory,.recipe-list{
     display: flex;
     flex-wrap: wrap;
     margin:0 auto;
@@ -613,4 +613,19 @@ progress::-webkit-progress-bar {
 }
 .popup-dialogues::-webkit-scrollbar{
     display: none;
+}
+
+/*CRAFTING MENU*/
+.recipe-list{
+
+}
+.recipe-description{
+
+}
+
+.ingredients-list{
+
+}
+.craft-btn{
+
 }

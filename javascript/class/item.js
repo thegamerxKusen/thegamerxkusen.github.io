@@ -61,7 +61,7 @@ class MANUAL extends ITEM {
 }
 //todo add NanoMachine lightnovel Ultra Lendedary Epic Raririty, 
 // that if found give access to information of places, item and information about how to get technique
-class BOOK extends MANUAL{
+class BOOK {
     constructor(name,desc,value,tier,page,learn,reqWisdom){
         this.name=name
         this.desc=desc
@@ -116,6 +116,40 @@ class BOOK extends MANUAL{
         return true
     }
 }
+class RECIPE_BOOK extends BOOK {
+    constructor(name,desc,value,tier,page,reqWisdom,recipes){
+        super(name,desc,value,tier,page,null,reqWisdom)
+        this.recipes = recipes || []
+    }
+    learnEffect(user){
+        const newRecipes = []
+        for (const recipe of this.recipes) {
+            if (!user.hasRecipe(recipe_db[recipe])) {
+                user.learnRecipe(recipe_db[recipe])
+                newRecipes.push(item_db[recipe].name)
+            }
+        }
+        sendConsoleMessage(`You finished reading [${this.name}] and learned the following recipes: ${newRecipes.join(", ")}. (+1 Wisdom)`)
+        user.processEvent("READ",this,1)
+        user.wisdom++
+    }
+}
+
+class BREATHING_TECHNIQUE_BOOK extends BOOK {
+    constructor(name,desc,value,tier,page,reqWisdom,breathing_technique){
+        super(name,desc,value,tier,page,null,reqWisdom)
+        this.breathing_technique = breathing_technique
+    }
+    learnEffect(user){
+        console.log("LearnEffect Manual :"+breathing_tech_db[this.breathing_technique])
+        if(!breathing_tech_db[this.breathing_technique] instanceof BREATHING_TECHNIQUE){return console.log("Invalid breathing technique")}
+        user.learn_breathing_tech(breathing_tech_db[this.breathing_technique])
+        sendConsoleMessage(`You finished reading [${this.name}]. (+1 Wisdom)`)
+        user.processEvent("READ",this,1)
+        user.wisdom++
+        
+    }
+}
 
 class SKILL_BOOK extends MANUAL {
     constructor(name, desc, value, content, tier) {
@@ -128,15 +162,7 @@ class SKILL_BOOK extends MANUAL {
     }
 }
 
-class BREATHING_TECHNIQUE_BOOK extends MANUAL {
-    constructor(name, desc, value, content, tier) {
-        super(name, desc, value, tier,()=>{
-            player.processEvent("USE_ITEM",this,1)
-            player.learn_breathing_tech(this)})
-        this.content = content
-    }
-    
-}
+
 
 class FIGHT_ITEM extends ITEM{
     constructor(name, desc, value, tier,quantity,effect) {
@@ -173,8 +199,6 @@ const item_db ={
         user.heal(heal_amount)
         user.effectCleanse("bleeding")
     }),
-    three_powers_breathing: new BREATHING_TECHNIQUE_BOOK(breathing_tech_db.three_powers_breathing.name,breathing_tech_db.three_powers_breathing.description,1000,breathing_tech_db.three_powers_breathing,item_tier_db.common),
-    basic_breathing_manual: new BREATHING_TECHNIQUE_BOOK(breathing_tech_db.basic_qi_tech.name,breathing_tech_db.basic_qi_tech.description,1000,breathing_tech_db.basic_qi_tech,item_tier_db.common),
     linen_martial_attire: new ARMOR_ITEM("Linen Martial Attire","A classic martial robe of medium quality, only offer resistance against cold wind.",100,1,0,0,item_tier_db.trash),
     herb: new ITEM("Herb","A common herb that can be used for cooking or crafting.",2,item_tier_db.trash),
     wood: new ITEM("Wood","A piece of wood that can be used for crafting or building.",2,item_tier_db.trash),
@@ -189,12 +213,22 @@ const book_db = {
     // ==========================================
     // --- THE DEMONIC PRINCE'S CORE LIBRARY ---
     // ==========================================
+
+    qi_ventilation: new BREATHING_TECHNIQUE_BOOK("Three Power Breathing",
+        "This method is not used to gather internal energy but to train the mind and body through Qi Ventitaltion.",100,
+        item_tier_db.common,12,1,"three_powers_breathing"),
+
+    poisoning_for_children : new RECIPE_BOOK(
+        "Poisoning for Children",
+        "Read to know which herbs are poisonous and how to craft simple poisons. A very basic book for the young to kill each other without harming oneself.",
+        10,item_tier_db.common, 50, 6,["simple_poison"]//todo increase wisdom req
+    ),
     chronicles_heavenly_demon: new BOOK(
         "Chronicles of the Heavenly Demon",
         "A historical record of the first Cult Leader who unified the Ten Thousand Mountains.",
-        50, item_tier_db.common, 150, 
+        50, item_tier_db.common, 150,
         null, 
-        5 // reqWisdom
+        4 // reqWisdom
     ),
 
     poetry_blood_plum: new BOOK(
@@ -228,7 +262,6 @@ const book_db = {
         null, 
         100
     ),
-//make it so that this unlock the nearby forest place when read, in this place you can gather herbs, hunt for animals and gather wood. For the start could be used to concoct poison
     guide_to_weeds: new BOOK(
         "Guide to Common Weeds",
         "A terribly written, half-eaten pamphlet about grass. Found in the outer sect trash.",
@@ -267,9 +300,9 @@ const book_db = {
     ),
 
     woodcutter_tale: new BOOK(
-        "Tale of the Iron Woodcutter",
-        "A children's fable about a man who chopped trees for 100 years until his axe split a mountain.",
-        15, item_tier_db.common, 30, 
+        "Tale of a Woodcutter",
+        "A diary left behind by a woodcutter who lived in seclusion. It details his daily life and all his englithment on the way of woodcutting.",
+        4, item_tier_db.common, 30, 
         null, 3
     ),
 
@@ -347,9 +380,7 @@ const book_db = {
         null, 150 // Extreme stat check
     ),
 
-    // ==========================================
-    // --- QUEST ITEMS & EVIDENCE ---
-    // ==========================================
+    // --- QUEST ITEMS  ---
 
     scented_pink_envelope: new BOOK(
         "Scented Pink Envelope",

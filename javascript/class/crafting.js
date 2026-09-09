@@ -1,12 +1,12 @@
 class RECIPE{
     constructor(ingredients, result,instrument){
-        this.name = result.name;
-        this.description = result.description;
+        this.name = item_db[result.item].name;
+        
         this.ingredients = ingredients;
         this.instrument = instrument;//Where you can craft: ex: pot, forge, crafting table...
         //ingredients/result template: [{item:"itemName", amount: 1,keep: true}, {item:"itemName2", amount: 2,keep: false}]
         this.result = result;
-        
+        this.description =  item_db[result.item].desc;
     }
 
     canCraft(){
@@ -15,8 +15,8 @@ class RECIPE{
 
     hasAllIngredients(){
         for(const ingredient of this.ingredients){
-            const item = ingredient.item
-            const quantity = ingredient.amount
+            const item = item_db[ingredient.item]
+            const quantity = item_db[ingredient.item].quantity
             if(!player.hasItem(item,quantity)){
                 return false
             }
@@ -29,15 +29,15 @@ class RECIPE{
             return false;
         }
         for(const ingredient of this.ingredients){
-            const item = ingredient.item
-            const quantity = ingredient.amount
+            const item = item_db[ingredient.item]
+            const quantity = item_db[ingredient.item].quantity
             player.removeItem(item,quantity)
         }
         while(this.result.amount > 0){
-            player.addItem(this.result.item)
+            player.addItem(item_db[this.result.item])
             this.result.amount -= 1
         }
-        sendConsoleMessage(`You crafted ${this.result.item} using the ${this.instrument}`)
+        sendConsoleMessage(`You crafted ${item_db[this.result.item].name} using the ${this.instrument}`)
         return true
     }
     

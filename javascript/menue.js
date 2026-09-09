@@ -124,7 +124,7 @@ function open_cultivation_tab(){
         <h3>${player._breathing_tech.name}</h3>
         <p>${player._breathing_tech.desc}</p>
         <h3>Cultivation Effect: ${player._breathing_tech.energy_boost}</h3>
-        <h3>${player._breathing_tech.tier}</h3>
+        <h3>${player._breathing_tech.tier.name}</h3>
         <button id="cultivate-day" onclick="player.cultivate(1)">Cultivate For 12 Hours</button>
         `
     }else{
@@ -144,7 +144,7 @@ function open_cultivation_tab(){
                     <h4>${cult_tech.name}</h4>
                     <p>${cult_tech.desc}</p>
                     <p>Energy Boost: ${cult_tech.energy_boost}</p>
-                    <p>Tier: ${cult_tech.tier}</p>
+                    <p>Tier: ${cult_tech.tier.name}</p>
                     
                 </div>
                 `
@@ -152,7 +152,7 @@ function open_cultivation_tab(){
                 const equip_btn = document.createElement("button")
                 equip_btn.textContent="Equip"
                 equip_btn.addEventListener("click",()=>{
-                    player.equipBreathingTech(breathing_manual)
+                    player.equipBreathingTech(cult_tech)
                     open_cultivation_tab()
                 })
                 tech_box.appendChild(equip_btn)
