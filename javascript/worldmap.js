@@ -244,9 +244,7 @@ class BOOKSHELF_INTERACTION extends INTERACTION {
             <h2>${this.name}</h2>
             <div class="book-list">
             </div>
-            <div id="item-description">
-                
-            </div>
+            <div id="item-description"></div>
             <button id="close-shop-btn" onclick="closePopup()">Back</button>
         `
         closePopup() 
@@ -269,20 +267,15 @@ class BOOKSHELF_INTERACTION extends INTERACTION {
                         <p>Required Wisdom: ${book.reqWisdom} </p>
                         <p id="book-progress">${book.currentPage}/${book.page}Pages</p>
                         <form id="minutes-reading" min="1">
-                            <label for="full-read">Full Read : ${book.minuteToCompletion(player)} minutes<button id="full-read">Set Time</button></label>
+                            <label for="full-read">Times: ${book.minuteToCompletion(player)} minutes<button id="full-read">Read</button></label>
                             <br></br>
-                            <label for="time-read">Time Spent:<input required min="1" max="400" type="number" id="time-read" name="time-read"></input></label>
-                            <input type="submit" id="read-btn"></input>
                         </form>
                     `
-                    document.querySelector("#full-read").addEventListener("click",()=>{
-                        document.querySelector("#time-read").setAttribute("value",book.minuteToCompletion(player))
-                    })
                     const minutesForm = document.querySelector("#minutes-reading")
                     minutesForm.addEventListener("submit",function(event){
                         event.preventDefault()//stop the submit refresh
                         console.log(book)
-                        book.readMinute(player,parseInt(document.querySelector("#time-read").value))  
+                        book.readMinute(player,book.minuteToCompletion(player))  
                         
                     })
 

@@ -91,6 +91,7 @@ class BOOK {
     }
     readMinute(user,minutesSpent){
         if(!(user instanceof PLAYER)){console.log("Not A Player");return}
+        closePopup()
         if (user.wisdom < this.reqWisdom) {
             sendConsoleMessage(`The concepts in [${this.name}] are too profound for you to grasp right now. (Requires ${this.reqWisdom} Wisdom)`)
             return false

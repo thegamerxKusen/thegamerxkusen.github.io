@@ -12,8 +12,6 @@ add footwork change in fight prep
 
 The game will be about the demonic accademy for now
 
-In residence library: rename study: add a "write diary[save]" and "read diary[load] "options so you need to be in a safe place to saves
-
 add overdrive toggle button who increase damage against stam or energy but has a chance to give the "Strained" status effect that reduce stats
 
 Give thanks to all assets used
@@ -36,3 +34,5 @@ Need to do over the combat manager for clarity
 
 academy gameplay:
 Free academy where you choose some course over others with free time, to train, socialize, explore...
+
+When i read a book, the learn effect went two times

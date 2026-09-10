@@ -8,10 +8,10 @@ function hide_main_menue(){
         const btn = e.target.closest('button-default-sound-effect');
         
         if (btn && !btn.disabled) {
-            gameAudio.playSFX('button_click');
+            //gameAudio.playSFX('button_click');
         }
     });
-    //todo make a class for the button that should be sounded and those that should 
+    //todo make a class for the button that should be sounded and those that shouldnt
     return
 }
 function open_main_menue(){
