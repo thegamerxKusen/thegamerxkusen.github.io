@@ -21,6 +21,7 @@ class RECIPE{
                 return false
             }
         }
+        console.log("Got them all Indredients")//todo Fix This shit, cant craft anything the button always hide, if i manualy unhide hide it does nothing. Go to WorldMap to take a look
         return true
     }
     craft(){
@@ -46,10 +47,11 @@ const instrument_db = ["Pot","Forge","Crafting Table"]
 const recipe_db = {
     "simple_poison" : new RECIPE(
         [
-            {item: "water", amount: 1, keep: false},//todo make a well to draw from
-            {item: "herb", amount: 1, keep: false},//
+            {item: "water", amount: 1, keep: false},
+            {item: "herb", amount: 1, keep: false},
             {item: "poison_herb", amount: 1, keep: false}, //search in the forest, can be found once you have read a book to recognise simple herbs
         ],
         {item: "simple_poison", amount: 1},instrument_db[0]
-    )
-}//todo make the item lol
+    ),
+    "water" : new RECIPE([{item:"dirty_water",amount:1,keep:false},{item:"wood",amount:1,keep:false}],{item:"water" , amount: 1},instrument_db[0])
+}

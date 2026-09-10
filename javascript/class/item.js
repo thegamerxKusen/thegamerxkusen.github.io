@@ -50,7 +50,6 @@ class ARMOR_ITEM extends ITEM{
 //as its just an academy game you only learn in library so i'll just make it so you learn the things when you finish reading it
 // So no Book item in inventory
 
-//todo add recipe book for cooking and crafting
 class MANUAL extends ITEM {
     constructor(name, desc, value, tier) {
         super(name, desc, value, item_tier_db.common, 1,()=>{player.processEvent("USE_ITEM",this,1)}) // Manuals are always common and quantity is 1
@@ -78,7 +77,7 @@ class BOOK {
     minuteToCompletion(user){
         const pageToRead = this.page - this.currentPage
         const speedMultiplier = user.wisdom / this.reqWisdom
-        return Math.ceil(pageToRead/0.5)/speedMultiplier
+        return Math.ceil(pageToRead/0.5)/speedMultiplier//problem with the flooring 
         //Read page is minuteSpent*0.5*speedMultiplier = page
     }
     learnEffect(user){
@@ -106,7 +105,6 @@ class BOOK {
         const pagesRead = Math.floor(minutesSpent * 0.5 * speedMultiplier)
         console.log("Minute Spent:"+minutesSpent)
         user.passMinute(minutesSpent)
-        //todo fix problem with the time
         this.currentPage += pagesRead
         gameAudio.playSFX("read")
     
@@ -209,6 +207,7 @@ const item_db ={
     linen_martial_attire: new ARMOR_ITEM("Linen Martial Attire","A classic martial robe of medium quality, only offer resistance against cold wind.",100,1,0,0,item_tier_db.trash),
     herb: new ITEM("Herb","A common herb that can be used for cooking or crafting.",2,item_tier_db.trash),
     wood: new ITEM("Wood","A piece of wood that can be used for crafting or building.",2,item_tier_db.trash),
+    dirty_water:new ITEM("(Unclean) Water","To get usable water, boil it in a pot.",0,item_tier_db.trash,0),//todo get sick upon using/drinking
     water: new ITEM("Water","You need a description of water? Maybe this game is too advanced for you.",0,item_tier_db.trash),
     poison_herb: new ITEM("Poison Herb","A rare herb that can be used to craft poison.",10,item_tier_db.common),
     simple_poison: new FIGHT_ITEM("Simple Poison","Weak poison that inflict 2 damage per turn for 3 turns.",25,item_tier_db.common,0,(user,target)=>{
@@ -228,7 +227,7 @@ const book_db = {
     poisoning_for_children : new RECIPE_BOOK(
         "Poisoning for Children",
         "Read to know which herbs are poisonous and how to craft simple poisons. A very basic book for the young to kill each other without harming oneself.",
-        10,item_tier_db.common, 50, 6,["simple_poison"]//todo increase wisdom req
+        10,item_tier_db.common, 50, 6,["simple_poison"]
     ),
     chronicles_heavenly_demon: new BOOK(
         "Chronicles of the Heavenly Demon",

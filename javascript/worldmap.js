@@ -328,7 +328,7 @@ class CRAFTING_MENUE_INTERACTION extends INTERACTION {
                     if(!recipe.canCraft()){hide(document.querySelector("#craft-btn"))}else{
                         document.querySelector("#craft-btn").addEventListener("click",()=>{
                             recipe.craft()
-                        })
+                        })//always hide
                     }
                     const ingredientElement = document.querySelector("#ingredients-list")
                     for(const ingredient of recipe.ingredients){
@@ -378,7 +378,7 @@ const worldMap = {
         "Residence Garden",
         "A peaceful obsidian-rock garden with a small pond. The air is still and calming.",
         ["player_home"],
-        ["leisure","mind_training"],
+        ["leisure","mind_training","draw_water"],
         () => true,
         null
     ),
@@ -752,12 +752,12 @@ const world_interactions = {
     "Right Guardian: -For the first test you will have to stay up under a sound attack of Elder Hang Soyu.",
     "The Elder slowly sat down with her zither and gracefully played a single sweet note, but then you feel a shock waves shaking your insides."]),
     //nearby forest interactions
-    "gather_herbs":new GET_ITEM_INTERACTION("Gather Herbs", 0, 0, () => true, item_db.herb),//todo fix, when i click it doesnt show a message the firstime, must be an event problem
+    "gather_herbs":new GET_ITEM_INTERACTION("Gather Herbs", 0, 0, () => true, item_db.herb),
     "gather_poisonous_herbs":new GET_ITEM_INTERACTION("Gather Poisonous Herbs", 0, 0, () => player.hasRead(book_db.poisoning_for_children)
     , item_db.poison_herb),
     "gather_wood":new GET_ITEM_INTERACTION("Gather Wood", 0, 0, () => player.hasRead(book_db.woodcutter_tale), item_db.wood,"gather_wood"),
     "cooking_pot":new CRAFTING_MENUE_INTERACTION("Cooking Pot",0,0,()=>true,"Pot"),
-
+    "draw_water":new GET_ITEM_INTERACTION("Draw (Unclean)Water",0,0,()=>true,item_db.dirty_water)
 }
 
 function refreshWorldSection(){

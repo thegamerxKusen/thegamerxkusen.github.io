@@ -60,7 +60,7 @@ class PLAYER {
         //academy story
         this.passed_first_test=false
 
-        this.known_recipes=[]
+        this.known_recipes=[recipe_db.water]
 
     }
 
