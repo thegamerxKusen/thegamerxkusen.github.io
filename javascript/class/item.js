@@ -75,6 +75,12 @@ class BOOK {
             return false;
         });
     }
+    minuteToCompletion(user){
+        const pageToRead = this.page - this.currentPage
+        const speedMultiplier = user.wisdom / this.reqWisdom
+        return Math.ceil(pageToRead/0.5)/speedMultiplier
+        //Read page is minuteSpent*0.5*speedMultiplier = page
+    }
     learnEffect(user){
         sendConsoleMessage(`You finished reading [${this.name}]. (+1 Wisdom)`)
         user.processEvent("READ",this,1)
