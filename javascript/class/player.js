@@ -690,7 +690,7 @@ class PLAYER {
     }
 
     //----INVENTORY MANAGEMENT----
-    addItem(item){
+    addItem(item){//todo add an amount factor in the method to add multiple item
         if(!(item instanceof ITEM)){
             console.log("Not an item: addItem(item)")
             return
@@ -701,10 +701,10 @@ class PLAYER {
         if (existingItem) {
             existingItem.addAnother()
             console.log(`Increased quantity of ${existingItem.name} to ${existingItem.quantity}`)
-            sendConsoleMessage("Added another " + existingItem.name)
         }else{
             this._inventory.push(item)
         }
+        sendConsoleMessage("LOOT: "+ item.name)
         this.processEvent("COLLECT",item,1)
         this.refreshInventory()
 
